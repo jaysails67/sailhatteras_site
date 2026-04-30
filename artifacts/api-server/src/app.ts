@@ -66,7 +66,8 @@ app.use(cors({
     }
     const allowed =
       allowedOrigins.has(origin) ||
-      (!isProd && (origin.endsWith(".replit.dev") || origin.endsWith(".replit.app")));
+      origin.endsWith(".replit.dev") ||
+      origin.endsWith(".replit.app");
     callback(allowed ? null : new Error("CORS: origin not allowed"), allowed);
   },
   credentials: true,
