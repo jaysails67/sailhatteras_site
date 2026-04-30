@@ -1,0 +1,153 @@
+You are building a WordPress-based website for the domain PamliEcoConnect.com. The company manufactures cutting-edge foiling electric boats for:
+
+Passenger transportation
+Military and domestic enforcement
+Recreational boating
+The site must be API-manageable by an OpenClaw agent via the WordPress REST API (using app passwords), so content and key sections must be easily updatable via REST calls.
+
+Core Requirements
+Tech Stack / Platform
+
+Use WordPress as the CMS.
+Use a child theme or simple custom theme that:
+Implements the layout described below.
+Exposes well-structured templates for REST-based content updates.
+Ensure the WordPress REST API remains enabled and standard endpoints are available:
+/wp-json/wp/v2/pages
+/wp-json/wp/v2/posts
+Content regions for key pages (hero text, section content, business plan sections, etc.) must be stored as pages or posts so they can be updated via REST.
+Global Layout & Templates
+
+Create a standard site layout with:
+Global header
+Global footer
+Sidebar menu (used for interior sections like the investor area)
+Define and implement at least these template types:
+Hero Template (for the home page)
+Page Template (standard content pages)
+Post Template (blog/news posts)
+Landing Page Funnel Template (for targeted funnels like investor landing, buyer landing, reservation funnel, etc.)
+Home Page (Hero)
+
+Design a catchy Hero home page that clearly presents PamliEcoConnect as a cutting-edge foiling electric boat manufacturer.
+Include:
+Strong headline and subheadline about electric foiling vessels.
+Hero image or video placeholder (media will be filled later).
+Primary CTA: “Learn More” that routes users into one of 3 funnels.
+Below or after the hero, present a short Introduction/Summary that “culls” visitors into three main funnels:
+Investors & Funding Sources
+Boat Buyers
+Passenger Reservations & Charters
+Implement the three funnels as clear buttons or sections linking to their respective areas.
+Funnels and Sections
+
+4.1 Investors & Funding Sources Funnel
+For first-time visitors:
+
+Landing page: “Request Access” page.
+This page collects Name, Email, Phone Number.
+When submitted:
+A WordPress user is created for this visitor (role appropriate for investors).
+The system stores a flag that they are an investor (e.g., via user meta).
+After form submission:
+
+Present a Terms & Conditions / NDA / Non-compete notice page.
+Show a concise explanation of the non-disclosure / non-compete terms.
+Include a checkbox: “I understand and agree to the terms.”
+Include a Submit button.
+On submit:
+Mark the user as having acknowledged terms (e.g., user meta).
+Trigger an approval workflow:
+Send a notification email to the site admin.
+Also send a notification via Telegram (assume we’ll wire in a webhook or plugin; create a clear hook or placeholder for this).
+The investor’s access is pending until manually approved by the admin.
+Show standard response screens:
+
+On initial request submission (before approval): polite, professional “Thank you, your request is pending review. You’ll be notified once approved.”
+On approval: message indicating that access has been granted and how to log in.
+On denial: polite message explaining that access was not granted.
+Once approved:
+
+The investor can log in and access a protected Investor / Financial Section.
+This section should:
+Use the standard layout (header, footer, sidebar).
+Show a left-hand sidebar menu listing the Business Plan sections:
+Exec Summary
+Products
+Services
+Marketing Plan
+Financial Plan
+Conclusion / Conversion Page (subscription agreement & payment options)
+When the user clicks any menu item, the center content area loads the corresponding section.
+Security:
+
+All investor/business-plan pages must be protected and only accessible to:
+Logged-in users who have been explicitly approved as investors (use a custom capability, role, or user meta check).
+Anonymous visitors or unapproved users should see a clean, polite “Access restricted” page.
+Business Plan Content Architecture:
+
+Implement each business-plan section as a WordPress page (or custom post type) that can be:
+Edited from the admin UI.
+Updated via REST API (e.g., /wp-json/wp/v2/pages/{id}).
+Make sure the theme code for the investor area pulls content from these pages dynamically.
+4.2 Boat Buyers Funnel
+Create a Boat Buyers landing page using the Landing Page Funnel Template.
+Outline:
+Overview of product lines (passenger, military/enforcement, recreational).
+Sections to describe model specs, capabilities, benefits.
+Clear CTAs for:
+Schedule a consultation / request a quote.
+Download spec sheet (placeholder).
+These pages should be public but structured so content blocks can be updated via REST (e.g., as pages or posts).
+4.3 Passenger Reservations & Charters Funnel
+Create a Booking / Reservations page (public-facing).
+For now:
+Do not enable actual bookings.
+Display clear messaging like “Reservations will be available once vessels are built and in service.”
+Optionally provide a waitlist form (Name, Email, Phone) that stores interested passengers as leads.
+This page is also managed via the Page Template and should be REST-updatable.
+Press and Multimedia Page
+
+Create a Press & Multimedia section:
+A page that lists:
+Blog posts (news/press releases)
+Video presentations
+Written presentations related to product development.
+Use:
+WordPress posts for blog/press entries.
+Custom fields or taxonomies to distinguish “press release,” “presentation,” “video,” etc.
+Template should:
+Show latest posts.
+Have sections for featured videos and documents.
+All content must be manageable via:
+WordPress admin UI.
+REST API: /wp-json/wp/v2/posts with categories/tags.
+Contact Page
+
+Create a Contact page accessible to the public.
+Include:
+Contact form: Name, Email, Message.
+Submissions should be sent to: info@pamliecoconnect.com.
+Implement basic spam protection (e.g., honeypot or simple check).
+Store form submissions in the database as well so they can be viewed from the admin area.
+Management Team Page
+
+Create a Management Team page.
+Structure:
+Placeholders (cards) for team members:
+Name
+Title/Role
+Short bio
+Headshot image placeholder
+Content must be easily editable in WordPress admin and via REST.
+Analytics
+
+Integrate basic analytics across the site:
+Use a standard analytics solution (e.g., Google Analytics, Plausible, or similar).
+Ensure tracking is present on all pages, especially:
+Hero / home
+Investor request and investor area pages
+Boat buyer and reservation funnels
+Press & Multimedia
+Goal: ability to track user behavior from first page hit through funnel behavior and exit.
+OpenClaw / REST API Content Management
