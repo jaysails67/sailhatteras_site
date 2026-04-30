@@ -1,12 +1,13 @@
 import { Router, type IRouter } from "express";
 import bcrypt from "bcryptjs";
 import { db } from "@workspace/db";
-import { usersTable } from "@workspace/db";
+import { usersTable, investorApplicationsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import {
   RegisterUserBody,
   LoginUserBody,
 } from "@workspace/api-zod";
+import { logger } from "../lib/logger";
 
 const router: IRouter = Router();
 
@@ -39,15 +40,23 @@ router.post("/auth/register", async (req, res): Promise<void> => {
   }
 
   const passwordHash = await bcrypt.hash(password, 12);
-  const [user] = await db.insert(usersTable).values({
-    name,
-    email,
-    phone,
-    passwordHash,
-    role: "investor",
-    approvalStatus: "pending",
-    ndaAccepted: false,
-  }).returning();
+  const [user] = await db
+    .insert(usersTable)
+    .values({
+      name,
+      email,
+      phone,
+      passwordHash,
+      role: "investor",
+      approvalStatus: "pending",
+      ndaAccepted: false,
+    })
+    .returning();
+
+  await db.insert(investorApplicationsTable).values({
+    userId: user.id,
+    status: "pending",
+  });
 
   req.session.userId = user.id;
 
@@ -74,6 +83,11 @@ router.post("/auth/accept-nda", async (req, res): Promise<void> => {
     return;
   }
 
+  await db
+    .update(investorApplicationsTable)
+    .set({ ndaAcceptedAt: new Date(), status: "pending" })
+    .where(eq(investorApplicationsTable.userId, user.id));
+
   const telegramWebhookUrl = process.env.TELEGRAM_WEBHOOK_URL;
   if (telegramWebhookUrl) {
     fetch(telegramWebhookUrl, {
@@ -82,7 +96,15 @@ router.post("/auth/accept-nda", async (req, res): Promise<void> => {
       body: JSON.stringify({
         text: `New investor application: ${user.name} (${user.email}) has accepted the NDA and is pending approval.`,
       }),
-    }).catch(() => {});
+    }).catch((err) => logger.warn({ err }, "Telegram notification failed"));
+  }
+
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (adminEmail) {
+    logger.info(
+      { investorName: user.name, investorEmail: user.email, adminEmail },
+      "Admin email notification queued for new investor application",
+    );
   }
 
   res.json({

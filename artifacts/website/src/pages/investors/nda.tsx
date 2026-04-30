@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { useEffect, useState } from "react";
 import { useAcceptNda } from "@workspace/api-client-react";
+import { events } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
@@ -30,6 +31,7 @@ export default function Nda() {
     
     acceptNdaMutation.mutate(undefined, {
       onSuccess: () => {
+        events.investorNdaAccepted();
         toast({
           title: "NDA Accepted",
           description: "Your application is now pending approval.",

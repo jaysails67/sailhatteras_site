@@ -6,25 +6,34 @@ import {
   contentPagesTable,
   postsTable,
 } from "@workspace/db";
-import { sql } from "drizzle-orm";
 import { logger } from "./lib/logger";
 
 export async function seed(): Promise<void> {
   try {
-    const passwordHash = await bcrypt.hash("admin123!", 10);
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    const adminEmail = process.env.ADMIN_EMAIL ?? "admin@pamliecoconnect.com";
 
-    await db
-      .insert(usersTable)
-      .values({
-        name: "Admin",
-        email: "admin@pamliecoconnect.com",
-        phone: "+1-555-000-0001",
-        passwordHash,
-        role: "admin",
-        approvalStatus: "approved",
-        ndaAccepted: true,
-      })
-      .onConflictDoNothing({ target: usersTable.email });
+    if (!adminPassword) {
+      logger.warn(
+        "ADMIN_PASSWORD env var is not set — skipping admin user seed. " +
+        "Set ADMIN_PASSWORD (and optionally ADMIN_EMAIL) to bootstrap the admin account.",
+      );
+    } else {
+      const passwordHash = await bcrypt.hash(adminPassword, 10);
+      await db
+        .insert(usersTable)
+        .values({
+          name: "Admin",
+          email: adminEmail,
+          phone: "+1-555-000-0001",
+          passwordHash,
+          role: "admin",
+          approvalStatus: "approved",
+          ndaAccepted: true,
+        })
+        .onConflictDoNothing({ target: usersTable.email });
+      logger.info({ adminEmail }, "Admin user seeded");
+    }
 
     await db
       .insert(teamMembersTable)

@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRegisterUser } from "@workspace/api-client-react";
+import { events } from "@/lib/analytics";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -58,6 +59,7 @@ export default function Investors() {
       { data: values },
       {
         onSuccess: () => {
+          events.investorRegistrationStart();
           toast({
             title: "Registration successful",
             description: "Please review and accept the NDA to continue.",

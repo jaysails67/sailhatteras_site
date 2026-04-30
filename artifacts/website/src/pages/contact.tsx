@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useSubmitContact } from "@workspace/api-client-react";
+import { events } from "@/lib/analytics";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -37,6 +38,7 @@ export default function Contact() {
       { data: values },
       {
         onSuccess: () => {
+          events.contactFormSubmitted();
           toast({
             title: "Message Sent",
             description: "We'll get back to you as soon as possible.",

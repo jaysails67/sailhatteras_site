@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
-import { usersTable } from "@workspace/db";
+import { usersTable, investorApplicationsTable } from "@workspace/db";
 import { eq, and, count } from "drizzle-orm";
 import {
   ListInvestorsQueryParams,
@@ -8,10 +8,14 @@ import {
   DenyInvestorParams,
 } from "@workspace/api-zod";
 import { requireAdmin } from "../middlewares/auth";
+import { logger } from "../lib/logger";
 
 const router: IRouter = Router();
 
-function formatApplication(user: typeof usersTable.$inferSelect) {
+type UserRow = typeof usersTable.$inferSelect;
+type AppRow = typeof investorApplicationsTable.$inferSelect;
+
+function formatApplication(user: UserRow, app?: AppRow | null) {
   return {
     id: user.id,
     userId: user.id,
@@ -19,9 +23,13 @@ function formatApplication(user: typeof usersTable.$inferSelect) {
     userEmail: user.email,
     userPhone: user.phone,
     status: user.approvalStatus,
+    approvalStatus: user.approvalStatus,
     ndaAccepted: user.ndaAccepted,
-    createdAt: user.createdAt.toISOString(),
-    updatedAt: user.updatedAt.toISOString(),
+    ndaAcceptedAt: app?.ndaAcceptedAt?.toISOString() ?? null,
+    notes: app?.notes ?? null,
+    applicationId: app?.id ?? null,
+    createdAt: (app?.createdAt ?? user.createdAt).toISOString(),
+    updatedAt: (app?.updatedAt ?? user.updatedAt).toISOString(),
   };
 }
 
@@ -32,18 +40,17 @@ router.get("/investors", requireAdmin, async (req, res): Promise<void> => {
     return;
   }
 
-  let query = db.select().from(usersTable).where(eq(usersTable.role, "investor"));
+  const rows = await db
+    .select()
+    .from(usersTable)
+    .leftJoin(investorApplicationsTable, eq(investorApplicationsTable.userId, usersTable.id))
+    .where(
+      parsed.data.status
+        ? and(eq(usersTable.role, "investor"), eq(usersTable.approvalStatus, parsed.data.status))
+        : eq(usersTable.role, "investor"),
+    );
 
-  if (parsed.data.status) {
-    const status = parsed.data.status;
-    const results = await db.select().from(usersTable)
-      .where(and(eq(usersTable.role, "investor"), eq(usersTable.approvalStatus, status)));
-    res.json(results.map(formatApplication));
-    return;
-  }
-
-  const results = await query;
-  res.json(results.map(formatApplication));
+  res.json(rows.map((r) => formatApplication(r.users, r.investor_applications)));
 });
 
 router.post("/investors/:id/approve", requireAdmin, async (req, res): Promise<void> => {
@@ -64,6 +71,12 @@ router.post("/investors/:id/approve", requireAdmin, async (req, res): Promise<vo
     return;
   }
 
+  const [app] = await db
+    .update(investorApplicationsTable)
+    .set({ status: "approved" })
+    .where(eq(investorApplicationsTable.userId, user.id))
+    .returning();
+
   const telegramWebhookUrl = process.env.TELEGRAM_WEBHOOK_URL;
   if (telegramWebhookUrl) {
     fetch(telegramWebhookUrl, {
@@ -72,10 +85,10 @@ router.post("/investors/:id/approve", requireAdmin, async (req, res): Promise<vo
       body: JSON.stringify({
         text: `Investor ${user.name} (${user.email}) has been approved.`,
       }),
-    }).catch(() => {});
+    }).catch((err) => logger.warn({ err }, "Telegram notification failed"));
   }
 
-  res.json(formatApplication(user));
+  res.json(formatApplication(user, app));
 });
 
 router.post("/investors/:id/deny", requireAdmin, async (req, res): Promise<void> => {
@@ -96,7 +109,13 @@ router.post("/investors/:id/deny", requireAdmin, async (req, res): Promise<void>
     return;
   }
 
-  res.json(formatApplication(user));
+  const [app] = await db
+    .update(investorApplicationsTable)
+    .set({ status: "denied" })
+    .where(eq(investorApplicationsTable.userId, user.id))
+    .returning();
+
+  res.json(formatApplication(user, app));
 });
 
 router.get("/investors/stats", requireAdmin, async (req, res): Promise<void> => {

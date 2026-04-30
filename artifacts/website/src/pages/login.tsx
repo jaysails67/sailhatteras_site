@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useLoginUser } from "@workspace/api-client-react";
+import { events } from "@/lib/analytics";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -54,7 +55,7 @@ export default function Login() {
       { data: values },
       {
         onSuccess: () => {
-          // Refresh page to load user state
+          events.investorLoginSuccess();
           window.location.href = "/";
         },
         onError: (error) => {

@@ -4,6 +4,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Anchor, ShieldCheck, Zap } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { events } from "@/lib/analytics";
 
 interface HomeContent {
   id: number;
@@ -74,12 +75,12 @@ export default function Home() {
               
               <div className="flex flex-wrap gap-4">
                 <Link href="/buyers">
-                  <Button size="lg" className="font-semibold tracking-wide">
+                  <Button size="lg" className="font-semibold tracking-wide" onClick={events.ctaClickBoats}>
                     Explore Models <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
                 <Link href="/investors">
-                  <Button size="lg" variant="outline" className="font-semibold backdrop-blur-md bg-background/30 border-border/50 hover:bg-accent">
+                  <Button size="lg" variant="outline" className="font-semibold backdrop-blur-md bg-background/30 border-border/50 hover:bg-accent" onClick={events.ctaClickInvestors}>
                     Investor Relations
                   </Button>
                 </Link>
@@ -137,7 +138,7 @@ export default function Home() {
                 <p className="text-muted-foreground mb-8">
                   Be among the first to experience silent flight over water. Join the passenger waitlist.
                 </p>
-                <Link href="/reservations" className="inline-flex items-center text-sm font-semibold text-primary group-hover:underline">
+                <Link href="/reservations" className="inline-flex items-center text-sm font-semibold text-primary group-hover:underline" onClick={events.ctaClickReservations}>
                   Join waitlist <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>
