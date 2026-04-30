@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Ship } from "lucide-react";
+import phbwIcon from "@/assets/images/phillips-boatworks-icon.png";
 
 export function Footer() {
   return (
@@ -8,7 +8,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="flex flex-col gap-2">
             <Link href="/" className="flex items-center gap-2 font-display font-bold text-xl tracking-tight text-primary">
-              <Ship className="h-6 w-6" />
+              <img src={phbwIcon} alt="Phillips Boatworks" className="h-8 w-8 rounded-sm object-cover" />
               PamliEcoConnect
             </Link>
             <p className="text-sm text-muted-foreground mt-2">
@@ -41,9 +41,13 @@ export function Footer() {
         </div>
         <div className="border-t border-border mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-muted-foreground">
           <p>© {new Date().getFullYear()} PamliEcoConnect. All rights reserved.</p>
-          <div className="flex gap-4 mt-4 md:mt-0">
+          <div className="flex items-center gap-6 mt-4 md:mt-0">
             <span className="hover:text-primary cursor-pointer transition-colors">Privacy Policy</span>
             <span className="hover:text-primary cursor-pointer transition-colors">Terms of Service</span>
+            <span className="flex items-center gap-1.5 text-muted-foreground/60">
+              <img src={phbwIcon} alt="" className="h-4 w-4 rounded-sm object-cover opacity-60" />
+              Phillips Boatworks
+            </span>
           </div>
         </div>
       </div>

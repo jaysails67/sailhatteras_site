@@ -1,8 +1,9 @@
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { Ship, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import phbwIcon from "@/assets/images/phillips-boatworks-icon.png";
 
 export function Navbar() {
   const [location] = useLocation();
@@ -22,7 +23,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-screen-2xl items-center px-4 md:px-8">
         <Link href="/" className="flex items-center gap-2 mr-6 font-display font-bold text-xl tracking-tight text-primary">
-          <Ship className="h-6 w-6" />
+          <img src={phbwIcon} alt="Phillips Boatworks" className="h-8 w-8 rounded-sm object-cover" />
           PamliEcoConnect
         </Link>
         <div className="hidden md:flex flex-1 items-center justify-between">
