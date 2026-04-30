@@ -4,6 +4,8 @@ import { db } from "@workspace/db";
 import { usersTable, postsTable, contactSubmissionsTable, waitlistTable } from "@workspace/db";
 import { eq, count, desc, and } from "drizzle-orm";
 import { requireAdmin } from "../middlewares/auth";
+import { forceRegisterWebhook, getWebhookInfo, buildWebhookUrl } from "../lib/telegram";
+import { logger } from "../lib/logger";
 
 const router: IRouter = Router();
 
@@ -38,6 +40,27 @@ router.get("/admin/dashboard", requireAdmin, async (_req, res): Promise<void> =>
       createdAt: p.createdAt.toISOString(),
     })),
   });
+});
+
+router.get("/admin/telegram/status", requireAdmin, async (_req, res): Promise<void> => {
+  const info = await getWebhookInfo();
+  const currentUrl = buildWebhookUrl();
+  res.json({
+    registered: info ?? null,
+    currentServerUrl: currentUrl,
+    isCorrect: info ? info.url === currentUrl : false,
+  });
+});
+
+router.post("/admin/telegram/reregister", requireAdmin, async (_req, res): Promise<void> => {
+  logger.info("Admin triggered Telegram webhook re-registration");
+  const result = await forceRegisterWebhook();
+  if (!result.ok) {
+    res.status(500).json({ error: result.description ?? "Webhook registration failed" });
+    return;
+  }
+  const info = await getWebhookInfo();
+  res.json({ ok: true, webhookUrl: result.webhookUrl, info });
 });
 
 router.post("/admin/investors/:id/reset-password", requireAdmin, async (req, res): Promise<void> => {

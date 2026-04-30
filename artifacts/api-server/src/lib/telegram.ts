@@ -26,35 +26,53 @@ export function sendTelegramToChat(chatId: string | number, text: string): void 
   }).catch((err) => logger.warn({ err }, "Telegram notification failed"));
 }
 
+export function buildWebhookUrl(): string | null {
+  // Allow explicit override via env var (useful for custom domains / self-hosting)
+  if (process.env.TELEGRAM_WEBHOOK_URL) {
+    return `${process.env.TELEGRAM_WEBHOOK_URL.replace(/\/$/, "")}/api/telegram/webhook`;
+  }
+  const domain = process.env.REPLIT_DEV_DOMAIN;
+  if (!domain) return null;
+  return `https://${domain}/api/telegram/webhook`;
+}
+
+async function setWebhook(webhookUrl: string): Promise<{ ok: boolean; description?: string }> {
+  if (!BOT_TOKEN) return { ok: false, description: "No bot token" };
+  const secret = deriveWebhookSecret(BOT_TOKEN);
+  const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/setWebhook`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      url: webhookUrl,
+      allowed_updates: ["message"],
+      secret_token: secret,
+    }),
+  });
+  return res.json() as Promise<{ ok: boolean; description?: string }>;
+}
+
 export async function registerWebhook(): Promise<void> {
   if (!BOT_TOKEN) {
     logger.warn("TELEGRAM_BOT_TOKEN not set — skipping webhook registration");
     return;
   }
-  // Only register in production — dev server must never overwrite the production
-  // webhook, as they use separate databases and the wrong server would receive callbacks.
-  if (process.env.NODE_ENV !== "production") {
+
+  // Skip only when explicitly running as the dev server (NODE_ENV=development is
+  // set by the dev workflow script). The production deployment does NOT set NODE_ENV,
+  // so the old check (NODE_ENV !== "production") was always true in production too.
+  if (process.env.NODE_ENV === "development") {
     logger.info("Dev mode — skipping Telegram webhook registration (production server owns the webhook)");
     return;
   }
-  const devDomain = process.env.REPLIT_DEV_DOMAIN;
-  if (!devDomain) {
-    logger.warn("REPLIT_DEV_DOMAIN not set — skipping Telegram webhook registration");
+
+  const webhookUrl = buildWebhookUrl();
+  if (!webhookUrl) {
+    logger.warn("Cannot determine webhook URL (TELEGRAM_WEBHOOK_URL and REPLIT_DEV_DOMAIN both unset) — skipping");
     return;
   }
-  const webhookUrl = `https://${devDomain}/api/telegram/webhook`;
-  const secret = deriveWebhookSecret(BOT_TOKEN);
+
   try {
-    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/setWebhook`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        url: webhookUrl,
-        allowed_updates: ["message"],
-        secret_token: secret,
-      }),
-    });
-    const data = (await res.json()) as { ok: boolean; description?: string };
+    const data = await setWebhook(webhookUrl);
     if (data.ok) {
       logger.info({ webhookUrl }, "Telegram webhook registered");
     } else {
@@ -63,4 +81,44 @@ export async function registerWebhook(): Promise<void> {
   } catch (err) {
     logger.warn({ err }, "Telegram webhook registration error");
   }
+}
+
+export async function forceRegisterWebhook(): Promise<{ ok: boolean; webhookUrl: string | null; description?: string }> {
+  if (!BOT_TOKEN) return { ok: false, webhookUrl: null, description: "TELEGRAM_BOT_TOKEN not set" };
+  const webhookUrl = buildWebhookUrl();
+  if (!webhookUrl) return { ok: false, webhookUrl: null, description: "Cannot determine webhook URL" };
+  try {
+    const data = await setWebhook(webhookUrl);
+    if (data.ok) {
+      logger.info({ webhookUrl }, "Telegram webhook force-registered by admin");
+    } else {
+      logger.warn({ description: data.description }, "Telegram webhook force-registration failed");
+    }
+    return { ok: data.ok, webhookUrl, description: data.description };
+  } catch (err) {
+    logger.warn({ err }, "Telegram webhook force-registration error");
+    return { ok: false, webhookUrl, description: String(err) };
+  }
+}
+
+export async function getWebhookInfo(): Promise<{
+  url: string;
+  pending_update_count: number;
+  last_error_message?: string;
+  last_error_date?: number;
+} | null> {
+  if (!BOT_TOKEN) return null;
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getWebhookInfo`);
+    const data = (await res.json()) as { ok: boolean; result?: {
+      url: string;
+      pending_update_count: number;
+      last_error_message?: string;
+      last_error_date?: number;
+    } };
+    if (data.ok && data.result) return data.result;
+  } catch {
+    // ignore
+  }
+  return null;
 }

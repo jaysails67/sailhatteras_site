@@ -17,7 +17,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle2, XCircle, Users, Mail, List, LayoutDashboard, KeyRound } from "lucide-react";
+import { CheckCircle2, XCircle, Users, Mail, List, LayoutDashboard, KeyRound, Bot, RefreshCw, AlertTriangle } from "lucide-react";
 import { format } from "date-fns";
 
 type Tab = "overview" | "investors" | "contacts" | "waitlist";
@@ -40,11 +40,52 @@ export default function Admin() {
   const { user, isLoading: authLoading } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const isAdmin = !!user && user.role === "admin";
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [denyDialog, setDenyDialog] = useState<DenyDialogState | null>(null);
   const [resetPwDialog, setResetPwDialog] = useState<ResetPasswordDialogState | null>(null);
 
-  const isAdmin = !!user && user.role === "admin";
+  type TelegramStatus = {
+    registered: { url: string; pending_update_count: number; last_error_message?: string; last_error_date?: number } | null;
+    currentServerUrl: string | null;
+    isCorrect: boolean;
+  };
+  const [telegramStatus, setTelegramStatus] = useState<TelegramStatus | null>(null);
+  const [telegramLoading, setTelegramLoading] = useState(false);
+  const [reregisterLoading, setReregisterLoading] = useState(false);
+
+  const fetchTelegramStatus = async () => {
+    setTelegramLoading(true);
+    try {
+      const res = await fetch("/api/admin/telegram/status", { credentials: "include" });
+      const data = await res.json() as TelegramStatus;
+      setTelegramStatus(data);
+    } catch {
+      toast({ title: "Error", description: "Could not fetch Telegram webhook status.", variant: "destructive" });
+    } finally {
+      setTelegramLoading(false);
+    }
+  };
+
+  const handleReregisterWebhook = async () => {
+    setReregisterLoading(true);
+    try {
+      const res = await fetch("/api/admin/telegram/reregister", { method: "POST", credentials: "include" });
+      const data = await res.json() as { ok?: boolean; webhookUrl?: string; error?: string };
+      if (!res.ok || !data.ok) throw new Error(data.error ?? "Failed to re-register webhook");
+      toast({ title: "Webhook registered", description: `Now pointing to: ${data.webhookUrl}` });
+      await fetchTelegramStatus();
+    } catch (err) {
+      toast({ title: "Error", description: (err as Error).message, variant: "destructive" });
+    } finally {
+      setReregisterLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isAdmin) fetchTelegramStatus();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAdmin]);
 
   const { data: dashboard, isLoading: dashboardLoading, refetch: refetchDashboard } = useGetAdminDashboard({
     query: { enabled: isAdmin, queryKey: getGetAdminDashboardQueryKey() }
@@ -172,6 +213,7 @@ export default function Admin() {
 
           {/* Overview */}
           {activeTab === "overview" && (
+            <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <Card>
                 <CardHeader className="pb-2">
@@ -205,6 +247,73 @@ export default function Admin() {
                   <div className="text-3xl font-bold">{dashboardLoading ? "-" : dashboard?.totalContacts}</div>
                 </CardContent>
               </Card>
+            </div>
+
+            {/* Telegram Bot Status */}
+            <Card>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Bot className="h-5 w-5 text-primary" /> Telegram Bot Webhook
+                  </CardTitle>
+                  <Button size="sm" variant="outline" onClick={fetchTelegramStatus} disabled={telegramLoading}>
+                    <RefreshCw className={`h-4 w-4 mr-1 ${telegramLoading ? "animate-spin" : ""}`} />
+                    Refresh
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm">
+                {telegramLoading && !telegramStatus ? (
+                  <p className="text-muted-foreground">Checking webhook status…</p>
+                ) : telegramStatus ? (
+                  <>
+                    <div className="flex items-start gap-2">
+                      {telegramStatus.isCorrect ? (
+                        <CheckCircle2 className="h-4 w-4 text-green-400 mt-0.5 shrink-0" />
+                      ) : (
+                        <AlertTriangle className="h-4 w-4 text-yellow-400 mt-0.5 shrink-0" />
+                      )}
+                      <div>
+                        <span className="font-medium text-foreground">
+                          {telegramStatus.isCorrect ? "Webhook is correctly registered" : "Webhook URL mismatch — registration needed"}
+                        </span>
+                        {telegramStatus.registered && (
+                          <p className="text-muted-foreground font-mono text-xs mt-0.5 break-all">
+                            Registered: {telegramStatus.registered.url}
+                          </p>
+                        )}
+                        {telegramStatus.currentServerUrl && !telegramStatus.isCorrect && (
+                          <p className="text-muted-foreground font-mono text-xs mt-0.5 break-all">
+                            This server: {telegramStatus.currentServerUrl}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {telegramStatus.registered && (
+                      <div className="flex gap-4 text-xs text-muted-foreground">
+                        <span>Pending updates: <span className={telegramStatus.registered.pending_update_count > 0 ? "text-yellow-400 font-semibold" : ""}>{telegramStatus.registered.pending_update_count}</span></span>
+                        {telegramStatus.registered.last_error_message && (
+                          <span className="text-destructive">Last error: {telegramStatus.registered.last_error_message}</span>
+                        )}
+                      </div>
+                    )}
+
+                    <Button
+                      size="sm"
+                      onClick={handleReregisterWebhook}
+                      disabled={reregisterLoading}
+                      className={telegramStatus.isCorrect ? "variant-outline" : ""}
+                    >
+                      <Bot className="h-4 w-4 mr-1" />
+                      {reregisterLoading ? "Registering…" : telegramStatus.isCorrect ? "Re-register Webhook" : "Fix Webhook Now"}
+                    </Button>
+                  </>
+                ) : (
+                  <p className="text-muted-foreground">Could not load webhook status.</p>
+                )}
+              </CardContent>
+            </Card>
             </div>
           )}
 
