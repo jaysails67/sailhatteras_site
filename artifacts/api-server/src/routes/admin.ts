@@ -1,7 +1,8 @@
 import { Router, type IRouter } from "express";
+import bcrypt from "bcryptjs";
 import { db } from "@workspace/db";
 import { usersTable, postsTable, contactSubmissionsTable, waitlistTable } from "@workspace/db";
-import { eq, count, desc } from "drizzle-orm";
+import { eq, count, desc, and } from "drizzle-orm";
 import { requireAdmin } from "../middlewares/auth";
 
 const router: IRouter = Router();
@@ -37,6 +38,30 @@ router.get("/admin/dashboard", requireAdmin, async (_req, res): Promise<void> =>
       createdAt: p.createdAt.toISOString(),
     })),
   });
+});
+
+router.post("/admin/investors/:id/reset-password", requireAdmin, async (req, res): Promise<void> => {
+  const id = Number(req.params.id);
+  const { newPassword } = req.body as { newPassword?: string };
+
+  if (!newPassword || typeof newPassword !== "string" || newPassword.length < 8) {
+    res.status(400).json({ error: "New password must be at least 8 characters" });
+    return;
+  }
+
+  const passwordHash = await bcrypt.hash(newPassword, 12);
+  const [user] = await db
+    .update(usersTable)
+    .set({ passwordHash })
+    .where(and(eq(usersTable.id, id), eq(usersTable.role, "investor")))
+    .returning({ id: usersTable.id, name: usersTable.name, email: usersTable.email });
+
+  if (!user) {
+    res.status(404).json({ error: "Investor not found" });
+    return;
+  }
+
+  res.json({ message: `Password reset for ${user.name} (${user.email})` });
 });
 
 export default router;

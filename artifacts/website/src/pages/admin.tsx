@@ -17,7 +17,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle2, XCircle, Users, Mail, List, LayoutDashboard } from "lucide-react";
+import { CheckCircle2, XCircle, Users, Mail, List, LayoutDashboard, KeyRound } from "lucide-react";
 import { format } from "date-fns";
 
 type Tab = "overview" | "investors" | "contacts" | "waitlist";
@@ -28,12 +28,21 @@ interface DenyDialogState {
   reason: string;
 }
 
+interface ResetPasswordDialogState {
+  investorId: number;
+  investorName: string;
+  investorEmail: string;
+  newPassword: string;
+  isResetting: boolean;
+}
+
 export default function Admin() {
   const { user, isLoading: authLoading } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [denyDialog, setDenyDialog] = useState<DenyDialogState | null>(null);
+  const [resetPwDialog, setResetPwDialog] = useState<ResetPasswordDialogState | null>(null);
 
   const isAdmin = !!user && user.role === "admin";
 
@@ -80,6 +89,34 @@ export default function Admin() {
 
   const openDenyDialog = (id: number, name: string) => {
     setDenyDialog({ investorId: id, investorName: name, reason: "" });
+  };
+
+  const openResetPwDialog = (id: number, name: string, email: string) => {
+    setResetPwDialog({ investorId: id, investorName: name, investorEmail: email, newPassword: "", isResetting: false });
+  };
+
+  const confirmResetPassword = async () => {
+    if (!resetPwDialog || resetPwDialog.isResetting) return;
+    if (resetPwDialog.newPassword.length < 8) {
+      toast({ title: "Password too short", description: "Must be at least 8 characters.", variant: "destructive" });
+      return;
+    }
+    setResetPwDialog({ ...resetPwDialog, isResetting: true });
+    try {
+      const res = await fetch(`/api/admin/investors/${resetPwDialog.investorId}/reset-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ newPassword: resetPwDialog.newPassword }),
+      });
+      const data = await res.json() as { message?: string; error?: string };
+      if (!res.ok) throw new Error(data.error ?? "Unknown error");
+      toast({ title: "Password reset", description: data.message });
+      setResetPwDialog(null);
+    } catch (err) {
+      toast({ title: "Error", description: (err as Error).message, variant: "destructive" });
+      setResetPwDialog((s) => s ? { ...s, isResetting: false } : null);
+    }
   };
 
   const confirmDeny = () => {
@@ -213,29 +250,40 @@ export default function Admin() {
                           </td>
                           <td className="px-6 py-4 text-muted-foreground">{format(new Date(inv.createdAt), "MMM d, yyyy")}</td>
                           <td className="px-6 py-4 text-right">
-                            {inv.status === "pending" && (
-                              <div className="flex justify-end gap-2">
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                                  onClick={() => openDenyDialog(inv.id, inv.userName)}
-                                  disabled={denyMutation.isPending || approveMutation.isPending}
-                                  data-testid={`btn-deny-${inv.id}`}
-                                >
-                                  <XCircle className="h-4 w-4 mr-1" /> Deny
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  className="bg-primary text-primary-foreground hover:bg-primary/90"
-                                  onClick={() => handleApprove(inv.id)}
-                                  disabled={denyMutation.isPending || approveMutation.isPending}
-                                  data-testid={`btn-approve-${inv.id}`}
-                                >
-                                  <CheckCircle2 className="h-4 w-4 mr-1" /> Approve
-                                </Button>
-                              </div>
-                            )}
+                            <div className="flex justify-end gap-2 flex-wrap">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="border-muted-foreground/40 text-muted-foreground hover:text-foreground"
+                                onClick={() => openResetPwDialog(inv.id, inv.userName, inv.userEmail)}
+                                title="Set a new temporary password for this investor"
+                              >
+                                <KeyRound className="h-4 w-4 mr-1" /> Reset PW
+                              </Button>
+                              {inv.status === "pending" && (
+                                <>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                                    onClick={() => openDenyDialog(inv.id, inv.userName)}
+                                    disabled={denyMutation.isPending || approveMutation.isPending}
+                                    data-testid={`btn-deny-${inv.id}`}
+                                  >
+                                    <XCircle className="h-4 w-4 mr-1" /> Deny
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    className="bg-primary text-primary-foreground hover:bg-primary/90"
+                                    onClick={() => handleApprove(inv.id)}
+                                    disabled={denyMutation.isPending || approveMutation.isPending}
+                                    data-testid={`btn-approve-${inv.id}`}
+                                  >
+                                    <CheckCircle2 className="h-4 w-4 mr-1" /> Approve
+                                  </Button>
+                                </>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       ))
@@ -324,6 +372,53 @@ export default function Admin() {
 
         </div>
       </main>
+
+      {/* Reset Password Dialog */}
+      {resetPwDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-card border border-border rounded-xl shadow-2xl w-full max-w-md p-6 space-y-5">
+            <div>
+              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                <KeyRound className="h-5 w-5 text-primary" /> Reset Password
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                Set a new temporary password for{" "}
+                <span className="font-medium text-foreground">{resetPwDialog.investorName}</span>{" "}
+                (<span className="font-mono text-xs">{resetPwDialog.investorEmail}</span>).
+                Share it with them securely so they can log back in.
+              </p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                New Temporary Password <span className="text-muted-foreground font-normal">(min 8 characters)</span>
+              </label>
+              <input
+                type="text"
+                className="w-full rounded-lg border border-border bg-background text-foreground text-sm p-3 focus:outline-none focus:ring-2 focus:ring-primary/50 placeholder:text-muted-foreground font-mono"
+                placeholder="e.g. Pamlico2024!"
+                value={resetPwDialog.newPassword}
+                onChange={(e) => setResetPwDialog({ ...resetPwDialog, newPassword: e.target.value })}
+                autoFocus
+              />
+            </div>
+            <div className="flex gap-3 justify-end">
+              <Button
+                variant="outline"
+                onClick={() => setResetPwDialog(null)}
+                disabled={resetPwDialog.isResetting}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={confirmResetPassword}
+                disabled={resetPwDialog.newPassword.length < 8 || resetPwDialog.isResetting}
+              >
+                {resetPwDialog.isResetting ? "Resetting..." : "Reset Password"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Deny Reason Dialog */}
       {denyDialog && (
