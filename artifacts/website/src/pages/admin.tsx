@@ -57,7 +57,8 @@ export default function Admin() {
   const fetchTelegramStatus = async () => {
     setTelegramLoading(true);
     try {
-      const res = await fetch("/api/admin/telegram/status", { credentials: "include" });
+      const origin = encodeURIComponent(window.location.origin);
+      const res = await fetch(`/api/admin/telegram/status?siteOrigin=${origin}`, { credentials: "include" });
       const data = await res.json() as TelegramStatus;
       setTelegramStatus(data);
     } catch {
@@ -70,7 +71,12 @@ export default function Admin() {
   const handleReregisterWebhook = async () => {
     setReregisterLoading(true);
     try {
-      const res = await fetch("/api/admin/telegram/reregister", { method: "POST", credentials: "include" });
+      const res = await fetch("/api/admin/telegram/reregister", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ siteOrigin: window.location.origin }),
+      });
       const data = await res.json() as { ok?: boolean; webhookUrl?: string; error?: string };
       if (!res.ok || !data.ok) throw new Error(data.error ?? "Failed to re-register webhook");
       toast({ title: "Webhook registered", description: `Now pointing to: ${data.webhookUrl}` });

@@ -26,11 +26,16 @@ export function sendTelegramToChat(chatId: string | number, text: string): void 
   }).catch((err) => logger.warn({ err }, "Telegram notification failed"));
 }
 
-export function buildWebhookUrl(): string | null {
-  // Allow explicit override via env var (useful for custom domains / self-hosting)
+export function buildWebhookUrl(siteOrigin?: string): string | null {
+  // 1. Explicit override from admin panel (browser passes window.location.origin)
+  if (siteOrigin) {
+    return `${siteOrigin.replace(/\/$/, "")}/api/telegram/webhook`;
+  }
+  // 2. Explicit override via env var (set this to production public domain, e.g. https://pamliecoconnect.com)
   if (process.env.TELEGRAM_WEBHOOK_URL) {
     return `${process.env.TELEGRAM_WEBHOOK_URL.replace(/\/$/, "")}/api/telegram/webhook`;
   }
+  // 3. Fallback: Replit dev domain (correct in dev, but NOT the public production URL in autoscale deployments)
   const domain = process.env.REPLIT_DEV_DOMAIN;
   if (!domain) return null;
   return `https://${domain}/api/telegram/webhook`;
@@ -83,9 +88,9 @@ export async function registerWebhook(): Promise<void> {
   }
 }
 
-export async function forceRegisterWebhook(): Promise<{ ok: boolean; webhookUrl: string | null; description?: string }> {
+export async function forceRegisterWebhook(siteOrigin?: string): Promise<{ ok: boolean; webhookUrl: string | null; description?: string }> {
   if (!BOT_TOKEN) return { ok: false, webhookUrl: null, description: "TELEGRAM_BOT_TOKEN not set" };
-  const webhookUrl = buildWebhookUrl();
+  const webhookUrl = buildWebhookUrl(siteOrigin);
   if (!webhookUrl) return { ok: false, webhookUrl: null, description: "Cannot determine webhook URL" };
   try {
     const data = await setWebhook(webhookUrl);

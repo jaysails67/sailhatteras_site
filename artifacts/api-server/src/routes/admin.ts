@@ -42,9 +42,10 @@ router.get("/admin/dashboard", requireAdmin, async (_req, res): Promise<void> =>
   });
 });
 
-router.get("/admin/telegram/status", requireAdmin, async (_req, res): Promise<void> => {
+router.get("/admin/telegram/status", requireAdmin, async (req, res): Promise<void> => {
   const info = await getWebhookInfo();
-  const currentUrl = buildWebhookUrl();
+  const siteOrigin = (req.query.siteOrigin as string | undefined);
+  const currentUrl = buildWebhookUrl(siteOrigin);
   res.json({
     registered: info ?? null,
     currentServerUrl: currentUrl,
@@ -52,9 +53,10 @@ router.get("/admin/telegram/status", requireAdmin, async (_req, res): Promise<vo
   });
 });
 
-router.post("/admin/telegram/reregister", requireAdmin, async (_req, res): Promise<void> => {
-  logger.info("Admin triggered Telegram webhook re-registration");
-  const result = await forceRegisterWebhook();
+router.post("/admin/telegram/reregister", requireAdmin, async (req, res): Promise<void> => {
+  const siteOrigin = (req.body as { siteOrigin?: string }).siteOrigin;
+  logger.info({ siteOrigin }, "Admin triggered Telegram webhook re-registration");
+  const result = await forceRegisterWebhook(siteOrigin);
   if (!result.ok) {
     res.status(500).json({ error: result.description ?? "Webhook registration failed" });
     return;
