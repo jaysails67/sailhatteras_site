@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Anchor, ShieldCheck, Zap } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { events } from "@/lib/analytics";
+import hydrofoilShuttle from "@/assets/images/hydrofoil-shuttle.png";
+import interiorFerry from "@/assets/images/interior-ferry.jpg";
 
 interface HomeContent {
   id: number;
@@ -53,10 +55,12 @@ export default function Home() {
         {/* Hero Section */}
         <section className="relative w-full h-[85vh] flex items-center overflow-hidden">
           <div className="absolute inset-0 z-0">
-            <div className="w-full h-full" style={{ background: 'linear-gradient(135deg, #0a0f1e 0%, #0d2137 40%, #0a3d5c 70%, #0e4f70 100%)' }}>
-              <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(ellipse at 70% 50%, rgba(6,182,212,0.15) 0%, transparent 60%), radial-gradient(ellipse at 30% 80%, rgba(14,116,144,0.1) 0%, transparent 50%)' }} />
-            </div>
-            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent" />
+            <img
+              src={hydrofoilShuttle}
+              alt="PamliEcoConnect hydrofoil electric shuttle in flight above water"
+              className="w-full h-full object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/75 to-background/20" />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
           </div>
           
@@ -96,6 +100,22 @@ export default function Home() {
             <p className="text-lg text-muted-foreground leading-relaxed">
               {introText}
             </p>
+          </div>
+        </section>
+
+        {/* Interior Experience Section */}
+        <section className="relative h-[50vh] overflow-hidden">
+          <img
+            src={interiorFerry}
+            alt="Luxury interior of a PamliEcoConnect hydrofoil passenger ferry"
+            className="w-full h-full object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/40 to-background/80" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center text-white px-4">
+              <p className="text-xs font-semibold tracking-[0.3em] uppercase text-primary mb-3">Passenger Experience</p>
+              <h2 className="text-3xl md:text-5xl font-display font-bold">Fly. Quietly.</h2>
+            </div>
           </div>
         </section>
 

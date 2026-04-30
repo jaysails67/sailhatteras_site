@@ -2,7 +2,9 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Download, Users, Shield, Compass, Waves } from "lucide-react";
+import { ArrowRight, Download, Users, Shield, Compass } from "lucide-react";
+import hydrofoilShuttle from "@/assets/images/hydrofoil-shuttle.png";
+import interiorFerry from "@/assets/images/interior-ferry.jpg";
 
 export default function Buyers() {
   return (
@@ -58,10 +60,12 @@ export default function Buyers() {
                   <Button variant="outline"><Download className="mr-2 h-4 w-4" /> Spec Sheet</Button>
                 </div>
               </div>
-              <div className="order-1 lg:order-2 rounded-2xl overflow-hidden border border-border aspect-video flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0a2540 0%, #0a4f7a 50%, #0891b2 100%)' }}>
-                <div className="flex flex-col items-center gap-4 text-cyan-400/60">
-                  <Waves className="h-20 w-20" />
-                  <span className="text-sm font-medium tracking-widest uppercase">P-Series</span>
+              <div className="order-1 lg:order-2 space-y-4">
+                <div className="rounded-2xl overflow-hidden border border-border aspect-video">
+                  <img src={hydrofoilShuttle} alt="Pamli P-Series hydrofoil electric shuttle in flight" className="w-full h-full object-cover" />
+                </div>
+                <div className="rounded-2xl overflow-hidden border border-border" style={{ aspectRatio: '16/7' }}>
+                  <img src={interiorFerry} alt="Pamli P-Series luxury passenger cabin interior" className="w-full h-full object-cover object-center" />
                 </div>
               </div>
             </div>
