@@ -1,25 +1,32 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { 
   useGetAdminDashboard, 
   useListInvestors, 
   useApproveInvestor, 
   useDenyInvestor,
+  useListContactSubmissions,
+  useListWaitlistEntries,
   getGetAdminDashboardQueryKey,
   getListInvestorsQueryKey,
+  getListContactSubmissionsQueryKey,
+  getListWaitlistEntriesQueryKey,
 } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, XCircle, Users, Mail, List, LayoutDashboard } from "lucide-react";
 import { format } from "date-fns";
+
+type Tab = "overview" | "investors" | "contacts" | "waitlist";
 
 export default function Admin() {
   const { user, isLoading: authLoading } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState<Tab>("overview");
 
   const isAdmin = !!user && user.role === "admin";
 
@@ -31,6 +38,14 @@ export default function Admin() {
     { status: "pending" },
     { query: { enabled: isAdmin, queryKey: getListInvestorsQueryKey({ status: "pending" }) } }
   );
+
+  const { data: contacts, isLoading: contactsLoading } = useListContactSubmissions({
+    query: { enabled: isAdmin, queryKey: getListContactSubmissionsQueryKey() }
+  });
+
+  const { data: waitlist, isLoading: waitlistLoading } = useListWaitlistEntries({
+    query: { enabled: isAdmin, queryKey: getListWaitlistEntriesQueryKey() }
+  });
 
   const approveMutation = useApproveInvestor();
   const denyMutation = useDenyInvestor();
@@ -69,18 +84,41 @@ export default function Admin() {
 
   if (authLoading || !user || user.role !== "admin") return null;
 
+  const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
+    { id: "overview", label: "Overview", icon: <LayoutDashboard className="h-4 w-4" /> },
+    { id: "investors", label: "Investors", icon: <Users className="h-4 w-4" /> },
+    { id: "contacts", label: "Contact Messages", icon: <Mail className="h-4 w-4" /> },
+    { id: "waitlist", label: "Waitlist", icon: <List className="h-4 w-4" /> },
+  ];
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Navbar />
       <main className="flex-1 p-6 md:p-12">
-        <div className="max-w-6xl mx-auto space-y-12">
+        <div className="max-w-6xl mx-auto space-y-8">
           
-          <div className="flex items-center justify-between">
-            <h1 className="text-4xl font-display font-bold">Admin Dashboard</h1>
+          <h1 className="text-4xl font-display font-bold">Admin Dashboard</h1>
+
+          {/* Tabs */}
+          <div className="flex gap-1 border-b border-border">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                  activeTab === tab.id
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {tab.icon}
+                {tab.label}
+              </button>
+            ))}
           </div>
 
-          <section>
-            <h2 className="text-xl font-semibold mb-4">Overview</h2>
+          {/* Overview */}
+          {activeTab === "overview" && (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <Card>
                 <CardHeader className="pb-2">
@@ -115,11 +153,14 @@ export default function Admin() {
                 </CardContent>
               </Card>
             </div>
-          </section>
+          )}
 
-          <section>
-            <h2 className="text-xl font-semibold mb-4">Pending Investor Applications</h2>
+          {/* Pending Investors */}
+          {activeTab === "investors" && (
             <Card>
+              <CardHeader>
+                <CardTitle>Pending Investor Applications</CardTitle>
+              </CardHeader>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm text-left">
                   <thead className="text-xs text-muted-foreground bg-accent/50 uppercase">
@@ -173,7 +214,81 @@ export default function Admin() {
                 </table>
               </div>
             </Card>
-          </section>
+          )}
+
+          {/* Contact Submissions */}
+          {activeTab === "contacts" && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Contact Form Submissions</CardTitle>
+              </CardHeader>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left">
+                  <thead className="text-xs text-muted-foreground bg-accent/50 uppercase">
+                    <tr>
+                      <th className="px-6 py-4 font-medium">Name</th>
+                      <th className="px-6 py-4 font-medium">Email</th>
+                      <th className="px-6 py-4 font-medium">Message</th>
+                      <th className="px-6 py-4 font-medium">Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {contactsLoading ? (
+                      <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">Loading...</td></tr>
+                    ) : contacts && contacts.length > 0 ? (
+                      contacts.map((c) => (
+                        <tr key={c.id} className="border-b border-border last:border-0 hover:bg-muted/50 transition-colors">
+                          <td className="px-6 py-4 font-medium text-foreground">{c.name}</td>
+                          <td className="px-6 py-4">{c.email}</td>
+                          <td className="px-6 py-4 max-w-xs truncate text-muted-foreground">{c.message}</td>
+                          <td className="px-6 py-4 text-muted-foreground">{format(new Date(c.createdAt), "MMM d, yyyy")}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">No contact submissions yet.</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+          )}
+
+          {/* Waitlist */}
+          {activeTab === "waitlist" && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Reservation Waitlist</CardTitle>
+              </CardHeader>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left">
+                  <thead className="text-xs text-muted-foreground bg-accent/50 uppercase">
+                    <tr>
+                      <th className="px-6 py-4 font-medium">Name</th>
+                      <th className="px-6 py-4 font-medium">Email</th>
+                      <th className="px-6 py-4 font-medium">Phone</th>
+                      <th className="px-6 py-4 font-medium">Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {waitlistLoading ? (
+                      <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">Loading...</td></tr>
+                    ) : waitlist && waitlist.length > 0 ? (
+                      waitlist.map((w) => (
+                        <tr key={w.id} className="border-b border-border last:border-0 hover:bg-muted/50 transition-colors">
+                          <td className="px-6 py-4 font-medium text-foreground">{w.name}</td>
+                          <td className="px-6 py-4">{w.email}</td>
+                          <td className="px-6 py-4">{w.phone}</td>
+                          <td className="px-6 py-4 text-muted-foreground">{format(new Date(w.createdAt), "MMM d, yyyy")}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr><td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">No waitlist entries yet.</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+          )}
 
         </div>
       </main>
