@@ -31,6 +31,33 @@ app.use(
 
 const isProd = process.env.NODE_ENV === "production";
 
+const PRODUCTION_ORIGINS = [
+  "https://pamliecoconnect.com",
+  "https://www.pamliecoconnect.com",
+];
+
+const DEV_ORIGINS = [
+  "http://localhost:19161",
+  "http://localhost:3000",
+];
+
+function buildAllowedOrigins(): Set<string> {
+  const origins = new Set<string>();
+  for (const o of PRODUCTION_ORIGINS) origins.add(o);
+  if (!isProd) {
+    for (const o of DEV_ORIGINS) origins.add(o);
+  }
+  const extra = process.env.ALLOWED_ORIGINS;
+  if (extra) {
+    for (const o of extra.split(",").map((s) => s.trim()).filter(Boolean)) {
+      origins.add(o);
+    }
+  }
+  return origins;
+}
+
+const allowedOrigins = buildAllowedOrigins();
+
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) {
@@ -38,10 +65,8 @@ app.use(cors({
       return;
     }
     const allowed =
-      origin.endsWith(".replit.dev") ||
-      origin.endsWith(".replit.app") ||
-      origin === "http://localhost:19161" ||
-      origin === "http://localhost:3000";
+      allowedOrigins.has(origin) ||
+      (!isProd && (origin.endsWith(".replit.dev") || origin.endsWith(".replit.app")));
     callback(allowed ? null : new Error("CORS: origin not allowed"), allowed);
   },
   credentials: true,

@@ -6,6 +6,7 @@ import {
   contentPagesTable,
   postsTable,
 } from "@workspace/db";
+import { sql } from "drizzle-orm";
 import { logger } from "./lib/logger";
 
 export async function seed(): Promise<void> {
@@ -43,39 +44,43 @@ export async function seed(): Promise<void> {
       logger.info({ adminEmail }, "Admin user seeded");
     }
 
-    await db
-      .insert(teamMembersTable)
-      .values([
-        {
-          name: "Dr. Elena Vasquez",
-          title: "Chief Executive Officer",
-          bio: "20+ years in aerospace and marine engineering. Former lead systems architect at a major international propulsion company. Elena founded PamliEcoConnect to bring sustainable maritime transport to the global stage.",
-          headshotUrl: null,
-          displayOrder: 1,
-        },
-        {
-          name: "Marcus T. Chen",
-          title: "Chief Technology Officer",
-          bio: "Previously engineered hydrofoil flight control systems for the U.S. Navy and commercial operators. Marcus leads PamliEcoConnect's R&D team and holds 14 patents in electric propulsion and foil hydrodynamics.",
-          headshotUrl: null,
-          displayOrder: 2,
-        },
-        {
-          name: "Anika Osei",
-          title: "Chief Operating Officer",
-          bio: "Supply chain and production scaling specialist with deep experience in advanced manufacturing and maritime supply chains across three continents. Anika ensures PamliEcoConnect's operations are world-class.",
-          headshotUrl: null,
-          displayOrder: 3,
-        },
-        {
-          name: "James Hartley",
-          title: "VP of Sales & Partnerships",
-          bio: "Seasoned commercial executive with a track record of closing complex contracts for defense, government, and luxury marine markets across Europe, the Middle East, and Asia Pacific.",
-          headshotUrl: null,
-          displayOrder: 4,
-        },
-      ])
-      .onConflictDoNothing();
+    const [{ teamCount }] = await db
+      .select({ teamCount: sql<number>`count(*)::int` })
+      .from(teamMembersTable);
+    if (teamCount === 0) {
+      await db
+        .insert(teamMembersTable)
+        .values([
+          {
+            name: "Dr. Elena Vasquez",
+            title: "Chief Executive Officer",
+            bio: "20+ years in aerospace and marine engineering. Former lead systems architect at a major international propulsion company. Elena founded PamliEcoConnect to bring sustainable maritime transport to the global stage.",
+            headshotUrl: null,
+            displayOrder: 1,
+          },
+          {
+            name: "Marcus T. Chen",
+            title: "Chief Technology Officer",
+            bio: "Previously engineered hydrofoil flight control systems for the U.S. Navy and commercial operators. Marcus leads PamliEcoConnect's R&D team and holds 14 patents in electric propulsion and foil hydrodynamics.",
+            headshotUrl: null,
+            displayOrder: 2,
+          },
+          {
+            name: "Anika Osei",
+            title: "Chief Operating Officer",
+            bio: "Supply chain and production scaling specialist with deep experience in advanced manufacturing and maritime supply chains across three continents. Anika ensures PamliEcoConnect's operations are world-class.",
+            headshotUrl: null,
+            displayOrder: 3,
+          },
+          {
+            name: "James Hartley",
+            title: "VP of Sales & Partnerships",
+            bio: "Seasoned commercial executive with a track record of closing complex contracts for defense, government, and luxury marine markets across Europe, the Middle East, and Asia Pacific.",
+            headshotUrl: null,
+            displayOrder: 4,
+          },
+        ]);
+    }
 
     await db
       .insert(contentPagesTable)
@@ -188,52 +193,56 @@ export async function seed(): Promise<void> {
       ])
       .onConflictDoNothing({ target: contentPagesTable.slug });
 
-    await db
-      .insert(postsTable)
-      .values([
-        {
-          title: "PamliEcoConnect Unveils P-40 Electric Foiling Ferry",
-          excerpt:
-            "The P-40 is the world's first commercially certified electric hydrofoil passenger ferry, carrying 40 passengers at 35 knots with zero emissions.",
-          content:
-            "PamliEcoConnect today announced the successful sea trials of the P-40 electric foiling passenger ferry, completing all certification requirements ahead of schedule. The P-40 represents a watershed moment for sustainable maritime transport...",
-          type: "press_release",
-          featured: true,
-          publishedAt: new Date("2025-09-15"),
-        },
-        {
-          title: "Inside the PamliEcoConnect R&D Lab",
-          excerpt:
-            "An exclusive video tour of PamliEcoConnect's engineering facility, where the future of maritime transport is being built today.",
-          content:
-            "In this exclusive video, CEO Dr. Elena Vasquez walks viewers through PamliEcoConnect's state-of-the-art R&D facility, revealing the engineering behind the world's most advanced electric foiling vessels...",
-          type: "video",
-          mediaUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-          featured: true,
-          publishedAt: new Date("2025-11-02"),
-        },
-        {
-          title: "PamliEcoConnect Secures $12M Series A Funding",
-          excerpt:
-            "Leading cleantech and maritime investors back PamliEcoConnect's vision of zero-emission hydrofoil vessels for passenger, military, and recreational markets.",
-          content:
-            "PamliEcoConnect announced today the closing of a $12 million Series A funding round led by Blue Ocean Ventures and Green Horizon Capital. The funds will accelerate production ramp and international expansion...",
-          type: "press_release",
-          featured: false,
-          publishedAt: new Date("2026-01-20"),
-        },
-        {
-          title: "2026 Innovation in Maritime Technology Investor Deck",
-          excerpt:
-            "Download PamliEcoConnect's 2026 investor presentation covering market opportunity, product roadmap, and financial projections.",
-          content:
-            "PamliEcoConnect's 2026 investor presentation provides a comprehensive overview of our market opportunity, technology differentiation, team, and financial projections for qualified investors...",
-          type: "presentation",
-          featured: false,
-          publishedAt: new Date("2026-03-01"),
-        },
-      ])
-      .onConflictDoNothing();
+    const [{ postCount }] = await db
+      .select({ postCount: sql<number>`count(*)::int` })
+      .from(postsTable);
+    if (postCount === 0) {
+      await db
+        .insert(postsTable)
+        .values([
+          {
+            title: "PamliEcoConnect Unveils P-40 Electric Foiling Ferry",
+            excerpt:
+              "The P-40 is the world's first commercially certified electric hydrofoil passenger ferry, carrying 40 passengers at 35 knots with zero emissions.",
+            content:
+              "PamliEcoConnect today announced the successful sea trials of the P-40 electric foiling passenger ferry, completing all certification requirements ahead of schedule. The P-40 represents a watershed moment for sustainable maritime transport...",
+            type: "press_release",
+            featured: true,
+            publishedAt: new Date("2025-09-15"),
+          },
+          {
+            title: "Inside the PamliEcoConnect R&D Lab",
+            excerpt:
+              "An exclusive video tour of PamliEcoConnect's engineering facility, where the future of maritime transport is being built today.",
+            content:
+              "In this exclusive video, CEO Dr. Elena Vasquez walks viewers through PamliEcoConnect's state-of-the-art R&D facility, revealing the engineering behind the world's most advanced electric foiling vessels...",
+            type: "video",
+            mediaUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+            featured: true,
+            publishedAt: new Date("2025-11-02"),
+          },
+          {
+            title: "PamliEcoConnect Secures $12M Series A Funding",
+            excerpt:
+              "Leading cleantech and maritime investors back PamliEcoConnect's vision of zero-emission hydrofoil vessels for passenger, military, and recreational markets.",
+            content:
+              "PamliEcoConnect announced today the closing of a $12 million Series A funding round led by Blue Ocean Ventures and Green Horizon Capital. The funds will accelerate production ramp and international expansion...",
+            type: "press_release",
+            featured: false,
+            publishedAt: new Date("2026-01-20"),
+          },
+          {
+            title: "2026 Innovation in Maritime Technology Investor Deck",
+            excerpt:
+              "Download PamliEcoConnect's 2026 investor presentation covering market opportunity, product roadmap, and financial projections.",
+            content:
+              "PamliEcoConnect's 2026 investor presentation provides a comprehensive overview of our market opportunity, technology differentiation, team, and financial projections for qualified investors...",
+            type: "presentation",
+            featured: false,
+            publishedAt: new Date("2026-03-01"),
+          },
+        ]);
+    }
 
     logger.info("Database seed complete");
   } catch (err) {
