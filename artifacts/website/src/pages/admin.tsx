@@ -9,6 +9,8 @@ import {
   useDenyInvestor,
   useListContactSubmissions,
   useListWaitlistEntries,
+  useListPosts,
+  getListPostsQueryKey,
   getGetAdminDashboardQueryKey,
   getListInvestorsQueryKey,
   getListContactSubmissionsQueryKey,
@@ -17,10 +19,11 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle2, XCircle, Users, Mail, List, LayoutDashboard, KeyRound, Bot, RefreshCw, AlertTriangle } from "lucide-react";
+import { CheckCircle2, XCircle, Users, Mail, List, LayoutDashboard, KeyRound, Bot, RefreshCw, AlertTriangle, Upload, Newspaper, Trash2, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
+import { useUpload } from "@workspace/object-storage-web";
 
-type Tab = "overview" | "investors" | "contacts" | "waitlist";
+type Tab = "overview" | "investors" | "contacts" | "waitlist" | "press";
 
 interface DenyDialogState {
   investorId: number;
@@ -182,13 +185,90 @@ export default function Admin() {
     );
   };
 
+  // Press tab state — must be before early return (Rules of Hooks)
+  const [pressForm, setPressForm] = useState({
+    title: "",
+    excerpt: "",
+    type: "video" as "press_release" | "video" | "presentation",
+    mediaUrl: "",
+    useUploadedFile: true,
+  });
+  const [pressSubmitting, setPressSubmitting] = useState(false);
+  const [deletingPostId, setDeletingPostId] = useState<number | null>(null);
+  const { data: allPosts, isLoading: postsLoading, refetch: refetchPosts } = useListPosts(
+    {},
+    { query: { enabled: isAdmin, queryKey: getListPostsQueryKey({}) } }
+  );
+  const { uploadFile, isUploading, progress } = useUpload({
+    onError: (err: Error) => toast({ title: "Upload failed", description: err.message, variant: "destructive" }),
+  });
+
   if (authLoading || !user || user.role !== "admin") return null;
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const result = await uploadFile(file);
+    if (result) {
+      const servingUrl = `/api/storage${result.objectPath}`;
+      setPressForm(f => ({ ...f, mediaUrl: servingUrl }));
+      toast({ title: "File uploaded", description: `Stored at ${servingUrl}` });
+    }
+    e.target.value = "";
+  };
+
+  const handleCreatePressEntry = async () => {
+    if (!pressForm.title.trim() || !pressForm.excerpt.trim()) {
+      toast({ title: "Missing fields", description: "Title and excerpt are required.", variant: "destructive" });
+      return;
+    }
+    setPressSubmitting(true);
+    try {
+      const res = await fetch("/api/posts", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: pressForm.title,
+          excerpt: pressForm.excerpt,
+          content: pressForm.excerpt,
+          type: pressForm.type,
+          mediaUrl: pressForm.mediaUrl || null,
+          featured: false,
+        }),
+      });
+      if (!res.ok) throw new Error((await res.json() as { error?: string }).error ?? "Failed");
+      toast({ title: "Press entry created", description: `"${pressForm.title}" is now live.` });
+      setPressForm({ title: "", excerpt: "", type: "video", mediaUrl: "", useUploadedFile: true });
+      refetchPosts();
+    } catch (err) {
+      toast({ title: "Error", description: (err as Error).message, variant: "destructive" });
+    } finally {
+      setPressSubmitting(false);
+    }
+  };
+
+  const handleDeletePost = async (id: number, title: string) => {
+    if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
+    setDeletingPostId(id);
+    try {
+      const res = await fetch(`/api/posts/${id}`, { method: "DELETE", credentials: "include" });
+      if (!res.ok && res.status !== 204) throw new Error("Failed to delete");
+      toast({ title: "Deleted", description: `"${title}" has been removed.` });
+      refetchPosts();
+    } catch (err) {
+      toast({ title: "Error", description: (err as Error).message, variant: "destructive" });
+    } finally {
+      setDeletingPostId(null);
+    }
+  };
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: "overview", label: "Overview", icon: <LayoutDashboard className="h-4 w-4" /> },
     { id: "investors", label: "Investors", icon: <Users className="h-4 w-4" /> },
     { id: "contacts", label: "Contact Messages", icon: <Mail className="h-4 w-4" /> },
     { id: "waitlist", label: "Waitlist", icon: <List className="h-4 w-4" /> },
+    { id: "press", label: "Press & Media", icon: <Newspaper className="h-4 w-4" /> },
   ];
 
   return (
@@ -483,6 +563,217 @@ export default function Admin() {
                 </table>
               </div>
             </Card>
+          )}
+
+          {/* ── PRESS & MEDIA TAB ──────────────────────────────────── */}
+          {activeTab === "press" && (
+            <div className="space-y-8">
+              {/* Create new press entry */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base font-semibold flex items-center gap-2">
+                    <Newspaper className="h-5 w-5 text-primary" /> Create New Press Entry
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-5">
+                  {/* Type selector */}
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">Content Type</label>
+                    <div className="flex gap-3">
+                      {(["video", "presentation", "press_release"] as const).map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => setPressForm(f => ({ ...f, type: t }))}
+                          className={`px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
+                            pressForm.type === t
+                              ? "border-primary bg-primary/10 text-primary"
+                              : "border-border bg-background text-muted-foreground hover:border-primary/50"
+                          }`}
+                        >
+                          {t === "press_release" ? "Press Release" : t === "video" ? "Video" : "Audio / Presentation"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Title */}
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">Title <span className="text-destructive">*</span></label>
+                    <input
+                      type="text"
+                      className="w-full rounded-lg border border-border bg-background text-foreground text-sm p-3 focus:outline-none focus:ring-2 focus:ring-primary/50 placeholder:text-muted-foreground"
+                      placeholder="e.g. Phillips Boatworks Unveils the PB-1 Foiler"
+                      value={pressForm.title}
+                      onChange={(e) => setPressForm(f => ({ ...f, title: e.target.value }))}
+                    />
+                  </div>
+
+                  {/* Excerpt */}
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">Excerpt / Summary <span className="text-destructive">*</span></label>
+                    <textarea
+                      className="w-full rounded-lg border border-border bg-background text-foreground text-sm p-3 resize-none focus:outline-none focus:ring-2 focus:ring-primary/50 placeholder:text-muted-foreground"
+                      rows={3}
+                      placeholder="Brief description shown on the press listing page…"
+                      value={pressForm.excerpt}
+                      onChange={(e) => setPressForm(f => ({ ...f, excerpt: e.target.value }))}
+                    />
+                  </div>
+
+                  {/* Media URL section */}
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-3">
+                      Media {pressForm.type === "press_release" ? "(optional)" : ""}
+                    </label>
+
+                    {/* Toggle: upload vs external link */}
+                    <div className="flex gap-3 mb-4">
+                      <button
+                        type="button"
+                        onClick={() => setPressForm(f => ({ ...f, useUploadedFile: true }))}
+                        className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
+                          pressForm.useUploadedFile
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-border bg-background text-muted-foreground hover:border-primary/50"
+                        }`}
+                      >
+                        Upload File
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPressForm(f => ({ ...f, useUploadedFile: false }))}
+                        className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
+                          !pressForm.useUploadedFile
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-border bg-background text-muted-foreground hover:border-primary/50"
+                        }`}
+                      >
+                        External URL
+                      </button>
+                    </div>
+
+                    {pressForm.useUploadedFile ? (
+                      <div className="space-y-3">
+                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-xl cursor-pointer bg-card hover:bg-muted/40 transition-colors">
+                          <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                            <Upload className="h-6 w-6" />
+                            <span className="text-sm">
+                              {isUploading ? `Uploading… ${progress}%` : "Click to upload audio or video file"}
+                            </span>
+                            <span className="text-xs">MP3, MP4, M4A, WAV, WEBM, OGG supported</span>
+                          </div>
+                          <input
+                            type="file"
+                            className="hidden"
+                            accept="audio/*,video/*"
+                            disabled={isUploading}
+                            onChange={handleFileUpload}
+                          />
+                        </label>
+                        {pressForm.mediaUrl && (
+                          <div className="flex items-center gap-2 text-xs text-green-400 bg-green-950/30 border border-green-800/40 rounded-lg px-3 py-2">
+                            <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
+                            <span className="font-mono break-all">{pressForm.mediaUrl}</span>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <input
+                        type="url"
+                        className="w-full rounded-lg border border-border bg-background text-foreground text-sm p-3 focus:outline-none focus:ring-2 focus:ring-primary/50 placeholder:text-muted-foreground"
+                        placeholder={pressForm.type === "video" ? "https://www.youtube.com/embed/… or HeyGen share URL" : "https://drive.google.com/…"}
+                        value={pressForm.mediaUrl}
+                        onChange={(e) => setPressForm(f => ({ ...f, mediaUrl: e.target.value }))}
+                      />
+                    )}
+                  </div>
+
+                  <div className="pt-1">
+                    <Button
+                      onClick={handleCreatePressEntry}
+                      disabled={pressSubmitting || isUploading || !pressForm.title.trim() || !pressForm.excerpt.trim()}
+                    >
+                      {pressSubmitting ? "Creating…" : "Publish Press Entry"}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Existing press entries */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base font-semibold">All Press Entries</CardTitle>
+                </CardHeader>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-border text-xs text-muted-foreground uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left font-medium">Title</th>
+                        <th className="px-6 py-3 text-left font-medium">Type</th>
+                        <th className="px-6 py-3 text-left font-medium">Published</th>
+                        <th className="px-6 py-3 text-left font-medium">Media</th>
+                        <th className="px-6 py-3 text-right font-medium">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {postsLoading ? (
+                        <tr><td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">Loading…</td></tr>
+                      ) : !allPosts?.length ? (
+                        <tr><td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">No press entries yet.</td></tr>
+                      ) : (
+                        allPosts.map((post) => (
+                          <tr key={post.id} className="hover:bg-muted/30 transition-colors">
+                            <td className="px-6 py-4 font-medium text-foreground max-w-xs">
+                              <a
+                                href={`/press/${post.id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:text-primary transition-colors line-clamp-2"
+                              >
+                                {post.title}
+                              </a>
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground capitalize">
+                                {post.type.replace("_", " ")}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-muted-foreground whitespace-nowrap">
+                              {format(new Date(post.publishedAt), "MMM d, yyyy")}
+                            </td>
+                            <td className="px-6 py-4">
+                              {post.mediaUrl ? (
+                                <a
+                                  href={post.mediaUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                                >
+                                  <ExternalLink className="h-3 w-3" /> Link
+                                </a>
+                              ) : (
+                                <span className="text-muted-foreground text-xs">—</span>
+                              )}
+                            </td>
+                            <td className="px-6 py-4 text-right">
+                              <button
+                                onClick={() => handleDeletePost(post.id, post.title)}
+                                disabled={deletingPostId === post.id}
+                                className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-40"
+                                title="Delete entry"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            </div>
           )}
 
         </div>

@@ -59,14 +59,30 @@ export default function PressArticle() {
 
             <article className="container max-w-3xl mx-auto px-4 md:px-8 py-12">
               {post.mediaUrl && post.type === "video" && (
-                <div className="mb-10 rounded-xl overflow-hidden aspect-video bg-muted">
-                  <iframe
-                    src={post.mediaUrl}
-                    title={post.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full"
-                  />
+                post.mediaUrl.startsWith("/api/storage") || post.mediaUrl.endsWith(".mp4") || post.mediaUrl.endsWith(".webm") ? (
+                  <div className="mb-10 rounded-xl overflow-hidden bg-muted">
+                    <video controls className="w-full" src={post.mediaUrl}>
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                ) : (
+                  <div className="mb-10 rounded-xl overflow-hidden aspect-video bg-muted">
+                    <iframe
+                      src={post.mediaUrl}
+                      title={post.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full"
+                    />
+                  </div>
+                )
+              )}
+              {post.mediaUrl && post.type === "presentation" && (
+                <div className="mb-10 rounded-xl bg-muted/50 border border-border p-6">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">Audio Podcast</p>
+                  <audio controls className="w-full" src={post.mediaUrl}>
+                    Your browser does not support the audio element.
+                  </audio>
                 </div>
               )}
               <div
