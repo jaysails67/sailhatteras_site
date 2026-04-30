@@ -348,6 +348,266 @@ function TheOfferingSection() {
   );
 }
 
+// ─── Static section: Omnibus Subscription Agreement ─────────────────────────
+
+function SubscriptionAgreementSection() {
+  const clauses: { number: string; title: string; content: ReactNode }[] = [
+    {
+      number: "1",
+      title: "Subscription",
+      content: (
+        <div className="space-y-4">
+          <div>
+            <p className="text-xs font-semibold text-foreground mb-1">1.1 Subscription for Shares.</p>
+            <p className="text-sm text-muted-foreground">Subject to the terms and conditions of this Agreement, each Investor hereby subscribes for and agrees to purchase, and the Company agrees to issue and sell to such Investor, that number of Shares set forth on the Investor's signature page hereto (the "Subscribed Shares") at a purchase price of $[PRICE] per Share (the "Purchase Price").</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-foreground mb-1">1.2 Purchase Amount.</p>
+            <p className="text-sm text-muted-foreground">The aggregate purchase price for the Subscribed Shares (the "Purchase Amount") is set forth on the Investor's signature page and shall be paid in cash by wire transfer of immediately available funds to the account designated by the Company on or before the closing of the Offering applicable to such Investor.</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-foreground mb-1">1.3 Acceptance of Subscription.</p>
+            <p className="text-sm text-muted-foreground">The Company reserves the right to accept or reject any subscription, in whole or in part, in its sole discretion. The subscription shall be deemed accepted by the Company only when this Agreement is countersigned by an authorized officer of the Company or when the Company records the issuance of the Subscribed Shares to the Investor.</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      number: "2",
+      title: "The Offering",
+      content: (
+        <div className="space-y-4">
+          <div>
+            <p className="text-xs font-semibold text-foreground mb-1">2.1 Offering Size.</p>
+            <p className="text-sm text-muted-foreground">The Company is seeking to raise an aggregate of approximately $1,000,000 (the "Target Raise") in this Offering, but may increase or decrease the Target Raise in its sole discretion.</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-foreground mb-1">2.2 Use of Proceeds.</p>
+            <p className="text-sm text-muted-foreground">The Company intends to use the net proceeds of the Offering substantially as described in the Company's business plan and offering materials, including, without limitation, research and development of 20-passenger R&D vessels, U.S. Coast Guard approval processes, initial route deployment, and preparatory work for 50-passenger vessel design and regulatory approval.</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-foreground mb-1">2.3 Private Offering.</p>
+            <p className="text-sm text-muted-foreground">The Offering is being made in reliance upon exemptions from registration under applicable securities laws. The Company is offering the Shares only to investors who qualify under such exemptions and who make the representations and warranties set forth herein.</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      number: "3",
+      title: "Closing",
+      content: (
+        <div className="space-y-4">
+          <div>
+            <p className="text-xs font-semibold text-foreground mb-1">3.1 Closing.</p>
+            <p className="text-sm text-muted-foreground">The closing or closings of the purchase and sale of the Shares (each, a "Closing") shall occur on such date or dates as determined by the Company. At each Closing, the Company shall issue the Subscribed Shares to each Investor whose subscription has been accepted and whose Purchase Amount has been received by the Company.</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-foreground mb-1">3.2 Deliveries at Closing.</p>
+            <p className="text-sm text-muted-foreground">At each applicable Closing: (a) the Company shall deliver to the Investor evidence of the issuance of the Subscribed Shares (which may be in the form of book-entry, electronic record, or physical certificate, as determined by the Company); and (b) the Investor shall have previously paid the Purchase Amount in full by wire transfer, subject to any arrangements agreed with the Company in advance.</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      number: "4",
+      title: "Investor Representations and Warranties",
+      content: (
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground">Each Investor hereby represents and warrants to the Company, as of the date hereof and as of the applicable Closing, that:</p>
+          {[
+            { n: "4.1", t: "Authority.", b: "If the Investor is an individual, the Investor has full legal capacity to execute and deliver this Agreement and to perform the Investor's obligations hereunder. If the Investor is an entity, it is duly organized, validly existing, and in good standing under the laws of its jurisdiction of organization and has full corporate, partnership, or other power and authority to execute, deliver, and perform this Agreement." },
+            { n: "4.2", t: "Investment Intent.", b: "The Investor is acquiring the Subscribed Shares for its own account, for investment purposes only, and not with a view to or for resale in connection with any distribution thereof in violation of applicable securities laws." },
+            { n: "4.3", t: "Sophistication; Investigation.", b: "The Investor has such knowledge and experience in financial and business matters that the Investor is capable of evaluating the merits and risks of an investment in the Shares. The Investor has been given the opportunity to ask questions of, and receive answers from, the Company regarding its business, operations, financial condition, and the terms and conditions of the Offering, and to obtain any additional information the Investor deems necessary to evaluate the investment." },
+            { n: "4.4", t: "Accredited Investor Status.", b: "The Investor is an \"accredited investor\" as that term is defined in Rule 501(a) of Regulation D under the U.S. Securities Act of 1933, as amended, or otherwise meets the eligibility requirements for participation in the Offering under applicable securities laws, as represented to the Company in a separate investor questionnaire." },
+            { n: "4.5", t: "No General Solicitation Reliance.", b: "The Investor acknowledges that the Offering has not been made by means of any general solicitation or general advertising (except as permitted by applicable law where specifically disclosed), including any advertisement, article, notice, or other communication published in any newspaper, magazine, or similar media or broadcast over television, radio, or the internet, or any seminar or meeting whose attendees have been invited by general solicitation or general advertising." },
+            { n: "4.6", t: "Restricted Securities.", b: "The Investor understands that the Shares have not been registered under the Securities Act or under the securities laws of any state or other jurisdiction, and that the Shares constitute \"restricted securities\" under the Securities Act and applicable state securities laws. The Investor understands that the Shares may not be sold, transferred, or otherwise disposed of without registration or an available exemption." },
+            { n: "4.7", t: "Ability to Bear Risk.", b: "The Investor is able to bear the economic risk of this investment for an indefinite period of time and is able to afford a complete loss of this investment." },
+            { n: "4.8", t: "No Reliance on Unwritten Representations.", b: "The Investor has not relied on any representation or warranty of the Company or any of its officers, directors, employees, agents, or representatives except as expressly set forth in this Agreement and in any separate written offering documents provided by the Company." },
+          ].map(({ n, t, b }) => (
+            <div key={n}>
+              <p className="text-xs font-semibold text-foreground mb-1">{n} {t}</p>
+              <p className="text-sm text-muted-foreground">{b}</p>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      number: "5",
+      title: "Company Representations and Warranties",
+      content: (
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground">The Company hereby represents and warrants to each Investor that:</p>
+          {[
+            { n: "5.1", t: "Organization and Good Standing.", b: "The Company is duly organized, validly existing, and in good standing under the laws of its jurisdiction of incorporation, with all requisite corporate power and authority to own, lease, and operate its properties and to carry on its business." },
+            { n: "5.2", t: "Authority.", b: "The Company has full corporate power and authority to execute and deliver this Agreement and to perform its obligations hereunder. This Agreement constitutes a valid and binding obligation of the Company, enforceable against the Company in accordance with its terms, subject to applicable bankruptcy, insolvency, and similar laws and general principles of equity." },
+            { n: "5.3", t: "Valid Issuance of Shares.", b: "The Shares, when issued and delivered against payment therefor as provided in this Agreement, will be duly authorized, validly issued, fully paid, and non-assessable, and will be free of any liens or encumbrances created by the Company, except as set forth in the Company's charter documents and any investor rights agreements." },
+          ].map(({ n, t, b }) => (
+            <div key={n}>
+              <p className="text-xs font-semibold text-foreground mb-1">{n} {t}</p>
+              <p className="text-sm text-muted-foreground">{b}</p>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      number: "6",
+      title: "Restrictions on Transfer",
+      content: (
+        <div className="space-y-4">
+          <div>
+            <p className="text-xs font-semibold text-foreground mb-1">6.1 No Public Market.</p>
+            <p className="text-sm text-muted-foreground">The Investor understands that no public market for the Shares currently exists and that there is no assurance that a public market will develop.</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-foreground mb-1">6.2 Transfer Restrictions.</p>
+            <p className="text-sm text-muted-foreground">The Investor shall not sell, assign, transfer, pledge, or otherwise dispose of any of the Shares except in compliance with (a) this Agreement, (b) applicable securities laws, and (c) any other applicable agreements between the Investor and the Company, including any shareholder or investor rights agreements.</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      number: "7",
+      title: "Miscellaneous",
+      content: (
+        <div className="space-y-4">
+          {[
+            { n: "7.1", t: "Governing Law.", b: "This Agreement shall be governed by and construed in accordance with the laws of the State of [GOVERNING LAW STATE], without regard to its conflict of laws principles." },
+            { n: "7.2", t: "Entire Agreement.", b: "This Agreement, together with any related subscription documents, exhibits, and schedules, constitutes the entire agreement between the parties with respect to the subject matter hereof and supersedes all prior agreements and understandings, whether written or oral." },
+            { n: "7.3", t: "Amendments.", b: "This Agreement may be amended, modified, or supplemented only by a written instrument executed by the Company and the Investor (or by the Company and a requisite majority of Investors, if structured that way)." },
+            { n: "7.4", t: "Counterparts.", b: "This Agreement may be executed in counterparts (including via electronic signatures or scanned copies), each of which shall be deemed an original and all of which together shall constitute one and the same instrument." },
+            { n: "7.5", t: "Severability.", b: "If any provision of this Agreement is held to be invalid or unenforceable, such provision shall be enforced to the maximum extent permissible, and the remaining provisions shall remain in full force and effect." },
+            { n: "7.6", t: "No Tax or Legal Advice.", b: "Each Investor acknowledges that the Company has not provided, and does not provide, tax, legal, or investment advice to the Investor. The Investor has been advised to consult its own legal, tax, and financial advisors regarding this investment." },
+          ].map(({ n, t, b }) => (
+            <div key={n}>
+              <p className="text-xs font-semibold text-foreground mb-1">{n} {t}</p>
+              <p className="text-sm text-muted-foreground">{b}</p>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      number: "8",
+      title: "Investor Information and Signature",
+      content: (
+        <div className="space-y-5">
+          <p className="text-sm text-muted-foreground">Each Investor will complete and sign a signature page substantially in the following form:</p>
+          <div className="rounded-xl border border-border bg-background/50 p-6 space-y-4 font-mono text-sm">
+            <div className="grid sm:grid-cols-2 gap-4">
+              {["Investor Name:", "Address:", "Email:", "Phone:"].map((f) => (
+                <div key={f}>
+                  <p className="text-xs text-muted-foreground mb-1">{f}</p>
+                  <div className="border-b border-border/60 h-7" />
+                </div>
+              ))}
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4 pt-2">
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Purchase Amount (USD):</p>
+                <div className="border-b border-border/60 h-7" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Number of Shares Subscribed:</p>
+                <div className="border-b border-border/60 h-7" />
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground pt-2">By signing below, the Investor agrees to be bound by all terms and conditions of this Omnibus Subscription Agreement.</p>
+            <div className="grid sm:grid-cols-3 gap-4 pt-1">
+              {["Investor Signature:", "Name (print):", "Title (if entity):"].map((f) => (
+                <div key={f}>
+                  <p className="text-xs text-muted-foreground mb-1">{f}</p>
+                  <div className="border-b border-border/60 h-7" />
+                </div>
+              ))}
+            </div>
+            <div className="w-40">
+              <p className="text-xs text-muted-foreground mb-1">Date:</p>
+              <div className="border-b border-border/60 h-7" />
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      number: "9",
+      title: "Company Acceptance",
+      content: (
+        <div className="space-y-5">
+          <p className="text-sm text-muted-foreground">PamliEcoConnect, Inc. hereby accepts the foregoing subscription, subject to the terms and conditions of this Omnibus Subscription Agreement.</p>
+          <div className="rounded-xl border border-border bg-background/50 p-6 space-y-4 font-mono text-sm">
+            <p className="text-xs font-semibold text-foreground">Company: PamliEcoConnect, Inc.</p>
+            <div className="grid sm:grid-cols-3 gap-4">
+              {["By:", "Name:", "Title:"].map((f) => (
+                <div key={f}>
+                  <p className="text-xs text-muted-foreground mb-1">{f}</p>
+                  <div className="border-b border-border/60 h-7" />
+                </div>
+              ))}
+            </div>
+            <div className="w-40">
+              <p className="text-xs text-muted-foreground mb-1">Date:</p>
+              <div className="border-b border-border/60 h-7" />
+            </div>
+          </div>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div className="space-y-10">
+      {/* Header */}
+      <div>
+        <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Confidential — For Approved Investors Only</p>
+        <h2 className="font-display text-3xl font-bold text-foreground mb-1">Omnibus Subscription Agreement</h2>
+        <p className="text-sm text-muted-foreground mb-4">Seed / Series Seed Preferred Stock — PamliEcoConnect, Inc.</p>
+        <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-4">
+          <p className="text-xs text-amber-400 font-semibold uppercase tracking-wider mb-1">Template Notice</p>
+          <p className="text-xs text-muted-foreground">
+            This document is a template only and must be reviewed and modified by legal counsel prior to use. It does not constitute legal advice or a binding legal obligation.
+          </p>
+        </div>
+      </div>
+
+      {/* Preamble */}
+      <div className="rounded-xl border border-border bg-card p-6">
+        <p className="text-sm text-muted-foreground mb-3">
+          This Omnibus Subscription Agreement (this "Agreement") is made and entered into by and between <strong className="text-foreground">PamliEcoConnect, Inc.</strong>, a [jurisdiction] corporation (the "Company"), and each undersigned investor (each, an "Investor" and collectively, the "Investors").
+        </p>
+        <p className="text-sm text-muted-foreground">
+          This Agreement sets forth the terms under which the Investors will subscribe for shares of the Company's <strong className="text-foreground">Series Seed Preferred Stock</strong> (the "Shares") in a private offering exempt from registration under applicable securities laws (the "Offering").
+        </p>
+      </div>
+
+      {/* Numbered clauses */}
+      <div className="space-y-6">
+        {clauses.map(({ number, title, content }) => (
+          <div key={number} className="rounded-xl border border-border bg-card overflow-hidden">
+            <div className="flex items-center gap-3 px-6 py-4 border-b border-border bg-card/80">
+              <span className="flex items-center justify-center h-7 w-7 rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0">
+                {number}
+              </span>
+              <h3 className="font-display font-semibold text-foreground">{title}</h3>
+            </div>
+            <div className="px-6 py-5">
+              {content}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Footer disclaimer */}
+      <div className="rounded-lg border border-border/50 bg-muted/20 p-4">
+        <p className="text-xs text-muted-foreground leading-relaxed italic">
+          This Omnibus Subscription Agreement template is provided for informational purposes within the secure investor portal. Execution of any subscription is subject to finalization of offering documents, legal review, and compliance with applicable securities laws. Contact the Company directly to initiate the subscription process.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // ─── Section config ──────────────────────────────────────────────────────────
 
 type PlanSection = {
@@ -370,8 +630,9 @@ const PLAN_SECTIONS: PlanSection[] = [
   { slug: "timeline",          label: "Implementation" },
   { slug: "conclusion",        label: "Investors & Funding" },
   { slug: "grants",            label: "Grant Opportunities" },
-  { slug: "management-team",   label: "Management Team",  staticContent: <ManagementTeamSection /> },
-  { slug: "the-offering",      label: "The Offering",     staticContent: <TheOfferingSection /> },
+  { slug: "management-team",        label: "Management Team",               staticContent: <ManagementTeamSection /> },
+  { slug: "the-offering",           label: "The Offering",                  staticContent: <TheOfferingSection /> },
+  { slug: "subscription-agreement", label: "Subscription Agreement",        staticContent: <SubscriptionAgreementSection /> },
 ];
 
 // ─── Portal page ─────────────────────────────────────────────────────────────
