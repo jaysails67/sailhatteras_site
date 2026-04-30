@@ -316,13 +316,20 @@ paths:
     get:
       operationId: getContentPage
       tags: [content]
-      summary: Get content page by slug
+      summary: Get investor-gated content page by slug (requires approved investor or admin)
+      description: >
+        Returns investor-only content pages. Requires an authenticated session with
+        `approvalStatus = "approved"` or `role = "admin"`. Use `/public-content/{slug}`
+        for unauthenticated access to public (non-investor) pages.
       parameters:
         - name: slug
           in: path
           required: true
           schema:
             type: string
+          description: >
+            One of the investor-only slugs: exec-summary, products, services,
+            marketing-plan, financial-plan, conclusion
       responses:
         "200":
           description: Content page
@@ -330,6 +337,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ContentPage"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Access restricted — investor approval required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "404":
           description: Not found
           content:

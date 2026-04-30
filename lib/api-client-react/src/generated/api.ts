@@ -1104,7 +1104,9 @@ export function useListContentPages<
 }
 
 /**
- * @summary Get content page by slug
+ * Returns investor-only content pages. Requires an authenticated session with `approvalStatus = "approved"` or `role = "admin"`. Use `/public-content/{slug}` for unauthenticated access to public (non-investor) pages.
+
+ * @summary Get investor-gated content page by slug (requires approved investor or admin)
  */
 export const getGetContentPageUrl = (slug: string) => {
   return `/api/content/${slug}`;
@@ -1164,7 +1166,7 @@ export type GetContentPageQueryResult = NonNullable<
 export type GetContentPageQueryError = ErrorType<ErrorResponse>;
 
 /**
- * @summary Get content page by slug
+ * @summary Get investor-gated content page by slug (requires approved investor or admin)
  */
 
 export function useGetContentPage<

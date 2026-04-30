@@ -202,10 +202,16 @@ export const ListContentPagesResponseItem = zod.object({
 export const ListContentPagesResponse = zod.array(ListContentPagesResponseItem);
 
 /**
- * @summary Get content page by slug
+ * Returns investor-only content pages. Requires an authenticated session with `approvalStatus = "approved"` or `role = "admin"`. Use `/public-content/{slug}` for unauthenticated access to public (non-investor) pages.
+
+ * @summary Get investor-gated content page by slug (requires approved investor or admin)
  */
 export const GetContentPageParams = zod.object({
-  slug: zod.coerce.string(),
+  slug: zod.coerce
+    .string()
+    .describe(
+      "One of the investor-only slugs: exec-summary, products, services, marketing-plan, financial-plan, conclusion\n",
+    ),
 });
 
 export const GetContentPageResponse = zod.object({
