@@ -1,0 +1,46 @@
+
+Client Configuration settings for "info@pamliecoconnect.com".
+Mail Client Manual Settings
+Secure SSL/TLS Settings (Recommended)
+Username:	info@pamliecoconnect.com
+Password:	Use the email account's password.
+Incoming Server:	mail.pamliecoconnect.com
+IMAP Port: 993 POP3 Port: 995
+Outgoing Server:	mail.pamliecoconnect.com
+SMTP Port: 465
+IMAP, POP3, and SMTP require authentication.
+Calendar & Contacts Manual Settings
+Secure SSL/TLS Settings (Recommended).
+Username:	info@pamliecoconnect.com
+Password:	Use the email account's password.
+Server:	https://mail.pamliecoconnect.com:2080
+Port: 2080
+Full Calendar URL(s):	
+cPanel CalDAV Calendar: https://mail.pamliecoconnect.com:2080/calendars/info@pamliecoconnect.com/calendar
+Full Contact List URL(s):	
+cPanel CardDAV Address Book: https://mail.pamliecoconnect.com:2080/addressbooks/info@pamliecoconnect.com/addressbook
+Non-SSL Settings (NOT Recommended).
+Username:	info@pamliecoconnect.com
+Password:	Use the email account's password.
+Server:	http://mail.pamliecoconnect.com:2079
+Port: 2079
+Full Calendar URL(s):	
+cPanel CalDAV Calendar: http://mail.pamliecoconnect.com:2079/calendars/info@pamliecoconnect.com/calendar
+Full Contact List URL(s):	
+cPanel CardDAV Address Book: http://mail.pamliecoconnect.com:2079/addressbooks/info@pamliecoconnect.com/addressbook
+A .mobileconfig file for use with iOS for iPhone/iPad/iPod and MacOS® Mail.app® for Mountain Lion (10.8+) is attached to this message.
+
+This notice is the result of a request made by a computer with the IP address of "74.244.146.147" through the "cpanel" service on the server.
+
+The remote computer's location appears to be: United States (US).
+
+The remote computer's IP address is assigned to the provider: "SpaceX Services, Inc."
+
+The remote computer's network link type appears to be: "Ethernet or modem".
+
+The remote computer's operating system appears to be: "Windows" with version "NT kernel 5.x".
+
+The system generated this notice on Thursday, April 30, 2026 at 7:07:38 PM UTC.
+
+Do not reply to this automated message.
+

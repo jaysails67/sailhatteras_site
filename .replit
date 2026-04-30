@@ -46,3 +46,6 @@ channel = "stable-25_05"
 
 [userenv.shared]
 VITE_GA_MEASUREMENT_ID = "G-XXXXXXXXXX"
+SMTP_HOST = "mail.pamliecoconnect.com"
+SMTP_PORT = "465"
+SMTP_USER = "info@pamliecoconnect.com"

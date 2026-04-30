@@ -38,9 +38,11 @@ router.post("/contact", async (req, res): Promise<void> => {
   if (smtpConfigured) {
     try {
       const nodemailer = await import("nodemailer");
+      const smtpPort = Number(process.env.SMTP_PORT ?? 587);
       const transporter = nodemailer.default.createTransport({
         host: process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT ?? 587),
+        port: smtpPort,
+        secure: smtpPort === 465,
         auth: {
           user: process.env.SMTP_USER,
           pass: process.env.SMTP_PASS,
