@@ -171,7 +171,7 @@ export default function Contact() {
                 <div className="flex items-start gap-4">
                   <Phone className="h-6 w-6 text-primary shrink-0" />
                   <div>
-                    <p>+1 (800) 555-0199</p>
+                    <p>252-489-8193</p>
                   </div>
                 </div>
               </div>
