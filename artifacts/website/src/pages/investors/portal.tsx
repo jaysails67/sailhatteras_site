@@ -3,11 +3,11 @@ import { Footer } from "@/components/layout/Footer";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { useEffect, useState } from "react";
-import { useGetContentPage } from "@workspace/api-client-react";
+import { useGetContentPage, getGetContentPageQueryKey } from "@workspace/api-client-react";
 import { FileText, Lock, ChevronRight } from "lucide-react";
 
 const sections = [
-  { slug: "executive-summary", label: "Executive Summary" },
+  { slug: "exec-summary", label: "Executive Summary" },
   { slug: "products", label: "Products" },
   { slug: "services", label: "Services" },
   { slug: "marketing-plan", label: "Marketing Plan" },
@@ -20,8 +20,10 @@ export default function Portal() {
   const [, setLocation] = useLocation();
   const [activeSlug, setActiveSlug] = useState(sections[0].slug);
 
+  const isApproved = !!user && user.approvalStatus === "approved";
+
   const { data: page, isLoading: pageLoading } = useGetContentPage(activeSlug, {
-    query: { enabled: !!user && user.approvalStatus === 'approved' }
+    query: { enabled: isApproved, queryKey: getGetContentPageQueryKey(activeSlug) }
   });
 
   useEffect(() => {
@@ -36,13 +38,12 @@ export default function Portal() {
     }
   }, [user, authLoading, setLocation]);
 
-  if (authLoading || !user || user.approvalStatus !== 'approved') return null;
+  if (authLoading || !user || user.approvalStatus !== "approved") return null;
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Navbar />
       <main className="flex-1 flex flex-col md:flex-row border-t border-border">
-        {/* Sidebar */}
         <aside className="w-full md:w-64 border-r border-border bg-card p-6 flex flex-col gap-2">
           <div className="flex items-center gap-2 text-primary font-semibold mb-4 pb-4 border-b border-border">
             <Lock className="h-4 w-4" />
@@ -65,7 +66,6 @@ export default function Portal() {
           ))}
         </aside>
 
-        {/* Content */}
         <section className="flex-1 p-6 md:p-12">
           <div className="max-w-4xl mx-auto">
             {pageLoading ? (
@@ -81,10 +81,10 @@ export default function Portal() {
                   <FileText className="h-8 w-8 text-primary" />
                   {page.title}
                 </h1>
-                <div dangerouslySetLabel={{ __html: page.content }} />
-                {/* Fallback if content isn't HTML */}
-                {!page.content.includes('<') && (
-                   <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">{page.content}</p>
+                {page.content.includes("<") ? (
+                  <div dangerouslySetInnerHTML={{ __html: page.content }} />
+                ) : (
+                  <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">{page.content}</p>
                 )}
               </div>
             ) : (

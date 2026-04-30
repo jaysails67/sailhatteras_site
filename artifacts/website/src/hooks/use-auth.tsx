@@ -1,6 +1,5 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import { useGetMe, useLogoutUser, User } from "@workspace/api-client-react";
-import { useLocation } from "wouter";
 
 interface AuthContextType {
   user: User | null;
@@ -11,14 +10,12 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const { data: user, isLoading, isError } = useGetMe({ query: { retry: false } });
+  const { data: user, isLoading, isError } = useGetMe();
   const logoutMutation = useLogoutUser();
-  const [, setLocation] = useLocation();
 
   const handleLogout = () => {
     logoutMutation.mutate(undefined, {
       onSuccess: () => {
-        // Soft refresh to clear state
         window.location.href = "/login";
       },
     });

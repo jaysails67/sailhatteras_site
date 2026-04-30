@@ -46,7 +46,7 @@ export default function Contact() {
         onError: (error) => {
           toast({
             title: "Submission failed",
-            description: error.error || "An error occurred",
+            description: (error.data as { error?: string })?.error || error.message,
             variant: "destructive",
           });
         },

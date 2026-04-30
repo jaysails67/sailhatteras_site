@@ -39,7 +39,7 @@ export default function Nda() {
       onError: (error) => {
         toast({
           title: "Error",
-          description: error.error || "An error occurred",
+          description: (error.data as { error?: string })?.error || error.message,
           variant: "destructive",
         });
       }

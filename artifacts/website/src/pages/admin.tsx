@@ -1,18 +1,19 @@
 import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { 
   useGetAdminDashboard, 
   useListInvestors, 
   useApproveInvestor, 
-  useDenyInvestor 
+  useDenyInvestor,
+  getGetAdminDashboardQueryKey,
+  getListInvestorsQueryKey,
 } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Users, Mail, Clock, CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, XCircle } from "lucide-react";
 import { format } from "date-fns";
 
 export default function Admin() {
@@ -20,13 +21,15 @@ export default function Admin() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
+  const isAdmin = !!user && user.role === "admin";
+
   const { data: dashboard, isLoading: dashboardLoading, refetch: refetchDashboard } = useGetAdminDashboard({
-    query: { enabled: !!user && user.role === 'admin' }
+    query: { enabled: isAdmin, queryKey: getGetAdminDashboardQueryKey() }
   });
 
   const { data: pendingInvestors, isLoading: investorsLoading, refetch: refetchInvestors } = useListInvestors(
     { status: "pending" },
-    { query: { enabled: !!user && user.role === 'admin' } }
+    { query: { enabled: isAdmin, queryKey: getListInvestorsQueryKey({ status: "pending" }) } }
   );
 
   const approveMutation = useApproveInvestor();
@@ -49,7 +52,7 @@ export default function Admin() {
         refetchInvestors();
         refetchDashboard();
       },
-      onError: (err) => toast({ title: "Error", description: err.error, variant: "destructive" })
+      onError: (err) => toast({ title: "Error", description: (err.data as { error?: string })?.error || err.message, variant: "destructive" })
     });
   };
 
@@ -60,11 +63,11 @@ export default function Admin() {
         refetchInvestors();
         refetchDashboard();
       },
-      onError: (err) => toast({ title: "Error", description: err.error, variant: "destructive" })
+      onError: (err) => toast({ title: "Error", description: (err.data as { error?: string })?.error || err.message, variant: "destructive" })
     });
   };
 
-  if (authLoading || !user || user.role !== 'admin') return null;
+  if (authLoading || !user || user.role !== "admin") return null;
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -76,7 +79,6 @@ export default function Admin() {
             <h1 className="text-4xl font-display font-bold">Admin Dashboard</h1>
           </div>
 
-          {/* Stats Overview */}
           <section>
             <h2 className="text-xl font-semibold mb-4">Overview</h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -115,7 +117,6 @@ export default function Admin() {
             </div>
           </section>
 
-          {/* Pending Investors */}
           <section>
             <h2 className="text-xl font-semibold mb-4">Pending Investor Applications</h2>
             <Card>
@@ -139,7 +140,7 @@ export default function Admin() {
                           <td className="px-6 py-4 font-medium text-foreground">{inv.userName}</td>
                           <td className="px-6 py-4">{inv.userEmail}</td>
                           <td className="px-6 py-4">{inv.userPhone}</td>
-                          <td className="px-6 py-4 text-muted-foreground">{format(new Date(inv.createdAt), 'MMM d, yyyy')}</td>
+                          <td className="px-6 py-4 text-muted-foreground">{format(new Date(inv.createdAt), "MMM d, yyyy")}</td>
                           <td className="px-6 py-4 text-right">
                             <div className="flex justify-end gap-2">
                               <Button 

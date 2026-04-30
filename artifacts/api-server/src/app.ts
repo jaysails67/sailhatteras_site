@@ -29,24 +29,40 @@ app.use(
   }),
 );
 
+const isProd = process.env.NODE_ENV === "production";
+
 app.use(cors({
-  origin: true,
+  origin: (origin, callback) => {
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+    const allowed =
+      origin.endsWith(".replit.dev") ||
+      origin.endsWith(".replit.app") ||
+      origin === "http://localhost:19161" ||
+      origin === "http://localhost:3000";
+    callback(allowed ? null : new Error("CORS: origin not allowed"), allowed);
+  },
   credentials: true,
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const sessionSecret = process.env.SESSION_SECRET ?? "pamliecoconnect-dev-secret-change-in-production";
+const sessionSecret = process.env.SESSION_SECRET;
+if (!sessionSecret && isProd) {
+  throw new Error("SESSION_SECRET environment variable is required in production");
+}
 
 app.use(session({
-  secret: sessionSecret,
+  secret: sessionSecret ?? "pamliecoconnect-dev-secret-do-not-use-in-production",
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === "production",
+    secure: isProd,
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    sameSite: isProd ? "none" : "lax",
   },
 }));
 
