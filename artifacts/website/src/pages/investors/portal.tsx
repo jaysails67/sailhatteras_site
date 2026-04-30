@@ -11,6 +11,7 @@ import { Link } from "wouter";
 const PLAN_SECTIONS = [
   { slug: "exec-summary",      label: "Executive Summary" },
   { slug: "company-overview",  label: "Company Overview" },
+  { slug: "market-analysis",   label: "Market Analysis" },
   { slug: "products",          label: "Products & Vessels" },
   { slug: "services",          label: "Services & Routes" },
   { slug: "marketing-plan",    label: "Marketing Plan" },
