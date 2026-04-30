@@ -13,6 +13,7 @@ const router: IRouter = Router();
 
 const INVESTOR_SLUGS = [
   "exec-summary",
+  "company-overview",
   "products",
   "services",
   "marketing-plan",

@@ -9,12 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 
 const PLAN_SECTIONS = [
-  { slug: "exec-summary",   label: "Executive Summary" },
-  { slug: "products",       label: "Products & Vessels" },
-  { slug: "services",       label: "Services & Routes" },
-  { slug: "marketing-plan", label: "Marketing Plan" },
-  { slug: "financial-plan", label: "Financial Plan" },
-  { slug: "conclusion",     label: "Conclusion" },
+  { slug: "exec-summary",      label: "Executive Summary" },
+  { slug: "company-overview",  label: "Company Overview" },
+  { slug: "products",          label: "Products & Vessels" },
+  { slug: "services",          label: "Services & Routes" },
+  { slug: "marketing-plan",    label: "Marketing Plan" },
+  { slug: "financial-plan",    label: "Financial Plan" },
+  { slug: "conclusion",        label: "Conclusion" },
 ];
 
 export default function Portal() {
