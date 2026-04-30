@@ -24,6 +24,7 @@ const INVESTOR_SLUGS = [
   "risk-analysis",
   "timeline",
   "conclusion",
+  "grants",
 ];
 
 function formatPage(page: typeof contentPagesTable.$inferSelect) {

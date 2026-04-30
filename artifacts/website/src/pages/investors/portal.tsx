@@ -21,6 +21,7 @@ const PLAN_SECTIONS = [
   { slug: "risk-analysis",     label: "Risk Analysis" },
   { slug: "timeline",          label: "Implementation" },
   { slug: "conclusion",        label: "Investors & Funding" },
+  { slug: "grants",            label: "Grant Opportunities" },
 ];
 
 export default function Portal() {

@@ -184,6 +184,227 @@ export async function seed(): Promise<void> {
           metaData: { section: "investor" },
         },
         {
+          slug: "grants",
+          title: "Grant Opportunities",
+          content: `<h2>Grant Opportunities</h2>
+<p>PamliEcoConnect is positioned to pursue significant federal and state grant funding across clean maritime technology, shipbuilding, workforce development, and port electrification. This section covers our readiness checklist, prioritized action plan, and a curated list of currently active and upcoming funding programs.</p>
+<p class="text-xs text-muted-foreground mt-1">Prepared by Jay Phillips / Phillips Boat Works — April 27, 2026</p>
+
+<hr class="my-8 border-border"/>
+
+<h2>Part 1 — Grant Readiness &amp; Action Plan</h2>
+
+<h3>1. Readiness Checklist</h3>
+
+<h4>Category 1: Registrations &amp; Identifiers</h4>
+<ul>
+  <li><strong>SAM.gov &amp; UEI:</strong> An active SAM registration and Unique Entity Identifier (UEI) is required to receive any federal funds. Requires sharing business bank account information. <em>Note: SAM.gov is currently experiencing significant processing backlogs — begin immediately.</em></li>
+  <li><strong>Research.gov &amp; SBIR Company Registry:</strong> Required specifically for NSF SBIR/STTR proposals.</li>
+  <li><strong>ARPA-E eXCHANGE:</strong> Required to apply for DOE maritime battery and electrification grants such as PROPEL-1K.</li>
+</ul>
+
+<h4>Category 2: Compliance &amp; Documentation</h4>
+<ul>
+  <li><strong>Foreign Risk &amp; Security Screening:</strong> Documented, transparent records of ownership structure, capital sources, key personnel affiliations, and cybersecurity safeguards are required to pass mandatory SBIR/STTR due diligence reviews.</li>
+  <li><strong>DCAA/FAR Compliant Accounting:</strong> Phase II awards (up to $2M) require pre-award accounting surveys verifying financial systems meet Federal Acquisition Regulation (FAR) and Defense Contract Audit Agency (DCAA) standards.</li>
+  <li><strong>Core Proposal Boilerplate:</strong> Prepare standard documents including budget justifications, organizational capability statements, and key personnel CVs.</li>
+  <li><strong>Benefit-Cost Analyses:</strong> Many maritime infrastructure grants require a formal benefit-cost analysis comparing no-build versus build scenarios over a 25–50 year lifecycle.</li>
+</ul>
+
+<h4>Category 3: Partnerships</h4>
+<ul>
+  <li><strong>U.S. Shipyards:</strong> Participation by at least one U.S. shipyard is a strict requirement for all National Shipbuilding Research Program (NSRP) projects.</li>
+  <li><strong>Universities &amp; Research Institutions:</strong> Required for STTR grants (minimum 30% of work by the institution), and strongly encouraged for NSF SBIR and workforce development (ATE) programs.</li>
+  <li><strong>Local Stakeholders:</strong> Official letters of support from federal, state, and local policymakers or port authorities are required to secure infrastructure and transit grants.</li>
+</ul>
+
+<h4>Category 4: Technical &amp; Commercial Materials</h4>
+<ul>
+  <li><strong>Project Pitches / White Papers:</strong> Required to assess technical fit before being invited to submit full proposals for NSF and NSRP programs.</li>
+  <li><strong>Commercialization Plan:</strong> Reviewers look for early market validation signals including customer discovery, acquisition pathways, and IP strategy (provisional patents, freedom-to-operate analyses).</li>
+  <li><strong>Technology Readiness Level (TRL) Roadmaps:</strong> Must identify starting TRL and map a path to TRL 9 in a shipbuilding or operational environment.</li>
+</ul>
+
+<h4>Category 5: Financials &amp; Match</h4>
+<ul>
+  <li><strong>Accessible Cost-Share:</strong> Most discretionary federal grants (FTA ferry grants, Port Infrastructure Development Program) require a 20% local match documented as "ready and accessible."</li>
+  <li><strong>Strategic Match Capital:</strong> Strategic Breakthrough Phase II awards require 100% matching from private capital, commercial revenue, or non-SBIR defense contracts.</li>
+  <li><strong>Cost-Share Waivers:</strong> As a small business, PamliEcoConnect can claim waivers for the standard 50% cost-share requirement on NSRP Research Announcement projects.</li>
+</ul>
+
+<h4>Category 6: Repeated Evaluation Themes</h4>
+<ul>
+  <li><strong>Innovation &amp; Commercial Potential:</strong> Projects must prove scientific/technical merit and clear commercial viability.</li>
+  <li><strong>Emissions &amp; Climate Benefits:</strong> Strong emphasis on reducing greenhouse gases, port electrification, and zero-emission technology deployment.</li>
+  <li><strong>Workforce Development:</strong> Priority given to projects that train the next generation of maritime workers, support apprenticeships, and partner with educational institutions.</li>
+</ul>
+
+<hr class="my-8 border-border"/>
+
+<h3>2. Prioritized Actions</h3>
+
+<h4>Do These First — Next 30–60 Days</h4>
+<ol>
+  <li><strong>Register for SAM.gov</strong> to initiate UEI assignment immediately due to current processing backlogs.</li>
+  <li><strong>Register for Research.gov and the SBA SBIR Company Registry</strong> to be legally ready to submit NSF proposals.</li>
+  <li><strong>Register for ARPA-E eXCHANGE</strong> to access and review the active PROPEL-1K FOA for maritime battery systems.</li>
+  <li><strong>Draft a 2-page Project Pitch</strong> for the NSF SBIR program (targeting the "Mobility" topic) and submit to receive an official invitation for a full proposal.</li>
+  <li><strong>Audit ownership structure</strong> and foreign investment connections to prepare compliance documentation for mandatory SBIR security due diligence rules.</li>
+  <li><strong>Identify a U.S. Shipyard partner</strong> and request a letter of commitment to satisfy the mandatory eligibility requirement for upcoming NSRP solicitations.</li>
+</ol>
+
+<h4>6–12 Month Roadmap</h4>
+<ul>
+  <li><strong>Months 3–4 (Partnerships &amp; Concept Refinement):</strong> Deepen relationships with university partners (NC State, UNC) to open STTR grant pathways and collaborate on engineering and battery challenges. Begin drafting NSRP White Papers ahead of spring/summer solicitation cycles.</li>
+  <li><strong>Months 5–6 (Boilerplate &amp; Advocacy):</strong> Prepare boilerplate sections for technical narratives, commercialization plans, and budget justifications. Request letters of support from NC stakeholders (EDPNC, local economic development boards) to demonstrate community backing.</li>
+  <li><strong>Months 7–9 (Financial Match Readiness):</strong> Line up and document non-federal cost-share sources. Ensure these funds are formally marked as "ready and accessible" for transit and manufacturing grant applications.</li>
+  <li><strong>Months 10–12 (Phase II Readiness):</strong> Begin upgrading internal financial and accounting systems to meet DCAA and FAR standards — a critical hurdle to clear for Phase II funding (up to $2M) and future Strategic Breakthrough awards.</li>
+</ul>
+
+<hr class="my-8 border-border"/>
+
+<h3>3. Gaps Requiring External Research</h3>
+<ul>
+  <li><strong>Exact NOFO Dates:</strong> Several major grants (MARAD Small Shipyard, EPA Clean Ports, FTA Electric Ferry Pilot) are listed as "Annual" but exact 2026 Notice of Funding Opportunity release dates and deadlines require verification.</li>
+  <li><strong>NC State-Level Vendor Registrations:</strong> State support via NC Commerce and EDPNC is available, but specific state-level procurement portals and vendor registration steps needed for state matching funds or local contracts require confirmation.</li>
+  <li><strong>Maritime Prosperity Zone Boundaries:</strong> Up to 100 Maritime Prosperity Zones (MPZs) were to be defined by July 8, 2025. The final map and geographic boundaries for North Carolina — and specifically whether Pamlico County qualifies — must be confirmed with the Department of Commerce.</li>
+</ul>
+
+<hr class="my-8 border-border"/>
+
+<h2>Part 2 — Current &amp; Active Grant Programs</h2>
+<p>Programs currently open or clearly active/recurring that align with PamliEcoConnect's profile in electric foiling ferries and maritime deep-tech.</p>
+
+<div class="overflow-x-auto mt-6">
+<table class="w-full text-sm border-collapse">
+  <thead>
+    <tr class="border-b border-border">
+      <th class="text-left py-3 pr-4 font-semibold text-foreground">Program</th>
+      <th class="text-left py-3 pr-4 font-semibold text-foreground">Agency</th>
+      <th class="text-left py-3 pr-4 font-semibold text-foreground">Award Size</th>
+      <th class="text-left py-3 pr-4 font-semibold text-foreground">Match</th>
+      <th class="text-left py-3 font-semibold text-foreground">Status / Window</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="border-b border-border/50">
+      <td class="py-3 pr-4 font-medium text-foreground">PROPEL-1K<br/><span class="font-normal text-muted-foreground text-xs">Pioneering Railroad, Oceanic, and Plane Electrification</span></td>
+      <td class="py-3 pr-4 text-muted-foreground">DOE / ARPA-E</td>
+      <td class="py-3 pr-4 text-muted-foreground">~15 awards expected</td>
+      <td class="py-3 pr-4 text-muted-foreground">None required</td>
+      <td class="py-3 text-muted-foreground">Active (DE-FOA-0003163)</td>
+    </tr>
+    <tr class="border-b border-border/50">
+      <td class="py-3 pr-4 font-medium text-foreground">NSF SBIR Phase I<br/><span class="font-normal text-muted-foreground text-xs">Mobility Topic — America's Seed Fund</span></td>
+      <td class="py-3 pr-4 text-muted-foreground">NSF</td>
+      <td class="py-3 pr-4 text-muted-foreground">Up to $275K–$305K</td>
+      <td class="py-3 pr-4 text-muted-foreground">0% (no equity)</td>
+      <td class="py-3 text-muted-foreground">Rolling (closes Feb 28, May 31, Aug 31, Nov 30)</td>
+    </tr>
+    <tr class="border-b border-border/50">
+      <td class="py-3 pr-4 font-medium text-foreground">NSRP Research Announcement<br/><span class="font-normal text-muted-foreground text-xs">National Shipbuilding Research Program</span></td>
+      <td class="py-3 pr-4 text-muted-foreground">NSRP / U.S. Navy</td>
+      <td class="py-3 pr-4 text-muted-foreground">Varies (multi-million total pool)</td>
+      <td class="py-3 pr-4 text-muted-foreground">50% — waived for small biz</td>
+      <td class="py-3 text-muted-foreground">Annual (spring/summer cycle)</td>
+    </tr>
+    <tr class="border-b border-border/50">
+      <td class="py-3 pr-4 font-medium text-foreground">Assistance to Small Shipyards<br/><span class="font-normal text-muted-foreground text-xs">MARAD Small Shipyard Grant Program</span></td>
+      <td class="py-3 pr-4 text-muted-foreground">MARAD / DOT</td>
+      <td class="py-3 pr-4 text-muted-foreground">$105M total FY27, ~20 awards</td>
+      <td class="py-3 pr-4 text-muted-foreground">&gt;25% preferred</td>
+      <td class="py-3 text-muted-foreground">Annual (exact 2026 dates TBD)</td>
+    </tr>
+    <tr class="border-b border-border/50">
+      <td class="py-3 pr-4 font-medium text-foreground">Title XI — Federal Ship Financing<br/><span class="font-normal text-muted-foreground text-xs">Federal Ship Financing Program</span></td>
+      <td class="py-3 pr-4 text-muted-foreground">MARAD / DOT</td>
+      <td class="py-3 pr-4 text-muted-foreground">$1.8B loan approval capacity</td>
+      <td class="py-3 pr-4 text-muted-foreground">N/A (loan guarantee)</td>
+      <td class="py-3 text-muted-foreground">Rolling / recurring</td>
+    </tr>
+    <tr class="border-b border-border/50">
+      <td class="py-3 pr-4 font-medium text-foreground">Electric or Low-Emitting Ferry Pilot<br/><span class="font-normal text-muted-foreground text-xs">FTA Electric Ferry Pilot Program</span></td>
+      <td class="py-3 pr-4 text-muted-foreground">FTA</td>
+      <td class="py-3 pr-4 text-muted-foreground">$50M available per year</td>
+      <td class="py-3 pr-4 text-muted-foreground">20% match</td>
+      <td class="py-3 text-muted-foreground">Annual (exact 2026 dates TBD)</td>
+    </tr>
+    <tr>
+      <td class="py-3 pr-4 font-medium text-foreground">DoD SBIR / STTR<br/><span class="font-normal text-muted-foreground text-xs">Department of Defense across all components</span></td>
+      <td class="py-3 pr-4 text-muted-foreground">DoD (Navy, DARPA, etc.)</td>
+      <td class="py-3 pr-4 text-muted-foreground">Standard Phase I/II amounts</td>
+      <td class="py-3 pr-4 text-muted-foreground">0% match</td>
+      <td class="py-3 text-muted-foreground">Multiple per year (Feb, Apr, May closings)</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<hr class="my-8 border-border"/>
+
+<h2>Part 3 — Future &amp; Upcoming Programs (6–18 Months)</h2>
+<p>Recurring or likely opportunities not necessarily open today, targeted for the next 6–18 months of our pipeline.</p>
+
+<div class="overflow-x-auto mt-6">
+<table class="w-full text-sm border-collapse">
+  <thead>
+    <tr class="border-b border-border">
+      <th class="text-left py-3 pr-4 font-semibold text-foreground">Program</th>
+      <th class="text-left py-3 pr-4 font-semibold text-foreground">Agency</th>
+      <th class="text-left py-3 pr-4 font-semibold text-foreground">Typical Award</th>
+      <th class="text-left py-3 pr-4 font-semibold text-foreground">Match</th>
+      <th class="text-left py-3 font-semibold text-foreground">Timing</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="border-b border-border/50">
+      <td class="py-3 pr-4 font-medium text-foreground">DOT SBIR Phase I<br/><span class="font-normal text-muted-foreground text-xs">Transportation R&amp;D — Mobility</span></td>
+      <td class="py-3 pr-4 text-muted-foreground">DOT</td>
+      <td class="py-3 pr-4 text-muted-foreground">Standard Phase I (0% equity)</td>
+      <td class="py-3 pr-4 text-muted-foreground">0%</td>
+      <td class="py-3 text-muted-foreground">Annual Q1 (historically closes early March)</td>
+    </tr>
+    <tr class="border-b border-border/50">
+      <td class="py-3 pr-4 font-medium text-foreground">Strategic Breakthrough Phase II<br/><span class="font-normal text-muted-foreground text-xs">Deep Tech Scaling — Bridge Valley of Death</span></td>
+      <td class="py-3 pr-4 text-muted-foreground">DoD / NSF</td>
+      <td class="py-3 pr-4 text-muted-foreground">Up to $30M over 4 years</td>
+      <td class="py-3 pr-4 text-muted-foreground">100% private match required</td>
+      <td class="py-3 text-muted-foreground">First solicitations expected Q4 2026</td>
+    </tr>
+    <tr class="border-b border-border/50">
+      <td class="py-3 pr-4 font-medium text-foreground">NSF Advanced Technological Education (ATE)<br/><span class="font-normal text-muted-foreground text-xs">STEM Workforce Development</span></td>
+      <td class="py-3 pr-4 text-muted-foreground">NSF</td>
+      <td class="py-3 pr-4 text-muted-foreground">Pool of $69M–$74M annually</td>
+      <td class="py-3 pr-4 text-muted-foreground">Varies</td>
+      <td class="py-3 text-muted-foreground">Annual — <strong>Next deadline: October 1, 2026</strong></td>
+    </tr>
+    <tr class="border-b border-border/50">
+      <td class="py-3 pr-4 font-medium text-foreground">EPA Clean Ports Program<br/><span class="font-normal text-muted-foreground text-xs">Port Electrification &amp; Zero-Emission Tech</span></td>
+      <td class="py-3 pr-4 text-muted-foreground">EPA</td>
+      <td class="py-3 pr-4 text-muted-foreground">$3B allocated FY24</td>
+      <td class="py-3 pr-4 text-muted-foreground">10–20% match</td>
+      <td class="py-3 text-muted-foreground">Annual (exact 2026 dates TBD)</td>
+    </tr>
+    <tr class="border-b border-border/50">
+      <td class="py-3 pr-4 font-medium text-foreground">NSF STTR — Technology Transfer<br/><span class="font-normal text-muted-foreground text-xs">Collaborative R&amp;D with University Partners</span></td>
+      <td class="py-3 pr-4 text-muted-foreground">NSF</td>
+      <td class="py-3 pr-4 text-muted-foreground">$275K Phase I / $2M Phase II</td>
+      <td class="py-3 pr-4 text-muted-foreground">0% equity</td>
+      <td class="py-3 text-muted-foreground">Rolling windows — next opens July 15, 2026</td>
+    </tr>
+    <tr>
+      <td class="py-3 pr-4 font-medium text-foreground">DoD SBIR/STTR — Defense Maritime<br/><span class="font-normal text-muted-foreground text-xs">Dual-use composites, guidance, propulsion</span></td>
+      <td class="py-3 pr-4 text-muted-foreground">DoD (Navy, DARPA)</td>
+      <td class="py-3 pr-4 text-muted-foreground">Standard Phase I/II</td>
+      <td class="py-3 pr-4 text-muted-foreground">0%</td>
+      <td class="py-3 text-muted-foreground">Multiple releases per year — monitor closely</td>
+    </tr>
+  </tbody>
+</table>
+</div>`,
+          metaData: { section: "investor" },
+        },
+        {
           slug: "conclusion",
           title: "Conclusion",
           content: `<h2>Investment Thesis</h2>
