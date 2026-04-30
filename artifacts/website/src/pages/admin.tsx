@@ -41,9 +41,9 @@ export default function Admin() {
     query: { enabled: isAdmin, queryKey: getGetAdminDashboardQueryKey() }
   });
 
-  const { data: pendingInvestors, isLoading: investorsLoading, refetch: refetchInvestors } = useListInvestors(
-    { status: "pending" },
-    { query: { enabled: isAdmin, queryKey: getListInvestorsQueryKey({ status: "pending" }) } }
+  const { data: allInvestors, isLoading: investorsLoading, refetch: refetchInvestors } = useListInvestors(
+    {},
+    { query: { enabled: isAdmin, queryKey: getListInvestorsQueryKey({}) } }
   );
 
   const { data: contacts, isLoading: contactsLoading } = useListContactSubmissions({
@@ -171,11 +171,11 @@ export default function Admin() {
             </div>
           )}
 
-          {/* Pending Investors */}
+          {/* All Investors */}
           {activeTab === "investors" && (
             <Card>
               <CardHeader>
-                <CardTitle>Pending Investor Applications</CardTitle>
+                <CardTitle>All Investor Applications</CardTitle>
               </CardHeader>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm text-left">
@@ -185,48 +185,62 @@ export default function Admin() {
                       <th className="px-6 py-4 font-medium">Name</th>
                       <th className="px-6 py-4 font-medium">Email</th>
                       <th className="px-6 py-4 font-medium">Phone</th>
+                      <th className="px-6 py-4 font-medium">Status</th>
                       <th className="px-6 py-4 font-medium">Date</th>
                       <th className="px-6 py-4 font-medium text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {investorsLoading ? (
-                      <tr><td colSpan={6} className="px-6 py-8 text-center text-muted-foreground">Loading...</td></tr>
-                    ) : pendingInvestors && pendingInvestors.length > 0 ? (
-                      pendingInvestors.map((inv) => (
+                      <tr><td colSpan={7} className="px-6 py-8 text-center text-muted-foreground">Loading...</td></tr>
+                    ) : allInvestors && allInvestors.length > 0 ? (
+                      allInvestors.map((inv) => (
                         <tr key={inv.id} className="border-b border-border last:border-0 hover:bg-muted/50 transition-colors">
                           <td className="px-6 py-4 text-muted-foreground font-mono text-xs">#{inv.id}</td>
                           <td className="px-6 py-4 font-medium text-foreground">{inv.userName}</td>
                           <td className="px-6 py-4">{inv.userEmail}</td>
                           <td className="px-6 py-4">{inv.userPhone}</td>
+                          <td className="px-6 py-4">
+                            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                              inv.status === "approved"
+                                ? "bg-green-500/15 text-green-400"
+                                : inv.status === "denied"
+                                ? "bg-destructive/15 text-destructive"
+                                : "bg-primary/15 text-primary"
+                            }`}>
+                              {inv.status}
+                            </span>
+                          </td>
                           <td className="px-6 py-4 text-muted-foreground">{format(new Date(inv.createdAt), "MMM d, yyyy")}</td>
                           <td className="px-6 py-4 text-right">
-                            <div className="flex justify-end gap-2">
-                              <Button 
-                                size="sm" 
-                                variant="outline" 
-                                className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                                onClick={() => openDenyDialog(inv.id, inv.userName)}
-                                disabled={denyMutation.isPending || approveMutation.isPending}
-                                data-testid={`btn-deny-${inv.id}`}
-                              >
-                                <XCircle className="h-4 w-4 mr-1" /> Deny
-                              </Button>
-                              <Button 
-                                size="sm" 
-                                className="bg-primary text-primary-foreground hover:bg-primary/90"
-                                onClick={() => handleApprove(inv.id)}
-                                disabled={denyMutation.isPending || approveMutation.isPending}
-                                data-testid={`btn-approve-${inv.id}`}
-                              >
-                                <CheckCircle2 className="h-4 w-4 mr-1" /> Approve
-                              </Button>
-                            </div>
+                            {inv.status === "pending" && (
+                              <div className="flex justify-end gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                                  onClick={() => openDenyDialog(inv.id, inv.userName)}
+                                  disabled={denyMutation.isPending || approveMutation.isPending}
+                                  data-testid={`btn-deny-${inv.id}`}
+                                >
+                                  <XCircle className="h-4 w-4 mr-1" /> Deny
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  className="bg-primary text-primary-foreground hover:bg-primary/90"
+                                  onClick={() => handleApprove(inv.id)}
+                                  disabled={denyMutation.isPending || approveMutation.isPending}
+                                  data-testid={`btn-approve-${inv.id}`}
+                                >
+                                  <CheckCircle2 className="h-4 w-4 mr-1" /> Approve
+                                </Button>
+                              </div>
+                            )}
                           </td>
                         </tr>
                       ))
                     ) : (
-                      <tr><td colSpan={6} className="px-6 py-8 text-center text-muted-foreground">No pending applications.</td></tr>
+                      <tr><td colSpan={7} className="px-6 py-8 text-center text-muted-foreground">No investor applications yet.</td></tr>
                     )}
                   </tbody>
                 </table>
