@@ -31,7 +31,15 @@ export async function seed(): Promise<void> {
           approvalStatus: "approved",
           ndaAccepted: true,
         })
-        .onConflictDoNothing({ target: usersTable.email });
+        .onConflictDoUpdate({
+          target: usersTable.email,
+          set: {
+            passwordHash,
+            role: "admin",
+            approvalStatus: "approved",
+            ndaAccepted: true,
+          },
+        });
       logger.info({ adminEmail }, "Admin user seeded");
     }
 
