@@ -1,0 +1,15 @@
+import { pgTable, text, serial, timestamp } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod/v4";
+
+export const waitlistTable = pgTable("waitlist", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+  phone: text("phone").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const insertWaitlistSchema = createInsertSchema(waitlistTable).omit({ id: true, createdAt: true });
+export type InsertWaitlist = z.infer<typeof insertWaitlistSchema>;
+export type WaitlistEntry = typeof waitlistTable.$inferSelect;

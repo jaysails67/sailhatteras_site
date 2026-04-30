@@ -1,0 +1,144 @@
+import { Router, type IRouter } from "express";
+import bcrypt from "bcryptjs";
+import { db } from "@workspace/db";
+import { usersTable } from "@workspace/db";
+import { eq } from "drizzle-orm";
+import {
+  RegisterUserBody,
+  LoginUserBody,
+} from "@workspace/api-zod";
+
+const router: IRouter = Router();
+
+function formatUser(user: typeof usersTable.$inferSelect) {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    role: user.role,
+    approvalStatus: user.approvalStatus,
+    ndaAccepted: user.ndaAccepted,
+    createdAt: user.createdAt.toISOString(),
+  };
+}
+
+router.post("/auth/register", async (req, res): Promise<void> => {
+  const parsed = RegisterUserBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+
+  const { name, email, phone, password } = parsed.data;
+
+  const existing = await db.select().from(usersTable).where(eq(usersTable.email, email));
+  if (existing.length > 0) {
+    res.status(409).json({ error: "An account with this email already exists" });
+    return;
+  }
+
+  const passwordHash = await bcrypt.hash(password, 12);
+  const [user] = await db.insert(usersTable).values({
+    name,
+    email,
+    phone,
+    passwordHash,
+    role: "investor",
+    approvalStatus: "pending",
+    ndaAccepted: false,
+  }).returning();
+
+  req.session.userId = user.id;
+
+  res.status(201).json({
+    user: formatUser(user),
+    message: "Account created successfully. Please review and accept our terms.",
+  });
+});
+
+router.post("/auth/accept-nda", async (req, res): Promise<void> => {
+  if (!req.session?.userId) {
+    res.status(401).json({ error: "Authentication required" });
+    return;
+  }
+
+  const [user] = await db
+    .update(usersTable)
+    .set({ ndaAccepted: true })
+    .where(eq(usersTable.id, req.session.userId))
+    .returning();
+
+  if (!user) {
+    res.status(401).json({ error: "User not found" });
+    return;
+  }
+
+  const telegramWebhookUrl = process.env.TELEGRAM_WEBHOOK_URL;
+  if (telegramWebhookUrl) {
+    fetch(telegramWebhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        text: `New investor application: ${user.name} (${user.email}) has accepted the NDA and is pending approval.`,
+      }),
+    }).catch(() => {});
+  }
+
+  res.json({
+    user: formatUser(user),
+    message: "Thank you. Your access request is pending review. You will be notified once approved.",
+  });
+});
+
+router.post("/auth/login", async (req, res): Promise<void> => {
+  const parsed = LoginUserBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+
+  const { email, password } = parsed.data;
+
+  const [user] = await db.select().from(usersTable).where(eq(usersTable.email, email));
+  if (!user) {
+    res.status(401).json({ error: "Invalid email or password" });
+    return;
+  }
+
+  const valid = await bcrypt.compare(password, user.passwordHash);
+  if (!valid) {
+    res.status(401).json({ error: "Invalid email or password" });
+    return;
+  }
+
+  req.session.userId = user.id;
+
+  res.json({
+    user: formatUser(user),
+    message: "Logged in successfully",
+  });
+});
+
+router.post("/auth/logout", async (req, res): Promise<void> => {
+  req.session.destroy(() => {});
+  res.json({ message: "Logged out successfully" });
+});
+
+router.get("/auth/me", async (req, res): Promise<void> => {
+  if (!req.session?.userId) {
+    res.status(401).json({ error: "Not authenticated" });
+    return;
+  }
+
+  const [user] = await db.select().from(usersTable).where(eq(usersTable.id, req.session.userId));
+  if (!user) {
+    req.session.destroy(() => {});
+    res.status(401).json({ error: "User not found" });
+    return;
+  }
+
+  res.json(formatUser(user));
+});
+
+export default router;

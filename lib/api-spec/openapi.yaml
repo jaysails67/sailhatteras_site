@@ -1,22 +1,37 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: PamliEcoConnect REST API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: investors
+    description: Investor application operations
+  - name: content
+    description: Content page operations
+  - name: posts
+    description: Press & news post operations
+  - name: team
+    description: Team member operations
+  - name: contact
+    description: Contact form operations
+  - name: waitlist
+    description: Waitlist operations
+  - name: admin
+    description: Admin operations
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +39,544 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # Auth
+  /auth/register:
+    post:
+      operationId: registerUser
+      tags: [auth]
+      summary: Register a new investor account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterBody"
+      responses:
+        "201":
+          description: Registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/accept-nda:
+    post:
+      operationId: acceptNda
+      tags: [auth]
+      summary: Accept the NDA/terms after registration
+      responses:
+        "200":
+          description: NDA accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/login:
+    post:
+      operationId: loginUser
+      tags: [auth]
+      summary: Login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginBody"
+      responses:
+        "200":
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logoutUser
+      tags: [auth]
+      summary: Logout current user
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current authenticated user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # Investors
+  /investors:
+    get:
+      operationId: listInvestors
+      tags: [investors, admin]
+      summary: List all investor applications (admin only)
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, approved, denied]
+      responses:
+        "200":
+          description: List of investor applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InvestorApplication"
+
+  /investors/{id}/approve:
+    post:
+      operationId: approveInvestor
+      tags: [investors, admin]
+      summary: Approve an investor application (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Investor approved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvestorApplication"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /investors/{id}/deny:
+    post:
+      operationId: denyInvestor
+      tags: [investors, admin]
+      summary: Deny an investor application (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Investor denied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvestorApplication"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /investors/stats:
+    get:
+      operationId: getInvestorStats
+      tags: [investors, admin]
+      summary: Get investor application statistics (admin only)
+      responses:
+        "200":
+          description: Statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvestorStats"
+
+  # Content Pages
+  /content:
+    get:
+      operationId: listContentPages
+      tags: [content]
+      summary: List all content pages
+      responses:
+        "200":
+          description: Content pages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ContentPage"
+
+  /content/{slug}:
+    get:
+      operationId: getContentPage
+      tags: [content]
+      summary: Get content page by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Content page
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContentPage"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateContentPage
+      tags: [content, admin]
+      summary: Create or update a content page by slug (admin only)
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContentPageBody"
+      responses:
+        "200":
+          description: Updated content page
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContentPage"
+
+  # Posts
+  /posts:
+    get:
+      operationId: listPosts
+      tags: [posts]
+      summary: List posts (press releases, videos, presentations)
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [press_release, video, presentation]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Posts list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
+    post:
+      operationId: createPost
+      tags: [posts, admin]
+      summary: Create a new post (admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostBody"
+      responses:
+        "201":
+          description: Created post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+
+  /posts/{id}:
+    get:
+      operationId: getPost
+      tags: [posts]
+      summary: Get a single post
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updatePost
+      tags: [posts, admin]
+      summary: Update a post (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostBody"
+      responses:
+        "200":
+          description: Updated post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+    delete:
+      operationId: deletePost
+      tags: [posts, admin]
+      summary: Delete a post (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /posts/featured:
+    get:
+      operationId: getFeaturedPosts
+      tags: [posts]
+      summary: Get featured/pinned posts for the press page
+      responses:
+        "200":
+          description: Featured posts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeaturedPostsResponse"
+
+  # Team Members
+  /team:
+    get:
+      operationId: listTeamMembers
+      tags: [team]
+      summary: List all team members
+      responses:
+        "200":
+          description: Team members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TeamMember"
+    post:
+      operationId: createTeamMember
+      tags: [team, admin]
+      summary: Create a team member (admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamMemberBody"
+      responses:
+        "201":
+          description: Created team member
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamMember"
+
+  /team/{id}:
+    patch:
+      operationId: updateTeamMember
+      tags: [team, admin]
+      summary: Update a team member (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamMemberBody"
+      responses:
+        "200":
+          description: Updated team member
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamMember"
+    delete:
+      operationId: deleteTeamMember
+      tags: [team, admin]
+      summary: Delete a team member (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # Contact
+  /contact:
+    post:
+      operationId: submitContact
+      tags: [contact]
+      summary: Submit contact form
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactBody"
+      responses:
+        "201":
+          description: Contact submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    get:
+      operationId: listContactSubmissions
+      tags: [contact, admin]
+      summary: List contact submissions (admin only)
+      responses:
+        "200":
+          description: Contact submissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ContactSubmission"
+
+  # Waitlist
+  /waitlist:
+    post:
+      operationId: joinWaitlist
+      tags: [waitlist]
+      summary: Join passenger reservation waitlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WaitlistBody"
+      responses:
+        "201":
+          description: Added to waitlist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "409":
+          description: Already on waitlist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    get:
+      operationId: listWaitlistEntries
+      tags: [waitlist, admin]
+      summary: List waitlist entries (admin only)
+      responses:
+        "200":
+          description: Waitlist entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WaitlistEntry"
+
+  # Admin summary
+  /admin/dashboard:
+    get:
+      operationId: getAdminDashboard
+      tags: [admin]
+      summary: Get admin dashboard summary stats
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminDashboard"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +587,396 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    # Auth
+    RegisterBody:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        password:
+          type: string
+      required:
+        - name
+        - email
+        - phone
+        - password
+
+    LoginBody:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        role:
+          type: string
+          enum: [investor, admin]
+        approvalStatus:
+          type: string
+          enum: [pending, approved, denied]
+        ndaAccepted:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - email
+        - phone
+        - role
+        - approvalStatus
+        - ndaAccepted
+        - createdAt
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        message:
+          type: string
+      required:
+        - user
+        - message
+
+    # Investors
+    InvestorApplication:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        userName:
+          type: string
+        userEmail:
+          type: string
+        userPhone:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, denied]
+        ndaAccepted:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - userId
+        - userName
+        - userEmail
+        - userPhone
+        - status
+        - ndaAccepted
+        - createdAt
+        - updatedAt
+
+    InvestorStats:
+      type: object
+      properties:
+        total:
+          type: integer
+        pending:
+          type: integer
+        approved:
+          type: integer
+        denied:
+          type: integer
+      required:
+        - total
+        - pending
+        - approved
+        - denied
+
+    # Content
+    ContentPage:
+      type: object
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        metaData:
+          type: ["object", "null"]
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - slug
+        - title
+        - content
+        - updatedAt
+
+    ContentPageBody:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        metaData:
+          type: ["object", "null"]
+      required:
+        - title
+        - content
+
+    # Posts
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        excerpt:
+          type: string
+        content:
+          type: string
+        type:
+          type: string
+          enum: [press_release, video, presentation]
+        mediaUrl:
+          type: ["string", "null"]
+        featured:
+          type: boolean
+        publishedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - excerpt
+        - content
+        - type
+        - featured
+        - publishedAt
+        - createdAt
+
+    PostBody:
+      type: object
+      properties:
+        title:
+          type: string
+        excerpt:
+          type: string
+        content:
+          type: string
+        type:
+          type: string
+          enum: [press_release, video, presentation]
+        mediaUrl:
+          type: ["string", "null"]
+        featured:
+          type: boolean
+      required:
+        - title
+        - excerpt
+        - content
+        - type
+
+    FeaturedPostsResponse:
+      type: object
+      properties:
+        pressReleases:
+          type: array
+          items:
+            $ref: "#/components/schemas/Post"
+        videos:
+          type: array
+          items:
+            $ref: "#/components/schemas/Post"
+        presentations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Post"
+      required:
+        - pressReleases
+        - videos
+        - presentations
+
+    # Team
+    TeamMember:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        title:
+          type: string
+        bio:
+          type: string
+        headshotUrl:
+          type: ["string", "null"]
+        displayOrder:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - title
+        - bio
+        - displayOrder
+        - createdAt
+
+    TeamMemberBody:
+      type: object
+      properties:
+        name:
+          type: string
+        title:
+          type: string
+        bio:
+          type: string
+        headshotUrl:
+          type: ["string", "null"]
+        displayOrder:
+          type: integer
+      required:
+        - name
+        - title
+        - bio
+
+    # Contact
+    ContactBody:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        message:
+          type: string
+        honeypot:
+          type: ["string", "null"]
+      required:
+        - name
+        - email
+        - message
+
+    ContactSubmission:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        message:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - email
+        - message
+        - createdAt
+
+    # Waitlist
+    WaitlistBody:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+      required:
+        - name
+        - email
+        - phone
+
+    WaitlistEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - email
+        - phone
+        - createdAt
+
+    # Admin Dashboard
+    AdminDashboard:
+      type: object
+      properties:
+        investorStats:
+          $ref: "#/components/schemas/InvestorStats"
+        totalContacts:
+          type: integer
+        totalWaitlist:
+          type: integer
+        recentPosts:
+          type: array
+          items:
+            $ref: "#/components/schemas/Post"
+      required:
+        - investorStats
+        - totalContacts
+        - totalWaitlist
+        - recentPosts

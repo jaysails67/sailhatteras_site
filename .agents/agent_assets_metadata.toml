@@ -1,0 +1,26 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "FEOQ_Scekb7Jn7IYEaA4t"
+uri = "file://artifacts/website/src/assets/images/hero-boat.png"
+type = "image"
+title = "Hero foiling boat"
+
+[[generated]]
+id = "YHF02dgCgE-NGyu18swZ3"
+uri = "file://artifacts/website/src/assets/images/passenger-boat.png"
+type = "image"
+title = "Passenger foiling boat"
+
+[[generated]]
+id = "4fMuaKT_LpS33lPGyJwW4"
+uri = "file://artifacts/website/src/assets/images/military-boat.png"
+type = "image"
+title = "Military foiling boat"
+
+[[generated]]
+id = "26XczU0UEhcmHPGiJklql"
+uri = "file://artifacts/website/src/assets/images/recreational-boat.png"
+type = "image"
+title = "Recreational foiling boat"
