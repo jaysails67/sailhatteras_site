@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { useEffect, useRef, useState } from "react";
 import { useListContentPages, getListContentPagesQueryKey } from "@workspace/api-client-react";
-import { ArrowRight, Phone, Lock, ChevronRight } from "lucide-react";
+import { Phone, Lock, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 
@@ -140,20 +140,6 @@ export default function Portal() {
                   );
                 })}
 
-                {/* Bottom CTA */}
-                <section className="py-16">
-                  <div className="rounded-2xl border border-primary/30 bg-primary/5 p-10 text-center">
-                    <h2 className="font-display text-3xl font-bold mb-4">Ready to Invest in Clean Maritime Transit?</h2>
-                    <p className="text-muted-foreground max-w-xl mx-auto mb-8">
-                      We're actively building our founding investor group. If this opportunity aligns with your portfolio, we'd love to connect.
-                    </p>
-                    <Link href="/contact">
-                      <Button size="lg" className="font-semibold">
-                        Schedule a Conversation <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </Link>
-                  </div>
-                </section>
               </>
             )}
           </div>
