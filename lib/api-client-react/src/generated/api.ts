@@ -710,11 +710,14 @@ export const getDenyInvestorUrl = (id: number) => {
 
 export const denyInvestor = async (
   id: number,
+  body?: { reason?: string },
   options?: RequestInit,
 ): Promise<InvestorApplication> => {
   return customFetch<InvestorApplication>(getDenyInvestorUrl(id), {
     ...options,
     method: "POST",
+    headers: { "Content-Type": "application/json", ...(options?.headers as Record<string, string>) },
+    body: JSON.stringify(body ?? {}),
   });
 };
 
@@ -725,14 +728,14 @@ export const getDenyInvestorMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof denyInvestor>>,
     TError,
-    { id: number },
+    { id: number; reason?: string },
     TContext
   >;
   request?: SecondParameter<typeof customFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof denyInvestor>>,
   TError,
-  { id: number },
+  { id: number; reason?: string },
   TContext
 > => {
   const mutationKey = ["denyInvestor"];
@@ -746,11 +749,11 @@ export const getDenyInvestorMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof denyInvestor>>,
-    { id: number }
+    { id: number; reason?: string }
   > = (props) => {
-    const { id } = props ?? {};
+    const { id, reason } = props ?? {};
 
-    return denyInvestor(id, requestOptions);
+    return denyInvestor(id, { reason }, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -772,14 +775,14 @@ export const useDenyInvestor = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof denyInvestor>>,
     TError,
-    { id: number },
+    { id: number; reason?: string },
     TContext
   >;
   request?: SecondParameter<typeof customFetch>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof denyInvestor>>,
   TError,
-  { id: number },
+  { id: number; reason?: string },
   TContext
 > => {
   return useMutation(getDenyInvestorMutationOptions(options));

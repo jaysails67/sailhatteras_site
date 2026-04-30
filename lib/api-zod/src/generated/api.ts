@@ -130,6 +130,10 @@ export const DenyInvestorParams = zod.object({
   id: zod.coerce.number(),
 });
 
+export const DenyInvestorBody = zod.object({
+  reason: zod.string().optional(),
+});
+
 export const DenyInvestorResponse = zod.object({
   id: zod.number(),
   userId: zod.number(),

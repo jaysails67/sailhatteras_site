@@ -6,8 +6,9 @@ import {
   ListInvestorsQueryParams,
   ApproveInvestorParams,
   DenyInvestorParams,
+  DenyInvestorBody,
 } from "@workspace/api-zod";
-import { requireAdmin } from "../middlewares/auth";
+import { requireAdmin, requireAuth } from "../middlewares/auth";
 import { logger } from "../lib/logger";
 import { sendTelegramMessage } from "../lib/telegram";
 
@@ -33,6 +34,21 @@ function formatApplication(user: UserRow, app?: AppRow | null) {
     updatedAt: (app?.updatedAt ?? user.updatedAt).toISOString(),
   };
 }
+
+router.get("/investors/my-application", requireAuth, async (req, res): Promise<void> => {
+  const [row] = await db
+    .select()
+    .from(usersTable)
+    .leftJoin(investorApplicationsTable, eq(investorApplicationsTable.userId, usersTable.id))
+    .where(eq(usersTable.id, req.session.userId!));
+
+  if (!row) {
+    res.status(404).json({ error: "Application not found" });
+    return;
+  }
+
+  res.json(formatApplication(row.users, row.investor_applications));
+});
 
 router.get("/investors", requireAdmin, async (req, res): Promise<void> => {
   const parsed = ListInvestorsQueryParams.safeParse(req.query);
@@ -95,6 +111,9 @@ router.post("/investors/:id/deny", requireAdmin, async (req, res): Promise<void>
     return;
   }
 
+  const body = DenyInvestorBody.safeParse(req.body);
+  const reason = body.success ? (body.data.reason ?? null) : null;
+
   const [user] = await db
     .update(usersTable)
     .set({ approvalStatus: "denied" })
@@ -108,9 +127,16 @@ router.post("/investors/:id/deny", requireAdmin, async (req, res): Promise<void>
 
   const [app] = await db
     .update(investorApplicationsTable)
-    .set({ status: "denied" })
+    .set({ status: "denied", notes: reason })
     .where(eq(investorApplicationsTable.userId, user.id))
     .returning();
+
+  sendTelegramMessage(
+    `🚫 <b>Investor Denied</b>\n` +
+    `<b>Name:</b> ${user.name}\n` +
+    `<b>Email:</b> ${user.email}\n` +
+    (reason ? `<b>Reason:</b> ${reason}` : `No reason provided.`),
+  );
 
   res.json(formatApplication(user, app));
 });

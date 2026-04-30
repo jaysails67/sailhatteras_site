@@ -22,11 +22,18 @@ import { format } from "date-fns";
 
 type Tab = "overview" | "investors" | "contacts" | "waitlist";
 
+interface DenyDialogState {
+  investorId: number;
+  investorName: string;
+  reason: string;
+}
+
 export default function Admin() {
   const { user, isLoading: authLoading } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<Tab>("overview");
+  const [denyDialog, setDenyDialog] = useState<DenyDialogState | null>(null);
 
   const isAdmin = !!user && user.role === "admin";
 
@@ -63,7 +70,7 @@ export default function Admin() {
   const handleApprove = (id: number) => {
     approveMutation.mutate({ id }, {
       onSuccess: () => {
-        toast({ title: "Investor approved" });
+        toast({ title: "Investor approved", description: "Access to the portal has been granted." });
         refetchInvestors();
         refetchDashboard();
       },
@@ -71,15 +78,24 @@ export default function Admin() {
     });
   };
 
-  const handleDeny = (id: number) => {
-    denyMutation.mutate({ id }, {
-      onSuccess: () => {
-        toast({ title: "Investor denied" });
-        refetchInvestors();
-        refetchDashboard();
-      },
-      onError: (err) => toast({ title: "Error", description: (err.data as { error?: string })?.error || err.message, variant: "destructive" })
-    });
+  const openDenyDialog = (id: number, name: string) => {
+    setDenyDialog({ investorId: id, investorName: name, reason: "" });
+  };
+
+  const confirmDeny = () => {
+    if (!denyDialog) return;
+    denyMutation.mutate(
+      { id: denyDialog.investorId, reason: denyDialog.reason.trim() || undefined },
+      {
+        onSuccess: () => {
+          toast({ title: "Investor denied", description: denyDialog.reason.trim() ? "Reason recorded and visible to the applicant." : "No reason provided." });
+          setDenyDialog(null);
+          refetchInvestors();
+          refetchDashboard();
+        },
+        onError: (err) => toast({ title: "Error", description: (err.data as { error?: string })?.error || err.message, variant: "destructive" })
+      }
+    );
   };
 
   if (authLoading || !user || user.role !== "admin") return null;
@@ -165,6 +181,7 @@ export default function Admin() {
                 <table className="w-full text-sm text-left">
                   <thead className="text-xs text-muted-foreground bg-accent/50 uppercase">
                     <tr>
+                      <th className="px-6 py-4 font-medium">ID</th>
                       <th className="px-6 py-4 font-medium">Name</th>
                       <th className="px-6 py-4 font-medium">Email</th>
                       <th className="px-6 py-4 font-medium">Phone</th>
@@ -174,10 +191,11 @@ export default function Admin() {
                   </thead>
                   <tbody>
                     {investorsLoading ? (
-                      <tr><td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">Loading...</td></tr>
+                      <tr><td colSpan={6} className="px-6 py-8 text-center text-muted-foreground">Loading...</td></tr>
                     ) : pendingInvestors && pendingInvestors.length > 0 ? (
                       pendingInvestors.map((inv) => (
                         <tr key={inv.id} className="border-b border-border last:border-0 hover:bg-muted/50 transition-colors">
+                          <td className="px-6 py-4 text-muted-foreground font-mono text-xs">#{inv.id}</td>
                           <td className="px-6 py-4 font-medium text-foreground">{inv.userName}</td>
                           <td className="px-6 py-4">{inv.userEmail}</td>
                           <td className="px-6 py-4">{inv.userPhone}</td>
@@ -188,7 +206,7 @@ export default function Admin() {
                                 size="sm" 
                                 variant="outline" 
                                 className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                                onClick={() => handleDeny(inv.id)}
+                                onClick={() => openDenyDialog(inv.id, inv.userName)}
                                 disabled={denyMutation.isPending || approveMutation.isPending}
                                 data-testid={`btn-deny-${inv.id}`}
                               >
@@ -208,7 +226,7 @@ export default function Admin() {
                         </tr>
                       ))
                     ) : (
-                      <tr><td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">No pending applications.</td></tr>
+                      <tr><td colSpan={6} className="px-6 py-8 text-center text-muted-foreground">No pending applications.</td></tr>
                     )}
                   </tbody>
                 </table>
@@ -292,6 +310,49 @@ export default function Admin() {
 
         </div>
       </main>
+
+      {/* Deny Reason Dialog */}
+      {denyDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-card border border-border rounded-xl shadow-2xl w-full max-w-md p-6 space-y-5">
+            <div>
+              <h2 className="text-lg font-semibold text-foreground">Deny Application</h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                You are denying <span className="font-medium text-foreground">{denyDialog.investorName}</span>. Provide a reason — this message will be shown to the applicant so they know what action to take.
+              </p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Reason for denial <span className="text-muted-foreground font-normal">(required)</span>
+              </label>
+              <textarea
+                className="w-full rounded-lg border border-border bg-background text-foreground text-sm p-3 resize-none focus:outline-none focus:ring-2 focus:ring-primary/50 placeholder:text-muted-foreground"
+                rows={4}
+                placeholder="e.g. We could not verify your identity. Please re-register with a valid corporate email address and phone number."
+                value={denyDialog.reason}
+                onChange={(e) => setDenyDialog({ ...denyDialog, reason: e.target.value })}
+                autoFocus
+              />
+            </div>
+            <div className="flex gap-3 justify-end">
+              <Button
+                variant="outline"
+                onClick={() => setDenyDialog(null)}
+                disabled={denyMutation.isPending}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={confirmDeny}
+                disabled={!denyDialog.reason.trim() || denyMutation.isPending}
+              >
+                {denyMutation.isPending ? "Denying..." : "Confirm Deny"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

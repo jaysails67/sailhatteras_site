@@ -1,6 +1,7 @@
 import app from "./app";
 import { logger } from "./lib/logger";
 import { seed } from "./seed";
+import { registerWebhook } from "./lib/telegram";
 
 const rawPort = process.env["PORT"];
 
@@ -24,4 +25,5 @@ app.listen(port, async (err?: Error) => {
 
   logger.info({ port }, "Server listening");
   await seed();
+  await registerWebhook();
 });

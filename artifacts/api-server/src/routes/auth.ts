@@ -91,10 +91,13 @@ router.post("/auth/accept-nda", async (req, res): Promise<void> => {
 
   sendTelegramMessage(
     `🚀 <b>New Investor Application</b>\n` +
+    `<b>ID:</b> ${user.id}\n` +
     `<b>Name:</b> ${user.name}\n` +
     `<b>Email:</b> ${user.email}\n` +
     `<b>Phone:</b> ${user.phone}\n` +
-    `NDA accepted — pending your approval.`,
+    `NDA accepted — pending your approval.\n\n` +
+    `Reply <code>/approve ${user.id}</code> to grant access\n` +
+    `Reply <code>/deny ${user.id} &lt;reason&gt;</code> to deny`,
   );
 
   const adminEmail = process.env.ADMIN_EMAIL;

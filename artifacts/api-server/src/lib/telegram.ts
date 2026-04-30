@@ -5,10 +5,42 @@ const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
 export function sendTelegramMessage(text: string): void {
   if (!BOT_TOKEN || !CHAT_ID) return;
+  sendTelegramToChat(CHAT_ID, text);
+}
 
+export function sendTelegramToChat(chatId: string | number, text: string): void {
+  if (!BOT_TOKEN) return;
   fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: "HTML" }),
+    body: JSON.stringify({ chat_id: chatId, text, parse_mode: "HTML" }),
   }).catch((err) => logger.warn({ err }, "Telegram notification failed"));
+}
+
+export async function registerWebhook(): Promise<void> {
+  if (!BOT_TOKEN) {
+    logger.warn("TELEGRAM_BOT_TOKEN not set — skipping webhook registration");
+    return;
+  }
+  const devDomain = process.env.REPLIT_DEV_DOMAIN;
+  if (!devDomain) {
+    logger.warn("REPLIT_DEV_DOMAIN not set — skipping Telegram webhook registration");
+    return;
+  }
+  const webhookUrl = `https://${devDomain}/api/telegram/webhook`;
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/setWebhook`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: webhookUrl, allowed_updates: ["message"] }),
+    });
+    const data = await res.json() as { ok: boolean; description?: string };
+    if (data.ok) {
+      logger.info({ webhookUrl }, "Telegram webhook registered");
+    } else {
+      logger.warn({ description: data.description }, "Telegram webhook registration failed");
+    }
+  } catch (err) {
+    logger.warn({ err }, "Telegram webhook registration error");
+  }
 }
