@@ -3,11 +3,22 @@ import { Footer } from "@/components/layout/Footer";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { getGetMeQueryKey } from "@workspace/api-client-react";
 import { ShieldCheck, UserCheck, Search, Clock } from "lucide-react";
 
 export default function Pending() {
   const { user, isLoading } = useAuth();
   const [, setLocation] = useLocation();
+  const queryClient = useQueryClient();
+
+  // Poll every 5 seconds so the page auto-redirects the moment admin approves/denies
+  useEffect(() => {
+    const interval = setInterval(() => {
+      queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() });
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [queryClient]);
 
   useEffect(() => {
     if (!isLoading) {
