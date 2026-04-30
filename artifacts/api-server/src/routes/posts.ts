@@ -79,6 +79,7 @@ router.post("/posts", requireAdmin, async (req, res): Promise<void> => {
       type: parsed.data.type,
       mediaUrl: parsed.data.mediaUrl ?? null,
       featured: parsed.data.featured ?? false,
+      ...(parsed.data.publishedAt ? { publishedAt: parsed.data.publishedAt } : {}),
     })
     .returning();
 
@@ -123,6 +124,7 @@ router.patch("/posts/:id", requireAdmin, async (req, res): Promise<void> => {
       type: body.data.type,
       mediaUrl: body.data.mediaUrl ?? null,
       featured: body.data.featured ?? false,
+      ...(body.data.publishedAt ? { publishedAt: body.data.publishedAt } : {}),
     })
     .where(eq(postsTable.id, params.data.id))
     .returning();

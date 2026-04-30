@@ -15,6 +15,7 @@ import Login from "@/pages/login";
 import Buyers from "@/pages/buyers";
 import Reservations from "@/pages/reservations";
 import Press from "@/pages/press";
+import PressArticle from "@/pages/press-article";
 import Contact from "@/pages/contact";
 import Team from "@/pages/team";
 import Admin from "@/pages/admin";
@@ -34,6 +35,7 @@ function Router() {
       <Route path="/buyers" component={Buyers} />
       <Route path="/reservations" component={Reservations} />
       <Route path="/press" component={Press} />
+      <Route path="/press/:id" component={PressArticle} />
       <Route path="/contact" component={Contact} />
       <Route path="/team" component={Team} />
       <Route path="/admin" component={Admin} />

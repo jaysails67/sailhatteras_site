@@ -276,6 +276,7 @@ export const CreatePostBody = zod.object({
   type: zod.enum(["press_release", "video", "presentation"]),
   mediaUrl: zod.string().nullish(),
   featured: zod.boolean().optional(),
+  publishedAt: zod.coerce.date().optional(),
 });
 
 /**
@@ -311,6 +312,7 @@ export const UpdatePostBody = zod.object({
   type: zod.enum(["press_release", "video", "presentation"]),
   mediaUrl: zod.string().nullish(),
   featured: zod.boolean().optional(),
+  publishedAt: zod.coerce.date().optional(),
 });
 
 export const UpdatePostResponse = zod.object({

@@ -199,56 +199,26 @@ export async function seed(): Promise<void> {
       ])
       .onConflictDoNothing({ target: contentPagesTable.slug });
 
-    const [{ postCount }] = await db
-      .select({ postCount: sql<number>`count(*)::int` })
-      .from(postsTable);
-    if (postCount === 0) {
-      await db
-        .insert(postsTable)
-        .values([
-          {
-            title: "PamliEcoConnect Unveils P-40 Electric Foiling Ferry",
-            excerpt:
-              "The P-40 is the world's first commercially certified electric hydrofoil passenger ferry, carrying 40 passengers at 35 knots with zero emissions.",
-            content:
-              "PamliEcoConnect today announced the successful sea trials of the P-40 electric foiling passenger ferry, completing all certification requirements ahead of schedule. The P-40 represents a watershed moment for sustainable maritime transport...",
-            type: "press_release",
-            featured: true,
-            publishedAt: new Date("2025-09-15"),
-          },
-          {
-            title: "Inside the PamliEcoConnect R&D Lab",
-            excerpt:
-              "An exclusive video tour of PamliEcoConnect's engineering facility, where the future of maritime transport is being built today.",
-            content:
-              "In this exclusive video, CEO Dr. Elena Vasquez walks viewers through PamliEcoConnect's state-of-the-art R&D facility, revealing the engineering behind the world's most advanced electric foiling vessels...",
-            type: "video",
-            mediaUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-            featured: true,
-            publishedAt: new Date("2025-11-02"),
-          },
-          {
-            title: "PamliEcoConnect Secures $12M Series A Funding",
-            excerpt:
-              "Leading cleantech and maritime investors back PamliEcoConnect's vision of zero-emission hydrofoil vessels for passenger, military, and recreational markets.",
-            content:
-              "PamliEcoConnect announced today the closing of a $12 million Series A funding round led by Blue Ocean Ventures and Green Horizon Capital. The funds will accelerate production ramp and international expansion...",
-            type: "press_release",
-            featured: false,
-            publishedAt: new Date("2026-01-20"),
-          },
-          {
-            title: "2026 Innovation in Maritime Technology Investor Deck",
-            excerpt:
-              "Download PamliEcoConnect's 2026 investor presentation covering market opportunity, product roadmap, and financial projections.",
-            content:
-              "PamliEcoConnect's 2026 investor presentation provides a comprehensive overview of our market opportunity, technology differentiation, team, and financial projections for qualified investors...",
-            type: "presentation",
-            featured: false,
-            publishedAt: new Date("2026-03-01"),
-          },
-        ]);
-    }
+    // Migrate: delete any placeholder/fake press release posts seeded in dev
+    // (identifiable by the fictional "P-40 Electric Foiling Ferry" title)
+    await db
+      .delete(postsTable)
+      .where(eq(postsTable.title, "PamliEcoConnect Unveils P-40 Electric Foiling Ferry"));
+    await db
+      .delete(postsTable)
+      .where(eq(postsTable.title, "Inside the PamliEcoConnect R&D Lab"));
+    await db
+      .delete(postsTable)
+      .where(eq(postsTable.title, "PamliEcoConnect Secures $12M Series A Funding"));
+    await db
+      .delete(postsTable)
+      .where(eq(postsTable.title, "2026 Innovation in Maritime Technology Investor Deck"));
+    await db
+      .delete(postsTable)
+      .where(eq(postsTable.title, "PEC Shield Completes Successful Sea Trials with Coast Guard Observer"));
+    await db
+      .delete(postsTable)
+      .where(eq(postsTable.title, "PamliEcoConnect Announces Series A Funding Round"));
 
     logger.info("Database seed complete");
   } catch (err) {

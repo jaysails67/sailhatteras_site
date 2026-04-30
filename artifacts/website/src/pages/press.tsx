@@ -4,6 +4,7 @@ import { useGetFeaturedPosts, useListPosts, Post } from "@workspace/api-client-r
 import { format } from "date-fns";
 import { PlayCircle, FileText, Presentation } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from "wouter";
 
 export default function Press() {
   const { data: featuredPosts, isLoading: featuredLoading } = useGetFeaturedPosts();
@@ -38,9 +39,9 @@ export default function Press() {
         <CardDescription className="text-muted-foreground text-sm line-clamp-3">
           {post.excerpt}
         </CardDescription>
-        <button className="mt-4 text-sm font-semibold text-primary hover:underline" data-testid={`link-post-${post.id}`}>
-          Read more
-        </button>
+        <Link href={`/press/${post.id}`} className="mt-4 inline-block text-sm font-semibold text-primary hover:underline" data-testid={`link-post-${post.id}`}>
+          Read more →
+        </Link>
       </CardContent>
     </Card>
   );
