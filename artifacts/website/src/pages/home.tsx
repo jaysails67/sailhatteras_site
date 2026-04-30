@@ -3,8 +3,47 @@ import { Footer } from "@/components/layout/Footer";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Anchor, ShieldCheck, Zap } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+
+interface HomeContent {
+  id: number;
+  slug: string;
+  title: string;
+  content: string;
+  metaData: {
+    heroTitle?: string;
+    heroTagline?: string;
+    introHeading?: string;
+    introText?: string;
+  } | null;
+  updatedAt: string;
+}
+
+function useHomeContent() {
+  return useQuery<HomeContent>({
+    queryKey: ["public-content", "home"],
+    queryFn: async () => {
+      const res = await fetch("/api/public-content/home");
+      if (!res.ok) throw new Error("Failed to load home content");
+      return res.json() as Promise<HomeContent>;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
 
 export default function Home() {
+  const { data: homeContent } = useHomeContent();
+
+  const heroTitle = homeContent?.metaData?.heroTitle ?? "Airborne above the water's surface.";
+  const heroTagline = homeContent?.metaData?.heroTagline ?? "The Future of Waterborne Transport";
+  const heroDescription = homeContent?.content ?? "PamliEcoConnect engineers cutting-edge electric foiling boats. Aerospace precision meets maritime craft for a silent, zero-emission, high-speed experience.";
+  const introHeading = homeContent?.metaData?.introHeading ?? "Silent. Fast. Precision-Engineered.";
+  const introText = homeContent?.metaData?.introText ?? "We are revolutionizing marine mobility. By lifting the hull out of the water, our advanced hydrofoil technology reduces drag by up to 80%, enabling unprecedented range and speed on battery power alone.";
+
+  const heroWords = heroTitle.split(" ");
+  const lastTwoWords = heroWords.slice(-3).join(" ");
+  const firstPart = heroWords.slice(0, -3).join(" ");
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Navbar />
@@ -24,13 +63,13 @@ export default function Home() {
             <div className="max-w-3xl">
               <div className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-sm font-medium text-primary mb-6 backdrop-blur-sm">
                 <Zap className="mr-2 h-4 w-4" />
-                The Future of Waterborne Transport
+                {heroTagline}
               </div>
               <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight text-white mb-6 leading-tight">
-                Airborne above the <span className="text-primary">water's surface.</span>
+                {firstPart} <span className="text-primary">{lastTwoWords}</span>
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl leading-relaxed">
-                PamliEcoConnect engineers cutting-edge electric foiling boats. Aerospace precision meets maritime craft for a silent, zero-emission, high-speed experience.
+                {heroDescription}
               </p>
               
               <div className="flex flex-wrap gap-4">
@@ -52,9 +91,9 @@ export default function Home() {
         {/* Intro Section */}
         <section className="py-24 bg-background border-b border-border">
           <div className="container px-4 md:px-8 text-center max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">Silent. Fast. Precision-Engineered.</h2>
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">{introHeading}</h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              We are revolutionizing marine mobility. By lifting the hull out of the water, our advanced hydrofoil technology reduces drag by up to 80%, enabling unprecedented range and speed on battery power alone. 
+              {introText}
             </p>
           </div>
         </section>

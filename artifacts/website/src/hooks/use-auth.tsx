@@ -1,5 +1,5 @@
 import { createContext, useContext, ReactNode } from "react";
-import { useGetMe, useLogoutUser, User } from "@workspace/api-client-react";
+import { useGetMe, useLogoutUser, User, getGetMeQueryKey } from "@workspace/api-client-react";
 
 interface AuthContextType {
   user: User | null;
@@ -10,7 +10,15 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const { data: user, isLoading, isError } = useGetMe();
+  const { data: user, isLoading, isError } = useGetMe({
+    query: {
+      queryKey: getGetMeQueryKey(),
+      retry: (failureCount, error) => {
+        if ((error as { status?: number })?.status === 401) return false;
+        return failureCount < 2;
+      },
+    },
+  });
   const logoutMutation = useLogoutUser();
 
   const handleLogout = () => {

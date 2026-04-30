@@ -1,0 +1,225 @@
+import bcrypt from "bcryptjs";
+import { db } from "@workspace/db";
+import {
+  usersTable,
+  teamMembersTable,
+  contentPagesTable,
+  postsTable,
+} from "@workspace/db";
+import { sql } from "drizzle-orm";
+import { logger } from "./lib/logger";
+
+export async function seed(): Promise<void> {
+  try {
+    const passwordHash = await bcrypt.hash("admin123!", 10);
+
+    await db
+      .insert(usersTable)
+      .values({
+        name: "Admin",
+        email: "admin@pamliecoconnect.com",
+        phone: "+1-555-000-0001",
+        passwordHash,
+        role: "admin",
+        approvalStatus: "approved",
+        ndaAccepted: true,
+      })
+      .onConflictDoNothing({ target: usersTable.email });
+
+    await db
+      .insert(teamMembersTable)
+      .values([
+        {
+          name: "Dr. Elena Vasquez",
+          title: "Chief Executive Officer",
+          bio: "20+ years in aerospace and marine engineering. Former lead systems architect at a major international propulsion company. Elena founded PamliEcoConnect to bring sustainable maritime transport to the global stage.",
+          headshotUrl: null,
+          displayOrder: 1,
+        },
+        {
+          name: "Marcus T. Chen",
+          title: "Chief Technology Officer",
+          bio: "Previously engineered hydrofoil flight control systems for the U.S. Navy and commercial operators. Marcus leads PamliEcoConnect's R&D team and holds 14 patents in electric propulsion and foil hydrodynamics.",
+          headshotUrl: null,
+          displayOrder: 2,
+        },
+        {
+          name: "Anika Osei",
+          title: "Chief Operating Officer",
+          bio: "Supply chain and production scaling specialist with deep experience in advanced manufacturing and maritime supply chains across three continents. Anika ensures PamliEcoConnect's operations are world-class.",
+          headshotUrl: null,
+          displayOrder: 3,
+        },
+        {
+          name: "James Hartley",
+          title: "VP of Sales & Partnerships",
+          bio: "Seasoned commercial executive with a track record of closing complex contracts for defense, government, and luxury marine markets across Europe, the Middle East, and Asia Pacific.",
+          headshotUrl: null,
+          displayOrder: 4,
+        },
+      ])
+      .onConflictDoNothing();
+
+    await db
+      .insert(contentPagesTable)
+      .values([
+        {
+          slug: "home",
+          title: "PamliEcoConnect Home",
+          content:
+            "PamliEcoConnect engineers cutting-edge electric foiling boats. Aerospace precision meets maritime craft for a silent, zero-emission, high-speed experience.",
+          metaData: {
+            heroTitle: "Airborne above the water's surface.",
+            heroTagline: "The Future of Waterborne Transport",
+            introHeading: "Silent. Fast. Precision-Engineered.",
+            introText:
+              "We are revolutionizing marine mobility. By lifting the hull out of the water, our advanced hydrofoil technology reduces drag by up to 80%, enabling unprecedented range and speed on battery power alone.",
+          },
+        },
+        {
+          slug: "exec-summary",
+          title: "Executive Summary",
+          content: `<h2>Executive Summary</h2>
+<p>PamliEcoConnect is a next-generation electric foiling boat manufacturer headquartered in the United States. We design, engineer, and manufacture high-performance electric hydrofoil vessels for passenger, military, and recreational applications.</p>
+<h3>Mission</h3>
+<p>To accelerate the transition to zero-emission maritime transport through advanced electric foiling technology that is faster, quieter, and more efficient than conventional vessels.</p>
+<h3>Market Opportunity</h3>
+<p>The global electric boat market is projected to exceed $20 billion by 2030, growing at a CAGR of 12%. PamliEcoConnect is positioned to capture a significant share of this rapidly expanding market across multiple verticals.</p>
+<h3>Competitive Advantage</h3>
+<ul>
+  <li>Proprietary hydrofoil flight control algorithms derived from aerospace engineering</li>
+  <li>Battery management system achieving class-leading energy density and cycle life</li>
+  <li>Modular hull architecture enabling rapid adaptation across use cases</li>
+  <li>Experienced leadership team with deep marine, aerospace, and defense expertise</li>
+</ul>`,
+          metaData: { section: "investor" },
+        },
+        {
+          slug: "products",
+          title: "Products",
+          content: `<h2>Product Portfolio</h2>
+<h3>PamliConnect P-40 Passenger Ferry</h3>
+<p>The P-40 carries up to 40 passengers at sustained speeds of 35 knots with zero emissions. Designed for urban water transit, island connections, and eco-tourism operators seeking to replace aging diesel ferries.</p>
+<h3>PamliConnect M-12 Maritime Patrol</h3>
+<p>A military-grade fast response craft capable of 55+ knot sprint speed, minimal acoustic signature, and all-weather operation. Designed for coast guard, port security, and naval patrol applications.</p>
+<h3>PamliConnect R-8 Recreational Foiler</h3>
+<p>A premium recreational vessel for private buyers seeking the ultimate on-water experience. The R-8 accommodates 8 guests, foils silently at 28 knots, and represents the pinnacle of sustainable luxury watercraft.</p>`,
+          metaData: { section: "investor" },
+        },
+        {
+          slug: "services",
+          title: "Services",
+          content: `<h2>Service & Support</h2>
+<p>PamliEcoConnect offers comprehensive lifecycle support across all product lines.</p>
+<h3>Fleet Management Platform</h3>
+<p>Our proprietary cloud-based fleet management platform provides real-time telemetry, predictive maintenance alerts, battery state analytics, and route optimization for commercial operators.</p>
+<h3>Training & Certification</h3>
+<p>Operator training programs and captain certification for all PamliEcoConnect vessels, delivered on-site or at our training centers.</p>
+<h3>Maintenance & Overhaul</h3>
+<p>Factory-authorized service centers and mobile service teams ensure maximum uptime for commercial clients. Extended warranty packages and service level agreements are available.</p>
+<h3>Custom Engineering</h3>
+<p>Bespoke hull configurations, propulsion layouts, and mission system integrations for government and defense clients with specialized requirements.</p>`,
+          metaData: { section: "investor" },
+        },
+        {
+          slug: "marketing-plan",
+          title: "Marketing Plan",
+          content: `<h2>Go-to-Market Strategy</h2>
+<h3>Target Segments</h3>
+<ul>
+  <li><strong>Government & Defense:</strong> Coast guard, naval patrol, port authority contracts via direct sales and defense procurement channels</li>
+  <li><strong>Commercial Operators:</strong> Ferry lines, water taxi services, and eco-tourism operators seeking emissions compliance and fuel savings</li>
+  <li><strong>Private Buyers:</strong> High-net-worth individuals and charter operators in premium recreational markets</li>
+</ul>
+<h3>Distribution</h3>
+<p>Direct sales for government and fleet contracts; authorized dealer network for recreational and charter markets across North America, Europe, and Asia Pacific.</p>
+<h3>Marketing Channels</h3>
+<p>Industry trade shows (METS, Miami International Boat Show, DSEI), digital marketing targeting maritime decision-makers, media partnerships with marine and sustainability publications, and strategic PR driving earned media coverage.</p>`,
+          metaData: { section: "investor" },
+        },
+        {
+          slug: "financial-plan",
+          title: "Financial Plan",
+          content: `<h2>Financial Projections</h2>
+<h3>Revenue Model</h3>
+<p>Primary revenue from vessel sales; secondary recurring revenue from service contracts, fleet management subscriptions, and spare parts. Government contracts typically include multi-year service agreements.</p>
+<h3>5-Year Outlook</h3>
+<ul>
+  <li><strong>Year 1:</strong> $4.2M — Pilot deliveries, R&D completion, government procurement entry</li>
+  <li><strong>Year 2:</strong> $11.8M — Commercial ferry contracts, dealer network activation</li>
+  <li><strong>Year 3:</strong> $28.5M — Full production ramp, international expansion begins</li>
+  <li><strong>Year 4:</strong> $52.1M — Defense contracts maturing, recreational market scaling</li>
+  <li><strong>Year 5:</strong> $89.3M — Global operations, target profitability achieved</li>
+</ul>
+<h3>Use of Funds</h3>
+<p>This funding round will be allocated: 45% production facility expansion, 30% R&D and certification, 15% sales and marketing, 10% working capital and operations.</p>`,
+          metaData: { section: "investor" },
+        },
+        {
+          slug: "conclusion",
+          title: "Conclusion",
+          content: `<h2>Investment Thesis</h2>
+<p>PamliEcoConnect represents a rare opportunity to invest at the ground floor of a high-growth clean technology company addressing a multi-billion dollar addressable market with a proprietary, defensible technology platform.</p>
+<h3>Why Now</h3>
+<p>Regulatory tailwinds (IMO 2030 emissions mandates, urban zero-emission ferry zones), falling battery costs, and rising fuel prices are converging to create an inflection point for electric marine adoption.</p>
+<h3>Why PamliEcoConnect</h3>
+<p>Our team combines rare expertise across aerospace engineering, naval architecture, defense procurement, and commercial maritime operations. We have the technology, the team, and the timing to define this emerging category.</p>
+<h3>Join Us</h3>
+<p>We invite accredited investors who share our vision of a cleaner, quieter, faster maritime future to join PamliEcoConnect as we scale from a pioneering startup to the world's leading electric foiling boat company.</p>`,
+          metaData: { section: "investor" },
+        },
+      ])
+      .onConflictDoNothing({ target: contentPagesTable.slug });
+
+    await db
+      .insert(postsTable)
+      .values([
+        {
+          title: "PamliEcoConnect Unveils P-40 Electric Foiling Ferry",
+          excerpt:
+            "The P-40 is the world's first commercially certified electric hydrofoil passenger ferry, carrying 40 passengers at 35 knots with zero emissions.",
+          content:
+            "PamliEcoConnect today announced the successful sea trials of the P-40 electric foiling passenger ferry, completing all certification requirements ahead of schedule. The P-40 represents a watershed moment for sustainable maritime transport...",
+          type: "press_release",
+          featured: true,
+          publishedAt: new Date("2025-09-15"),
+        },
+        {
+          title: "Inside the PamliEcoConnect R&D Lab",
+          excerpt:
+            "An exclusive video tour of PamliEcoConnect's engineering facility, where the future of maritime transport is being built today.",
+          content:
+            "In this exclusive video, CEO Dr. Elena Vasquez walks viewers through PamliEcoConnect's state-of-the-art R&D facility, revealing the engineering behind the world's most advanced electric foiling vessels...",
+          type: "video",
+          mediaUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+          featured: true,
+          publishedAt: new Date("2025-11-02"),
+        },
+        {
+          title: "PamliEcoConnect Secures $12M Series A Funding",
+          excerpt:
+            "Leading cleantech and maritime investors back PamliEcoConnect's vision of zero-emission hydrofoil vessels for passenger, military, and recreational markets.",
+          content:
+            "PamliEcoConnect announced today the closing of a $12 million Series A funding round led by Blue Ocean Ventures and Green Horizon Capital. The funds will accelerate production ramp and international expansion...",
+          type: "press_release",
+          featured: false,
+          publishedAt: new Date("2026-01-20"),
+        },
+        {
+          title: "2026 Innovation in Maritime Technology Investor Deck",
+          excerpt:
+            "Download PamliEcoConnect's 2026 investor presentation covering market opportunity, product roadmap, and financial projections.",
+          content:
+            "PamliEcoConnect's 2026 investor presentation provides a comprehensive overview of our market opportunity, technology differentiation, team, and financial projections for qualified investors...",
+          type: "presentation",
+          featured: false,
+          publishedAt: new Date("2026-03-01"),
+        },
+      ])
+      .onConflictDoNothing();
+
+    logger.info("Database seed complete");
+  } catch (err) {
+    logger.error({ err }, "Seed error");
+  }
+}
