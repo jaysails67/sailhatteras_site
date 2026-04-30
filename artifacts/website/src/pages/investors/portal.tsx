@@ -14,9 +14,13 @@ const PLAN_SECTIONS = [
   { slug: "market-analysis",   label: "Market Analysis" },
   { slug: "services",          label: "Service Model" },
   { slug: "products",          label: "Vessel & Technology" },
-  { slug: "marketing-plan",    label: "Marketing Plan" },
+  { slug: "marketing-plan",    label: "P3 Partnership" },
+  { slug: "operations",        label: "Operations Plan" },
   { slug: "financial-plan",    label: "Financial Plan" },
-  { slug: "conclusion",        label: "Conclusion" },
+  { slug: "economic-impact",   label: "Economic Impact" },
+  { slug: "risk-analysis",     label: "Risk Analysis" },
+  { slug: "timeline",          label: "Implementation" },
+  { slug: "conclusion",        label: "Investors & Funding" },
 ];
 
 export default function Portal() {

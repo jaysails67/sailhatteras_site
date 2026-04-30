@@ -15,10 +15,14 @@ const INVESTOR_SLUGS = [
   "exec-summary",
   "company-overview",
   "market-analysis",
-  "products",
   "services",
+  "products",
   "marketing-plan",
+  "operations",
   "financial-plan",
+  "economic-impact",
+  "risk-analysis",
+  "timeline",
   "conclusion",
 ];
 
