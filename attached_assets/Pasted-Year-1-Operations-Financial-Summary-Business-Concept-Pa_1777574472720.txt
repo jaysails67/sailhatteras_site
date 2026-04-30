@@ -1,0 +1,69 @@
+Year 1 Operations & Financial Summary
+Business Concept
+PamliEcoConnect operates high‑speed, 20‑passenger research and development ferries linking Vandemere, Ocracoke (Silver Lake), and Buxton. The service is designed to prove out an electrified, environmentally conscious ferry model while providing reliable regional transportation.
+
+Key Operating Assumptions
+Ticket price: $35 per passenger
+Capacity: 20 passengers per boat
+Boats in service:
+Summer: 4 boats
+Shoulder season: 3 boats
+Off‑season (Pamlico): 2 boats
+Off‑season alternate southern location: 4 boats
+Trips per day (per boat):
+Summer: 8
+Shoulder season: 6
+Off‑season: 4
+Southern location: 8
+Season lengths: 120 days each for summer, shoulder, off‑season, and southern season
+Occupancy & weather factors:
+Summer occupancy: 90%
+Shoulder & off‑season occupancy: 75%
+Safe‑weather factors applied by season (higher in summer, lower in winter)
+Year 1 Demand & Revenue
+Seats sold (blended year‑round, optimized with winter relocation):
+Base NC model: ~110k seats sold
+Shared winter location model: ~177k–196k seats sold (depending on weather/occupancy)
+Ticket sales (Year 1):
+Total ticket revenue: $6,284,964
+No material revenue is assumed yet from advertising or concessions in Year 1; upside from those channels is incremental to the base case.
+
+Year 1 Operating Costs
+Variable cost per cruise (per trip, per boat)
+
+Captain: $300
+Crew: $160
+Fuel (generator): $100
+Dockage fees per trip: $150
+Electric per trip: $50
+Water & cleaning per trip: $100
+Fixed and overhead costs (annualized / monthly)
+
+Insurance: $40,000
+USCG COI inspections: $5,000
+Safety gear refresh: $5,000
+Dockage: $500/month
+Dockage electric & water: $400/month
+Maintenance reserve: $200,000 per year
+Professional services (legal, accounting, web): $36,000 per year
+Marketing, sales & advertising: $60,000 per year
+Office management: $60,000 per year
+Operations manager: $84,000 per year
+Miscellaneous overhead: $60,000 per year
+Total Year 1 Disbursements: $2,808,672
+
+Year 1 Profitability
+The pro forma cash flow shows strong cash generation in the first full operating year:
+
+Total ticket revenue: $6,284,964
+Total operating disbursements: $2,808,672
+Year‑end operating profit (EBITDA‑like): $3,476,292
+This figure is effectively EBITDA, as interest, taxes, and depreciation/amortization are not broken out separately in the Year 1 model.
+
+Strategic Implications
+The model demonstrates that a small fleet of 20‑passenger R&D ferries can generate multi‑million‑dollar annual revenue with robust operating margins.
+Winter relocation to a southern market smooths seasonality, improves asset utilization, and significantly increases annual tickets sold and revenue.
+Strong cash flow in Year 1 provides capacity to:
+Reinvest in additional vessels,
+Upgrade charging and dock infrastructure, and
+Expand marketing and partnership programs.
