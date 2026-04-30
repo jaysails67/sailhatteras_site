@@ -2,17 +2,19 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useGetMyApplication, getGetMyApplicationQueryKey } from "@workspace/api-client-react";
 import { ShieldAlert, Mail } from "lucide-react";
-
-interface MyApplication {
-  notes: string | null;
-}
 
 export default function Denied() {
   const { user, isLoading } = useAuth();
   const [, setLocation] = useLocation();
-  const [application, setApplication] = useState<MyApplication | null>(null);
+
+  const isDenied = !!user && user.approvalStatus === "denied";
+
+  const { data: application } = useGetMyApplication({
+    query: { enabled: isDenied, queryKey: getGetMyApplicationQueryKey() }
+  });
 
   useEffect(() => {
     if (!isLoading) {
@@ -25,15 +27,6 @@ export default function Denied() {
       }
     }
   }, [user, isLoading, setLocation]);
-
-  useEffect(() => {
-    if (user && user.approvalStatus === "denied") {
-      fetch("/api/investors/my-application", { credentials: "include" })
-        .then((r) => r.ok ? r.json() : null)
-        .then((data) => setApplication(data))
-        .catch(() => null);
-    }
-  }, [user]);
 
   if (isLoading || !user) return null;
 

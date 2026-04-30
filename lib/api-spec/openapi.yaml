@@ -206,6 +206,12 @@ paths:
           required: true
           schema:
             type: integer
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DenyBody"
       responses:
         "200":
           description: Investor denied
@@ -213,6 +219,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InvestorApplication"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /investors/my-application:
+    get:
+      operationId: getMyApplication
+      tags: [investors]
+      summary: Get the current authenticated investor's own application
+      responses:
+        "200":
+          description: My application
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MyApplication"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "404":
           description: Not found
           content:
@@ -232,6 +263,38 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InvestorStats"
+
+  # Public Content (no auth required)
+  /public-content/{slug}:
+    get:
+      operationId: getPublicContentPage
+      tags: [content]
+      summary: Get a public (non-investor) content page by slug — no authentication required
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Public content page
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContentPage"
+        "403":
+          description: Access restricted (investor-only slug)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   # Content Pages
   /content:
@@ -676,6 +739,40 @@ components:
         - message
 
     # Investors
+    DenyBody:
+      type: object
+      properties:
+        reason:
+          type: string
+
+    MyApplication:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        status:
+          type: string
+          enum: [pending, approved, denied]
+        notes:
+          type: ["string", "null"]
+        ndaAcceptedAt:
+          type: ["string", "null"]
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - userId
+        - status
+        - createdAt
+        - updatedAt
+
     InvestorApplication:
       type: object
       properties:
@@ -694,6 +791,8 @@ components:
           enum: [pending, approved, denied]
         ndaAccepted:
           type: boolean
+        notes:
+          type: ["string", "null"]
         createdAt:
           type: string
           format: date-time

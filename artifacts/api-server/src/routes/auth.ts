@@ -101,10 +101,43 @@ router.post("/auth/accept-nda", async (req, res): Promise<void> => {
   );
 
   const adminEmail = process.env.ADMIN_EMAIL;
-  if (adminEmail) {
+  const smtpConfigured =
+    process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS;
+  if (adminEmail && smtpConfigured) {
+    try {
+      const nodemailer = await import("nodemailer");
+      const transporter = nodemailer.default.createTransport({
+        host: process.env.SMTP_HOST,
+        port: Number(process.env.SMTP_PORT ?? 587),
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      });
+      await transporter.sendMail({
+        from: process.env.SMTP_USER,
+        to: adminEmail,
+        subject: `New Investor Application — ${user.name}`,
+        text:
+          `A new investor has submitted an application and accepted the NDA.\n\n` +
+          `ID: ${user.id}\n` +
+          `Name: ${user.name}\n` +
+          `Email: ${user.email}\n` +
+          `Phone: ${user.phone}\n\n` +
+          `Log in to the admin dashboard to review:\n` +
+          `https://pamliecoconnect.com/admin`,
+      });
+      logger.info(
+        { investorName: user.name, investorEmail: user.email, adminEmail },
+        "Admin email notification sent for new investor application",
+      );
+    } catch (err) {
+      logger.warn({ err }, "Failed to send admin investor notification email");
+    }
+  } else if (adminEmail) {
     logger.info(
       { investorName: user.name, investorEmail: user.email, adminEmail },
-      "Admin email notification queued for new investor application",
+      "SMTP not configured — skipping admin email for new investor application",
     );
   }
 

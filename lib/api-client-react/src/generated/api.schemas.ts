@@ -61,6 +61,31 @@ export interface AuthResponse {
   message: string;
 }
 
+export interface DenyBody {
+  reason?: string;
+}
+
+export type MyApplicationStatus =
+  (typeof MyApplicationStatus)[keyof typeof MyApplicationStatus];
+
+export const MyApplicationStatus = {
+  pending: "pending",
+  approved: "approved",
+  denied: "denied",
+} as const;
+
+export interface MyApplication {
+  id: number;
+  userId: number;
+  status: MyApplicationStatus;
+  /** @nullable */
+  notes?: string | null;
+  /** @nullable */
+  ndaAcceptedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export type InvestorApplicationStatus =
   (typeof InvestorApplicationStatus)[keyof typeof InvestorApplicationStatus];
 
@@ -78,6 +103,8 @@ export interface InvestorApplication {
   userPhone: string;
   status: InvestorApplicationStatus;
   ndaAccepted: boolean;
+  /** @nullable */
+  notes?: string | null;
   createdAt: string;
   updatedAt: string;
 }

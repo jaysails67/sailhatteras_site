@@ -5,18 +5,16 @@
  * PamliEcoConnect REST API
  * OpenAPI spec version: 0.1.0
  */
-import type { InvestorApplicationStatus } from "./investorApplicationStatus";
+import type { MyApplicationStatus } from "./myApplicationStatus";
 
-export interface InvestorApplication {
+export interface MyApplication {
   id: number;
   userId: number;
-  userName: string;
-  userEmail: string;
-  userPhone: string;
-  status: InvestorApplicationStatus;
-  ndaAccepted: boolean;
+  status: MyApplicationStatus;
   /** @nullable */
   notes?: string | null;
+  /** @nullable */
+  ndaAcceptedAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }

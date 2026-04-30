@@ -3,6 +3,15 @@ import { logger } from "./logger";
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
+function deriveWebhookSecret(token: string): string {
+  return token.replace(/[^A-Za-z0-9_-]/g, "_").slice(0, 256);
+}
+
+export function getWebhookSecret(): string | null {
+  if (!BOT_TOKEN) return null;
+  return deriveWebhookSecret(BOT_TOKEN);
+}
+
 export function sendTelegramMessage(text: string): void {
   if (!BOT_TOKEN || !CHAT_ID) return;
   sendTelegramToChat(CHAT_ID, text);
@@ -28,13 +37,18 @@ export async function registerWebhook(): Promise<void> {
     return;
   }
   const webhookUrl = `https://${devDomain}/api/telegram/webhook`;
+  const secret = deriveWebhookSecret(BOT_TOKEN);
   try {
     const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/setWebhook`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url: webhookUrl, allowed_updates: ["message"] }),
+      body: JSON.stringify({
+        url: webhookUrl,
+        allowed_updates: ["message"],
+        secret_token: secret,
+      }),
     });
-    const data = await res.json() as { ok: boolean; description?: string };
+    const data = (await res.json()) as { ok: boolean; description?: string };
     if (data.ok) {
       logger.info({ webhookUrl }, "Telegram webhook registered");
     } else {

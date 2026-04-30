@@ -3,13 +3,23 @@ import { db } from "@workspace/db";
 import { usersTable, investorApplicationsTable } from "@workspace/db";
 import { eq, and } from "drizzle-orm";
 import { logger } from "../lib/logger";
-import { sendTelegramToChat } from "../lib/telegram";
+import { sendTelegramToChat, getWebhookSecret } from "../lib/telegram";
 
 const router: IRouter = Router();
 
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
 router.post("/telegram/webhook", async (req, res): Promise<void> => {
+  const expectedSecret = getWebhookSecret();
+  if (expectedSecret) {
+    const incomingSecret = req.headers["x-telegram-bot-api-secret-token"] as string | undefined;
+    if (!incomingSecret || incomingSecret !== expectedSecret) {
+      logger.warn({ incomingSecret: incomingSecret ? "[present but wrong]" : "[missing]" }, "Telegram webhook secret mismatch — rejected");
+      res.sendStatus(403);
+      return;
+    }
+  }
+
   res.sendStatus(200);
 
   const update = req.body as {
@@ -36,11 +46,12 @@ router.post("/telegram/webhook", async (req, res): Promise<void> => {
   const helpMatch = text.match(/^\/help$/i);
 
   if (helpMatch) {
-    sendTelegramToChat(CHAT_ID, 
+    sendTelegramToChat(
+      CHAT_ID,
       `<b>PamliEcoConnect Bot Commands</b>\n\n` +
-      `/approve &lt;id&gt; — Approve an investor application\n` +
-      `/deny &lt;id&gt; &lt;reason&gt; — Deny with a reason message\n\n` +
-      `Example:\n<code>/approve 5</code>\n<code>/deny 5 Unable to verify identity. Please re-register with a corporate email.</code>`
+        `/approve &lt;id&gt; — Approve an investor application\n` +
+        `/deny &lt;id&gt; &lt;reason&gt; — Deny with a reason message\n\n` +
+        `Example:\n<code>/approve 5</code>\n<code>/deny 5 Unable to verify identity. Please re-register with a corporate email.</code>`,
     );
     return;
   }
@@ -64,15 +75,18 @@ router.post("/telegram/webhook", async (req, res): Promise<void> => {
       .where(eq(investorApplicationsTable.userId, user.id));
 
     logger.info({ investorId: id, email: user.email }, "Investor approved via Telegram");
-    sendTelegramToChat(CHAT_ID,
-      `✅ <b>Approved!</b>\n<b>${user.name}</b> (${user.email}) now has access to the investor portal.`
+    sendTelegramToChat(
+      CHAT_ID,
+      `✅ <b>Approved!</b>\n<b>${user.name}</b> (${user.email}) now has access to the investor portal.`,
     );
     return;
   }
 
   if (denyMatch) {
     const id = Number(denyMatch[1]);
-    const reason = denyMatch[2]?.trim() || "Your application did not meet our current criteria.";
+    const reason =
+      denyMatch[2]?.trim() ||
+      "Your application did not meet our current criteria.";
 
     const [user] = await db
       .update(usersTable)
@@ -91,15 +105,14 @@ router.post("/telegram/webhook", async (req, res): Promise<void> => {
       .where(eq(investorApplicationsTable.userId, user.id));
 
     logger.info({ investorId: id, email: user.email, reason }, "Investor denied via Telegram");
-    sendTelegramToChat(CHAT_ID,
-      `🚫 <b>Denied.</b>\n<b>${user.name}</b> (${user.email}) has been denied access.\n<b>Reason sent:</b> ${reason}`
+    sendTelegramToChat(
+      CHAT_ID,
+      `🚫 <b>Denied.</b>\n<b>${user.name}</b> (${user.email}) has been denied access.\n<b>Reason sent:</b> ${reason}`,
     );
     return;
   }
 
-  sendTelegramToChat(CHAT_ID,
-    `Unknown command. Type /help to see available commands.`
-  );
+  sendTelegramToChat(CHAT_ID, `Unknown command. Type /help to see available commands.`);
 });
 
 export default router;

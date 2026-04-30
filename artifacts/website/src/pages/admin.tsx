@@ -85,7 +85,7 @@ export default function Admin() {
   const confirmDeny = () => {
     if (!denyDialog) return;
     denyMutation.mutate(
-      { id: denyDialog.investorId, reason: denyDialog.reason.trim() || undefined },
+      { id: denyDialog.investorId, data: { reason: denyDialog.reason.trim() || undefined } },
       {
         onSuccess: () => {
           toast({ title: "Investor denied", description: denyDialog.reason.trim() ? "Reason recorded and visible to the applicant." : "No reason provided." });

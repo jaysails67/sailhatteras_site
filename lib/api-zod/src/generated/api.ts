@@ -99,6 +99,7 @@ export const ListInvestorsResponseItem = zod.object({
   userPhone: zod.string(),
   status: zod.enum(["pending", "approved", "denied"]),
   ndaAccepted: zod.boolean(),
+  notes: zod.string().nullish(),
   createdAt: zod.coerce.date(),
   updatedAt: zod.coerce.date(),
 });
@@ -119,6 +120,7 @@ export const ApproveInvestorResponse = zod.object({
   userPhone: zod.string(),
   status: zod.enum(["pending", "approved", "denied"]),
   ndaAccepted: zod.boolean(),
+  notes: zod.string().nullish(),
   createdAt: zod.coerce.date(),
   updatedAt: zod.coerce.date(),
 });
@@ -142,6 +144,20 @@ export const DenyInvestorResponse = zod.object({
   userPhone: zod.string(),
   status: zod.enum(["pending", "approved", "denied"]),
   ndaAccepted: zod.boolean(),
+  notes: zod.string().nullish(),
+  createdAt: zod.coerce.date(),
+  updatedAt: zod.coerce.date(),
+});
+
+/**
+ * @summary Get the current authenticated investor's own application
+ */
+export const GetMyApplicationResponse = zod.object({
+  id: zod.number(),
+  userId: zod.number(),
+  status: zod.enum(["pending", "approved", "denied"]),
+  notes: zod.string().nullish(),
+  ndaAcceptedAt: zod.coerce.date().nullish(),
   createdAt: zod.coerce.date(),
   updatedAt: zod.coerce.date(),
 });
@@ -154,6 +170,22 @@ export const GetInvestorStatsResponse = zod.object({
   pending: zod.number(),
   approved: zod.number(),
   denied: zod.number(),
+});
+
+/**
+ * @summary Get a public (non-investor) content page by slug — no authentication required
+ */
+export const GetPublicContentPageParams = zod.object({
+  slug: zod.coerce.string(),
+});
+
+export const GetPublicContentPageResponse = zod.object({
+  id: zod.number(),
+  slug: zod.string(),
+  title: zod.string(),
+  content: zod.string(),
+  metaData: zod.object({}).passthrough().nullish(),
+  updatedAt: zod.coerce.date(),
 });
 
 /**

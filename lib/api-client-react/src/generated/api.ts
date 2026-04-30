@@ -23,6 +23,7 @@ import type {
   ContactSubmission,
   ContentPage,
   ContentPageBody,
+  DenyBody,
   ErrorResponse,
   FeaturedPostsResponse,
   HealthStatus,
@@ -32,6 +33,7 @@ import type {
   ListPostsParams,
   LoginBody,
   MessageResponse,
+  MyApplication,
   Post,
   PostBody,
   RegisterBody,
@@ -710,14 +712,14 @@ export const getDenyInvestorUrl = (id: number) => {
 
 export const denyInvestor = async (
   id: number,
-  body?: { reason?: string },
+  denyBody?: DenyBody,
   options?: RequestInit,
 ): Promise<InvestorApplication> => {
   return customFetch<InvestorApplication>(getDenyInvestorUrl(id), {
     ...options,
     method: "POST",
-    headers: { "Content-Type": "application/json", ...(options?.headers as Record<string, string>) },
-    body: JSON.stringify(body ?? {}),
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(denyBody),
   });
 };
 
@@ -728,14 +730,14 @@ export const getDenyInvestorMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof denyInvestor>>,
     TError,
-    { id: number; reason?: string },
+    { id: number; data: BodyType<DenyBody> },
     TContext
   >;
   request?: SecondParameter<typeof customFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof denyInvestor>>,
   TError,
-  { id: number; reason?: string },
+  { id: number; data: BodyType<DenyBody> },
   TContext
 > => {
   const mutationKey = ["denyInvestor"];
@@ -749,11 +751,11 @@ export const getDenyInvestorMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof denyInvestor>>,
-    { id: number; reason?: string }
+    { id: number; data: BodyType<DenyBody> }
   > = (props) => {
-    const { id, reason } = props ?? {};
+    const { id, data } = props ?? {};
 
-    return denyInvestor(id, { reason }, requestOptions);
+    return denyInvestor(id, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -762,7 +764,7 @@ export const getDenyInvestorMutationOptions = <
 export type DenyInvestorMutationResult = NonNullable<
   Awaited<ReturnType<typeof denyInvestor>>
 >;
-
+export type DenyInvestorMutationBody = BodyType<DenyBody>;
 export type DenyInvestorMutationError = ErrorType<ErrorResponse>;
 
 /**
@@ -775,18 +777,93 @@ export const useDenyInvestor = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof denyInvestor>>,
     TError,
-    { id: number; reason?: string },
+    { id: number; data: BodyType<DenyBody> },
     TContext
   >;
   request?: SecondParameter<typeof customFetch>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof denyInvestor>>,
   TError,
-  { id: number; reason?: string },
+  { id: number; data: BodyType<DenyBody> },
   TContext
 > => {
   return useMutation(getDenyInvestorMutationOptions(options));
 };
+
+/**
+ * @summary Get the current authenticated investor's own application
+ */
+export const getGetMyApplicationUrl = () => {
+  return `/api/investors/my-application`;
+};
+
+export const getMyApplication = async (
+  options?: RequestInit,
+): Promise<MyApplication> => {
+  return customFetch<MyApplication>(getGetMyApplicationUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetMyApplicationQueryKey = () => {
+  return [`/api/investors/my-application`] as const;
+};
+
+export const getGetMyApplicationQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyApplication>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getMyApplication>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyApplicationQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getMyApplication>>
+  > = ({ signal }) => getMyApplication({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMyApplication>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetMyApplicationQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMyApplication>>
+>;
+export type GetMyApplicationQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Get the current authenticated investor's own application
+ */
+
+export function useGetMyApplication<
+  TData = Awaited<ReturnType<typeof getMyApplication>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getMyApplication>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetMyApplicationQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
 
 /**
  * @summary Get investor application statistics (admin only)
@@ -855,6 +932,94 @@ export function useGetInvestorStats<
   request?: SecondParameter<typeof customFetch>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetInvestorStatsQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Get a public (non-investor) content page by slug — no authentication required
+ */
+export const getGetPublicContentPageUrl = (slug: string) => {
+  return `/api/public-content/${slug}`;
+};
+
+export const getPublicContentPage = async (
+  slug: string,
+  options?: RequestInit,
+): Promise<ContentPage> => {
+  return customFetch<ContentPage>(getGetPublicContentPageUrl(slug), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetPublicContentPageQueryKey = (slug: string) => {
+  return [`/api/public-content/${slug}`] as const;
+};
+
+export const getGetPublicContentPageQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPublicContentPage>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  slug: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getPublicContentPage>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetPublicContentPageQueryKey(slug);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getPublicContentPage>>
+  > = ({ signal }) => getPublicContentPage(slug, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!slug,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getPublicContentPage>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetPublicContentPageQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPublicContentPage>>
+>;
+export type GetPublicContentPageQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Get a public (non-investor) content page by slug — no authentication required
+ */
+
+export function useGetPublicContentPage<
+  TData = Awaited<ReturnType<typeof getPublicContentPage>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  slug: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getPublicContentPage>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetPublicContentPageQueryOptions(slug, options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
