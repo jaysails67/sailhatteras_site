@@ -13,7 +13,7 @@ const PLAN_SECTIONS = [
   { slug: "company-overview",  label: "Company Overview" },
   { slug: "market-analysis",   label: "Market Analysis" },
   { slug: "services",          label: "Service Model" },
-  { slug: "products",          label: "Products & Vessels" },
+  { slug: "products",          label: "Vessel & Technology" },
   { slug: "marketing-plan",    label: "Marketing Plan" },
   { slug: "financial-plan",    label: "Financial Plan" },
   { slug: "conclusion",        label: "Conclusion" },
