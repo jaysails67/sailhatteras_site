@@ -6,7 +6,7 @@ import {
   contentPagesTable,
   postsTable,
 } from "@workspace/db";
-import { sql } from "drizzle-orm";
+import { sql, eq } from "drizzle-orm";
 import { logger } from "./lib/logger";
 
 export async function seed(): Promise<void> {
@@ -47,37 +47,43 @@ export async function seed(): Promise<void> {
     const [{ teamCount }] = await db
       .select({ teamCount: sql<number>`count(*)::int` })
       .from(teamMembersTable);
-    if (teamCount === 0) {
+
+    // Migrate: if the DB still has the old placeholder team, replace with real members
+    const hasPlaceholders = teamCount > 0 && (await db
+      .select({ c: sql<number>`count(*)::int` })
+      .from(teamMembersTable)
+      .where(eq(teamMembersTable.name, "Dr. Elena Vasquez"))
+      .then(([row]) => Number(row?.c ?? 0) > 0));
+
+    if (hasPlaceholders) {
+      await db.delete(teamMembersTable);
+      logger.info("Removed placeholder team members — seeding real leadership team");
+    }
+
+    if (teamCount === 0 || hasPlaceholders) {
       await db
         .insert(teamMembersTable)
         .values([
           {
-            name: "Dr. Elena Vasquez",
-            title: "Chief Executive Officer",
-            bio: "20+ years in aerospace and marine engineering. Former lead systems architect at a major international propulsion company. Elena founded PamliEcoConnect to bring sustainable maritime transport to the global stage.",
+            name: "Jay M. Phillips",
+            title: "CEO & Product Development",
+            bio: "Jay has been immersed in the maritime industry since the age of 14, accumulating over 100,000 bluewater miles. His career spans ownership and management of sail lofts, boat building operations, and maritime web development firms. Jay currently serves as Chair of Hatteras Sailing, an educational maritime nonprofit, bringing decades of hands-on experience and passion for the sea to PamliEcoConnect.",
             headshotUrl: null,
             displayOrder: 1,
           },
           {
-            name: "Marcus T. Chen",
-            title: "Chief Technology Officer",
-            bio: "Previously engineered hydrofoil flight control systems for the U.S. Navy and commercial operators. Marcus leads PamliEcoConnect's R&D team and holds 14 patents in electric propulsion and foil hydrodynamics.",
+            name: "John Edward Elion",
+            title: "CFO & Technology Professional",
+            bio: "John has served as Chair of the Waterworks Foundation, a Chesapeake Bay environmental organization. He has owned and built several multihull brands across the United States and Canada, combining deep financial acumen with a lifelong commitment to environmental stewardship in the maritime sector.",
             headshotUrl: null,
             displayOrder: 2,
           },
           {
-            name: "Anika Osei",
-            title: "Chief Operating Officer",
-            bio: "Supply chain and production scaling specialist with deep experience in advanced manufacturing and maritime supply chains across three continents. Anika ensures PamliEcoConnect's operations are world-class.",
+            name: "Alan Stewart",
+            title: "Design Team Leader",
+            bio: "Alan holds a degree in Aerospace Engineering and brings over a decade of partnership at B&B Boat Designs in Eastern North Carolina. His aerospace background directly informs PamliEcoConnect's hydrofoil engineering, where principles of lift, drag, and structural efficiency are as critical on the water as they are in the air.",
             headshotUrl: null,
             displayOrder: 3,
-          },
-          {
-            name: "James Hartley",
-            title: "VP of Sales & Partnerships",
-            bio: "Seasoned commercial executive with a track record of closing complex contracts for defense, government, and luxury marine markets across Europe, the Middle East, and Asia Pacific.",
-            headshotUrl: null,
-            displayOrder: 4,
           },
         ]);
     }
