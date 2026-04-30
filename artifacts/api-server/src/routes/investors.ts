@@ -9,6 +9,7 @@ import {
 } from "@workspace/api-zod";
 import { requireAdmin } from "../middlewares/auth";
 import { logger } from "../lib/logger";
+import { sendTelegramMessage } from "../lib/telegram";
 
 const router: IRouter = Router();
 
@@ -77,16 +78,12 @@ router.post("/investors/:id/approve", requireAdmin, async (req, res): Promise<vo
     .where(eq(investorApplicationsTable.userId, user.id))
     .returning();
 
-  const telegramWebhookUrl = process.env.TELEGRAM_WEBHOOK_URL;
-  if (telegramWebhookUrl) {
-    fetch(telegramWebhookUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        text: `Investor ${user.name} (${user.email}) has been approved.`,
-      }),
-    }).catch((err) => logger.warn({ err }, "Telegram notification failed"));
-  }
+  sendTelegramMessage(
+    `✅ <b>Investor Approved</b>\n` +
+    `<b>Name:</b> ${user.name}\n` +
+    `<b>Email:</b> ${user.email}\n` +
+    `Access to the investor portal has been granted.`,
+  );
 
   res.json(formatApplication(user, app));
 });

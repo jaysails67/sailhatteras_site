@@ -8,6 +8,7 @@ import {
   LoginUserBody,
 } from "@workspace/api-zod";
 import { logger } from "../lib/logger";
+import { sendTelegramMessage } from "../lib/telegram";
 
 const router: IRouter = Router();
 
@@ -88,16 +89,13 @@ router.post("/auth/accept-nda", async (req, res): Promise<void> => {
     .set({ ndaAcceptedAt: new Date(), status: "pending" })
     .where(eq(investorApplicationsTable.userId, user.id));
 
-  const telegramWebhookUrl = process.env.TELEGRAM_WEBHOOK_URL;
-  if (telegramWebhookUrl) {
-    fetch(telegramWebhookUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        text: `New investor application: ${user.name} (${user.email}) has accepted the NDA and is pending approval.`,
-      }),
-    }).catch((err) => logger.warn({ err }, "Telegram notification failed"));
-  }
+  sendTelegramMessage(
+    `🚀 <b>New Investor Application</b>\n` +
+    `<b>Name:</b> ${user.name}\n` +
+    `<b>Email:</b> ${user.email}\n` +
+    `<b>Phone:</b> ${user.phone}\n` +
+    `NDA accepted — pending your approval.`,
+  );
 
   const adminEmail = process.env.ADMIN_EMAIL;
   if (adminEmail) {
