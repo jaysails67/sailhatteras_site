@@ -24,8 +24,8 @@ const advisors = [
     prospective: "Design Team Leader",
     name: "Alan Stewart",
     description:
-      "Advising on vessel concept development, foiling integration, and hull optimization. Alan holds a degree in Aerospace Engineering and brings over a decade of partnership at B&B Boat Designs in Eastern North Carolina, with aerospace principles directly informing PamliEcoConnect's hydrofoil engineering.",
-    filled: true,
+      "Holds a degree in Aerospace Engineering and brings over a decade of partnership at B&B Boat Designs in Eastern North Carolina. His background in aerodynamics and structural efficiency is directly applicable to foiling vessel design — making him an ideal candidate to guide concept development, foiling integration, and hull optimization.",
+    identified: true,
   },
   {
     icon: Wrench,
@@ -33,8 +33,8 @@ const advisors = [
     prospective: "M/E Engineering Lead",
     name: "Larry Ward",
     description:
-      "Advising on propulsion, systems integration, and control systems — with the potential to transition into a formal Mechanical/Electrical Engineering Lead role as the company advances through vessel development.",
-    filled: true,
+      "Has deep experience in propulsion systems, systems integration, and control architectures for high-performance marine platforms. His background positions him well to contribute to the technical development of PamliEcoConnect's electric drivetrain and foil control systems.",
+    identified: true,
   },
   {
     icon: Zap,
@@ -42,8 +42,8 @@ const advisors = [
     prospective: "Battery/Powerplant Technology Lead",
     name: "Brian Palmer",
     description:
-      "Advising on energy storage, powertrain architecture, and charging systems. With potential to move into a Battery/Powerplant Technology Lead role overseeing the full electric propulsion stack across all vessel series.",
-    filled: true,
+      "Brings expertise in energy storage, powertrain architecture, and marine charging systems. His knowledge of battery management and electric propulsion at scale is exactly the capability PamliEcoConnect will need as vessel development progresses.",
+    identified: true,
   },
   {
     icon: TrendingUp,
@@ -51,8 +51,8 @@ const advisors = [
     prospective: "Investment & Grant Acquisition Lead",
     name: "Robert Norton",
     description:
-      "Advising on capital raising, investor outreach, and grant strategy. Over time, this role may formalize as an Investment & Grant Acquisition Lead or remain in a senior advisory capacity.",
-    filled: true,
+      "Has a strong track record in capital raising, investor outreach, and navigating public grant programs. His strategic perspective on financing structures and institutional relationships would be invaluable as PamliEcoConnect moves toward securing its initial funding round.",
+    identified: true,
   },
   {
     icon: Shield,
@@ -60,8 +60,8 @@ const advisors = [
     prospective: "Compliance Lead",
     name: null,
     description:
-      "A specialized advisor to guide USCG approval processes and insurer expectations — from 20-passenger R&D vessels to 50-passenger commercial platforms. This advisory role may evolve into a Compliance Lead management position.",
-    filled: false,
+      "We are seeking an experienced maritime regulatory specialist to guide USCG approval processes and insurer expectations — from 20-passenger R&D vessels through to 50-passenger commercial certification. This is a critical role for the company's path to commercialization.",
+    identified: false,
   },
   {
     icon: Factory,
@@ -69,8 +69,8 @@ const advisors = [
     prospective: "Production Management Lead",
     name: null,
     description:
-      "An advisor focused on tooling, supply chain, quality systems, and production scale-up across multiple hulls and series. This role may transition into a Production Management Lead as vessel manufacturing ramps.",
-    filled: false,
+      "We are seeking an experienced production leader to guide tooling, supply chain management, quality systems, and manufacturing scale-up across multiple hull programs. This role becomes increasingly critical as vessel production ramps.",
+    identified: false,
   },
   {
     icon: Briefcase,
@@ -78,8 +78,8 @@ const advisors = [
     prospective: "Strategic Technology Partner",
     name: "Jim Gardiner / Compmillenia",
     description:
-      "Targeted as a potential strategic advisor and technology partner in advanced composite construction and high-performance hull manufacturing. This relationship may remain as a strategic partnership or evolve into a formalized leadership role in production technology.",
-    filled: true,
+      "A recognized authority in advanced composite construction and high-performance hull manufacturing. Compmillenia's capabilities in precision composite fabrication represent a potential strategic fit for PamliEcoConnect's vessel production goals.",
+    identified: true,
   },
 ];
 
@@ -109,7 +109,7 @@ export default function Team() {
           <div className="container px-4 md:px-8 max-w-3xl text-center mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
             <h1 className="text-5xl font-display font-bold mb-6">Management Team</h1>
             <p className="text-xl text-muted-foreground leading-relaxed">
-              PamliEcoConnect is building a high-caliber team of maritime engineers, financial experts, and industry veterans. We engage top-tier advisors early, with a clear pathway into formal management as the company matures.
+              PamliEcoConnect is led by its founding team and is in the process of carefully identifying and inviting a select group of maritime engineers, regulatory specialists, and industry veterans into advisory and eventual management roles as the company and its financing mature.
             </p>
           </div>
         </section>
@@ -151,11 +151,11 @@ export default function Team() {
           <div className="container px-4 md:px-8 max-w-6xl mx-auto">
             <div className="mb-14">
               <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-1.5 text-sm font-medium text-muted-foreground mb-4">
-                Advisory Board & Prospective Leadership
+                Prospective Advisory & Leadership Team
               </div>
-              <h2 className="text-3xl font-display font-bold mb-3">Advisors & Prospective Management</h2>
+              <h2 className="text-3xl font-display font-bold mb-3">Hand-Picked Candidates & Open Roles</h2>
               <p className="text-muted-foreground max-w-2xl">
-                We are actively building a Board of Advisors comprising experts who can materially advance vessel design, engineering, compliance, financing, and commercialization. Certain advisory roles may evolve into formal management positions as individuals' interest, contributions, and availability align with the company's needs.
+                The following individuals have been specifically identified for the expertise they would bring to PamliEcoConnect. They are interested parties at this stage — not yet formally committed — and will be selectively invited into advisory or management roles as the company and its financing mature.
               </p>
             </div>
 
@@ -166,16 +166,20 @@ export default function Team() {
                   <div
                     key={advisor.area}
                     className={`rounded-2xl border p-6 flex flex-col transition-colors ${
-                      advisor.filled
+                      advisor.identified
                         ? "bg-card border-border hover:border-primary/30"
                         : "bg-card/50 border-dashed border-border/60"
                     }`}
                   >
                     <div className="flex items-start justify-between mb-4">
-                      <div className={`p-2.5 rounded-xl ${advisor.filled ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                      <div className={`p-2.5 rounded-xl ${advisor.identified ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
                         <Icon className="h-5 w-5" />
                       </div>
-                      {!advisor.filled && (
+                      {advisor.identified ? (
+                        <span className="text-xs font-medium text-muted-foreground border border-border rounded-full px-2.5 py-0.5">
+                          Identified
+                        </span>
+                      ) : (
                         <span className="text-xs font-medium text-muted-foreground border border-border rounded-full px-2.5 py-0.5">
                           Seeking
                         </span>
@@ -187,8 +191,8 @@ export default function Team() {
                     ) : (
                       <h3 className="text-base font-semibold text-muted-foreground/60 italic mb-0.5">Role to be filled</h3>
                     )}
-                    <p className="text-xs font-medium text-primary mb-3 flex items-center gap-1">
-                      <ChevronRight className="h-3 w-3" /> Prospective: {advisor.prospective}
+                    <p className="text-xs font-medium text-muted-foreground mb-3 flex items-center gap-1">
+                      <ChevronRight className="h-3 w-3" /> Target role if invited: {advisor.prospective}
                     </p>
                     <p className="text-sm text-muted-foreground leading-relaxed flex-1">{advisor.description}</p>
                   </div>
