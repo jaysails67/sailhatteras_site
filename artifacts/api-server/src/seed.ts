@@ -219,6 +219,46 @@ export async function seed(): Promise<void> {
     await db
       .delete(postsTable)
       .where(eq(postsTable.title, "PamliEcoConnect Announces Series A Funding Round"));
+    // Remove earlier incomplete version of the Vandemere article (no links)
+    await db
+      .delete(postsTable)
+      .where(eq(postsTable.title, "Vandemere Community Roundtable Welcomes PamliEcoConnect as Passenger Ferry Vision Takes Shape"));
+
+    // ── Real press releases ──────────────────────────────────────────────────
+    const VANDEMERE_TITLE = "Vandemere Community Roundtable Explores Pamlico Sound Passenger Service with PamliEcoConnect";
+    // Always delete then re-insert so content/links stay current on each deploy
+    await db.delete(postsTable).where(eq(postsTable.title, VANDEMERE_TITLE));
+    await db.insert(postsTable).values({
+        title: VANDEMERE_TITLE,
+        excerpt:
+          "Vandemere Mayor Sandra Snipes and Pamlico Economic Development Director Beth Bucksot hosted the Annual Vandemere Community Roundtable on March 28, 2026 — inviting PamliEcoConnect to present a vision for electric passenger service connecting the Triangle to Ocracoke via the Pamlico Sound.",
+        content: `<p>On March 28, 2026, Vandemere Mayor <strong>Sandra Snipes</strong> and Pamlico County Economic Development Director <strong>Beth Bucksot</strong> hosted the Annual Vandemere Community Roundtable. PamliEcoConnect was invited by Director Bucksot following Vandemere's extensive feasibility study for a passenger route between Vandemere and Ocracoke.</p>
+
+<p>PamliEcoConnect CEO <strong>Jay Phillips</strong> and CFO <strong>John Elion</strong> attended the roundtable and presented the company's electric foiling vessel technology as a clean, quiet, and high-speed solution for the proposed crossing. Vandemere sits at an exceptional geographic position — a nearly ideal embarkation point for Triangle-area residents (a population of nearly 2 million) seeking weekend and week-long beach trips to the Outer Banks and Ocracoke Island via the Pamlico Sound.</p>
+
+<p>The presentation was well received by community members and local officials. PamliEcoConnect expects to continue working with Vandemere stakeholders as planning for a Blue Economy passenger corridor develops.</p>
+
+<h3>Presentations from the Roundtable</h3>
+<ul>
+  <li>
+    <strong>Audio Podcast Presentation</strong><br/>
+    <a href="https://drive.google.com/file/d/1dFmFx8udtVcVUU1f2mQWhWPIXxGOFvxH/viewlink" target="_blank" rel="noopener noreferrer">
+      Listen to the Vandemere–Ocracoke Blue Economy Corridor podcast presentation
+    </a>
+  </li>
+  <li>
+    <strong>Video Presentation</strong><br/>
+    <a href="https://app.heygen.com/videos/vandemere-ocracoke-buxton-a-blue-economy-corridor-21d3f5510b624dc0bbfc47789cd9cca0" target="_blank" rel="noopener noreferrer">
+      Watch the Vandemere–Ocracoke–Buxton: A Blue Economy Corridor video presentation
+    </a>
+  </li>
+</ul>`,
+        type: "press_release",
+        mediaUrl: null,
+        featured: true,
+        publishedAt: new Date("2026-03-28T12:00:00Z"),
+      });
+    logger.info("Seeded Vandemere Roundtable press release");
 
     logger.info("Database seed complete");
   } catch (err) {
