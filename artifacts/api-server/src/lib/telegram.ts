@@ -31,6 +31,12 @@ export async function registerWebhook(): Promise<void> {
     logger.warn("TELEGRAM_BOT_TOKEN not set — skipping webhook registration");
     return;
   }
+  // Only register in production — dev server must never overwrite the production
+  // webhook, as they use separate databases and the wrong server would receive callbacks.
+  if (process.env.NODE_ENV !== "production") {
+    logger.info("Dev mode — skipping Telegram webhook registration (production server owns the webhook)");
+    return;
+  }
   const devDomain = process.env.REPLIT_DEV_DOMAIN;
   if (!devDomain) {
     logger.warn("REPLIT_DEV_DOMAIN not set — skipping Telegram webhook registration");
