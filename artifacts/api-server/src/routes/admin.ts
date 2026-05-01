@@ -1,7 +1,7 @@
 import { Router, type IRouter } from "express";
 import bcrypt from "bcryptjs";
 import { db } from "@workspace/db";
-import { usersTable, postsTable, contactSubmissionsTable, waitlistTable } from "@workspace/db";
+import { usersTable, postsTable, contactSubmissionsTable, waitlistTable, investorApplicationsTable } from "@workspace/db";
 import { eq, count, desc, and } from "drizzle-orm";
 import { requireAdmin } from "../middlewares/auth";
 import { forceRegisterWebhook, getWebhookInfo, buildWebhookUrl } from "../lib/telegram";
@@ -87,6 +87,63 @@ router.post("/admin/investors/:id/reset-password", requireAdmin, async (req, res
   }
 
   res.json({ message: `Password reset for ${user.name} (${user.email})` });
+});
+
+router.patch("/admin/investors/:id/email", requireAdmin, async (req, res): Promise<void> => {
+  const id = Number(req.params.id);
+  const { email } = req.body as { email?: string };
+
+  if (!email || typeof email !== "string" || !email.includes("@")) {
+    res.status(400).json({ error: "A valid email address is required" });
+    return;
+  }
+
+  const normalizedEmail = email.toLowerCase().trim();
+
+  const existing = await db.select({ id: usersTable.id }).from(usersTable).where(eq(usersTable.email, normalizedEmail));
+  if (existing.length > 0 && existing[0].id !== id) {
+    res.status(409).json({ error: "That email is already in use by another account" });
+    return;
+  }
+
+  const [user] = await db
+    .update(usersTable)
+    .set({ email: normalizedEmail })
+    .where(and(eq(usersTable.id, id), eq(usersTable.role, "investor")))
+    .returning({ id: usersTable.id, name: usersTable.name, email: usersTable.email });
+
+  if (!user) {
+    res.status(404).json({ error: "Investor not found" });
+    return;
+  }
+
+  logger.info({ investorId: id, newEmail: normalizedEmail }, "Investor email updated by admin");
+  res.json({ message: `Email updated for ${user.name}`, email: user.email });
+});
+
+router.delete("/admin/investors/:id", requireAdmin, async (req, res): Promise<void> => {
+  const id = Number(req.params.id);
+
+  const [user] = await db
+    .select({ id: usersTable.id, name: usersTable.name, email: usersTable.email, role: usersTable.role })
+    .from(usersTable)
+    .where(eq(usersTable.id, id));
+
+  if (!user) {
+    res.status(404).json({ error: "User not found" });
+    return;
+  }
+
+  if (user.role === "admin") {
+    res.status(403).json({ error: "Admin accounts cannot be deleted" });
+    return;
+  }
+
+  await db.delete(investorApplicationsTable).where(eq(investorApplicationsTable.userId, id));
+  await db.delete(usersTable).where(eq(usersTable.id, id));
+
+  logger.info({ investorId: id, email: user.email }, "Investor account deleted by admin");
+  res.json({ message: `Account for ${user.name} (${user.email}) has been deleted` });
 });
 
 export default router;

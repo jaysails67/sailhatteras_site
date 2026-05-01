@@ -33,8 +33,9 @@ router.post("/auth/register", async (req, res): Promise<void> => {
   }
 
   const { name, email, phone, password } = parsed.data;
+  const normalizedEmail = email.toLowerCase().trim();
 
-  const existing = await db.select().from(usersTable).where(eq(usersTable.email, email));
+  const existing = await db.select().from(usersTable).where(eq(usersTable.email, normalizedEmail));
   if (existing.length > 0) {
     res.status(409).json({ error: "An account with this email already exists" });
     return;
@@ -45,7 +46,7 @@ router.post("/auth/register", async (req, res): Promise<void> => {
     .insert(usersTable)
     .values({
       name,
-      email,
+      email: normalizedEmail,
       phone,
       passwordHash,
       role: "investor",
@@ -155,8 +156,9 @@ router.post("/auth/login", async (req, res): Promise<void> => {
   }
 
   const { email, password } = parsed.data;
+  const normalizedEmail = email.toLowerCase().trim();
 
-  const [user] = await db.select().from(usersTable).where(eq(usersTable.email, email));
+  const [user] = await db.select().from(usersTable).where(eq(usersTable.email, normalizedEmail));
   if (!user) {
     res.status(401).json({ error: "Invalid email or password" });
     return;

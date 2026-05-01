@@ -2,7 +2,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation, Link } from "wouter";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Lock } from "lucide-react";
+import { Lock, Eye, EyeOff } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().email("Valid email is required"),
@@ -23,6 +23,7 @@ export default function Login() {
   const { user, isLoading } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const [showPassword, setShowPassword] = useState(false);
   
   const loginMutation = useLoginUser();
 
@@ -109,7 +110,17 @@ export default function Login() {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="••••••••" {...field} data-testid="input-login-password" />
+                        <div className="relative">
+                          <Input type={showPassword ? "text" : "password"} placeholder="••••••••" {...field} data-testid="input-login-password" className="pr-10" />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                            tabIndex={-1}
+                          >
+                            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          </button>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -126,8 +137,9 @@ export default function Login() {
               </form>
             </Form>
 
-            <div className="mt-6 text-center text-sm text-muted-foreground">
-              Don't have an account? <Link href="/investors" className="text-primary font-medium hover:underline">Request access</Link>
+            <div className="mt-6 text-center text-sm text-muted-foreground space-y-1">
+              <div>Don't have an account? <Link href="/investors" className="text-primary font-medium hover:underline">Request access</Link></div>
+              <div>Forgot your email or login info? <Link href="/contact" className="text-primary font-medium hover:underline">Contact us</Link></div>
             </div>
           </div>
         </div>

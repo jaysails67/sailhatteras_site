@@ -19,7 +19,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle2, XCircle, Users, Mail, List, LayoutDashboard, KeyRound, Bot, RefreshCw, AlertTriangle, Upload, Newspaper, Trash2, ExternalLink } from "lucide-react";
+import { CheckCircle2, XCircle, Users, Mail, List, LayoutDashboard, KeyRound, Bot, RefreshCw, AlertTriangle, Upload, Newspaper, Trash2, ExternalLink, Pencil } from "lucide-react";
 import { format } from "date-fns";
 import { useUpload } from "@workspace/object-storage-web";
 
@@ -39,6 +39,21 @@ interface ResetPasswordDialogState {
   isResetting: boolean;
 }
 
+interface EditEmailDialogState {
+  investorId: number;
+  investorName: string;
+  currentEmail: string;
+  newEmail: string;
+  isSaving: boolean;
+}
+
+interface DeleteDialogState {
+  investorId: number;
+  investorName: string;
+  investorEmail: string;
+  isDeleting: boolean;
+}
+
 export default function Admin() {
   const { user, isLoading: authLoading } = useAuth();
   const [, setLocation] = useLocation();
@@ -47,6 +62,8 @@ export default function Admin() {
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [denyDialog, setDenyDialog] = useState<DenyDialogState | null>(null);
   const [resetPwDialog, setResetPwDialog] = useState<ResetPasswordDialogState | null>(null);
+  const [editEmailDialog, setEditEmailDialog] = useState<EditEmailDialogState | null>(null);
+  const [deleteDialog, setDeleteDialog] = useState<DeleteDialogState | null>(null);
 
   type TelegramStatus = {
     registered: { url: string; pending_update_count: number; last_error_message?: string; last_error_date?: number } | null;
@@ -183,6 +200,60 @@ export default function Admin() {
         onError: (err) => toast({ title: "Error", description: (err.data as { error?: string })?.error || err.message, variant: "destructive" })
       }
     );
+  };
+
+  const openEditEmailDialog = (id: number, name: string, email: string) => {
+    setEditEmailDialog({ investorId: id, investorName: name, currentEmail: email, newEmail: email, isSaving: false });
+  };
+
+  const confirmEditEmail = async () => {
+    if (!editEmailDialog || editEmailDialog.isSaving) return;
+    const email = editEmailDialog.newEmail.trim();
+    if (!email.includes("@")) {
+      toast({ title: "Invalid email", description: "Please enter a valid email address.", variant: "destructive" });
+      return;
+    }
+    setEditEmailDialog({ ...editEmailDialog, isSaving: true });
+    try {
+      const res = await fetch(`/api/admin/investors/${editEmailDialog.investorId}/email`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json() as { message?: string; error?: string };
+      if (!res.ok) throw new Error(data.error ?? "Unknown error");
+      toast({ title: "Email updated", description: data.message });
+      setEditEmailDialog(null);
+      refetchInvestors();
+    } catch (err) {
+      toast({ title: "Error", description: (err as Error).message, variant: "destructive" });
+      setEditEmailDialog((s) => s ? { ...s, isSaving: false } : null);
+    }
+  };
+
+  const openDeleteDialog = (id: number, name: string, email: string) => {
+    setDeleteDialog({ investorId: id, investorName: name, investorEmail: email, isDeleting: false });
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteDialog || deleteDialog.isDeleting) return;
+    setDeleteDialog({ ...deleteDialog, isDeleting: true });
+    try {
+      const res = await fetch(`/api/admin/investors/${deleteDialog.investorId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      const data = await res.json() as { message?: string; error?: string };
+      if (!res.ok) throw new Error(data.error ?? "Unknown error");
+      toast({ title: "Account deleted", description: data.message });
+      setDeleteDialog(null);
+      refetchInvestors();
+      refetchDashboard();
+    } catch (err) {
+      toast({ title: "Error", description: (err as Error).message, variant: "destructive" });
+      setDeleteDialog((s) => s ? { ...s, isDeleting: false } : null);
+    }
   };
 
   // Press tab state — must be before early return (Rules of Hooks)
@@ -450,10 +521,28 @@ export default function Admin() {
                                 size="sm"
                                 variant="outline"
                                 className="border-muted-foreground/40 text-muted-foreground hover:text-foreground"
+                                onClick={() => openEditEmailDialog(inv.id, inv.userName, inv.userEmail)}
+                                title="Change this investor's email address"
+                              >
+                                <Pencil className="h-4 w-4 mr-1" /> Email
+                              </Button>
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                className="border-muted-foreground/40 text-muted-foreground hover:text-foreground"
                                 onClick={() => openResetPwDialog(inv.id, inv.userName, inv.userEmail)}
                                 title="Set a new temporary password for this investor"
                               >
                                 <KeyRound className="h-4 w-4 mr-1" /> Reset PW
+                              </Button>
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                className="border-destructive/60 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                                onClick={() => openDeleteDialog(inv.id, inv.userName, inv.userEmail)}
+                                title="Permanently delete this account"
+                              >
+                                <Trash2 className="h-4 w-4 mr-1" /> Delete
                               </Button>
                               {inv.status === "pending" && (
                                 <>
@@ -778,6 +867,69 @@ export default function Admin() {
 
         </div>
       </main>
+
+      {/* Edit Email Dialog */}
+      {editEmailDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-card border border-border rounded-xl shadow-2xl w-full max-w-md p-6 space-y-5">
+            <div>
+              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                <Pencil className="h-5 w-5 text-primary" /> Change Email Address
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                Update the login email for{" "}
+                <span className="font-medium text-foreground">{editEmailDialog.investorName}</span>.
+                They will need to use the new address to log in.
+              </p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">New Email Address</label>
+              <input
+                type="email"
+                className="w-full rounded-lg border border-border bg-background text-foreground text-sm p-3 focus:outline-none focus:ring-2 focus:ring-primary/50 placeholder:text-muted-foreground"
+                placeholder="investor@example.com"
+                value={editEmailDialog.newEmail}
+                onChange={(e) => setEditEmailDialog({ ...editEmailDialog, newEmail: e.target.value })}
+                autoFocus
+              />
+            </div>
+            <div className="flex gap-3 justify-end">
+              <Button variant="outline" onClick={() => setEditEmailDialog(null)} disabled={editEmailDialog.isSaving}>Cancel</Button>
+              <Button
+                onClick={confirmEditEmail}
+                disabled={!editEmailDialog.newEmail.trim() || editEmailDialog.newEmail === editEmailDialog.currentEmail || editEmailDialog.isSaving}
+              >
+                {editEmailDialog.isSaving ? "Saving..." : "Save Email"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Account Dialog */}
+      {deleteDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-card border border-border rounded-xl shadow-2xl w-full max-w-md p-6 space-y-5">
+            <div>
+              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                <Trash2 className="h-5 w-5 text-destructive" /> Delete Account
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                You are about to permanently delete the account for{" "}
+                <span className="font-medium text-foreground">{deleteDialog.investorName}</span>{" "}
+                (<span className="font-mono text-xs">{deleteDialog.investorEmail}</span>).
+                This cannot be undone. They will need to re-register if they want access in the future.
+              </p>
+            </div>
+            <div className="flex gap-3 justify-end">
+              <Button variant="outline" onClick={() => setDeleteDialog(null)} disabled={deleteDialog.isDeleting}>Cancel</Button>
+              <Button variant="destructive" onClick={confirmDelete} disabled={deleteDialog.isDeleting}>
+                {deleteDialog.isDeleting ? "Deleting..." : "Delete Account"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Reset Password Dialog */}
       {resetPwDialog && (
