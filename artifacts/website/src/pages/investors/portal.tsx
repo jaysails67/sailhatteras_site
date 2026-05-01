@@ -5,7 +5,7 @@ import { useLocation } from "wouter";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useListContentPages, getListContentPagesQueryKey } from "@workspace/api-client-react";
 import {
-  Phone, Lock, ChevronRight, Ship, Wrench, Zap, TrendingUp, Shield, Factory, Briefcase,
+  Phone, Lock, ChevronRight, Ship, Wrench, Zap, TrendingUp, Shield, Factory, Briefcase, FileDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
@@ -712,8 +712,13 @@ export default function Portal() {
             ))}
           </nav>
 
-          <div className="mt-6 pt-4 border-t border-border">
-            <p className="text-xs text-muted-foreground mb-3">Questions about investing?</p>
+          <div className="mt-6 pt-4 border-t border-border space-y-2">
+            <Link href="/investors/print">
+              <Button size="sm" variant="outline" className="w-full text-xs gap-1.5">
+                <FileDown className="h-3 w-3" /> Print / Save as PDF
+              </Button>
+            </Link>
+            <p className="text-xs text-muted-foreground mt-2 mb-1">Questions about investing?</p>
             <Link href="/contact">
               <Button size="sm" className="w-full text-xs gap-1.5">
                 <Phone className="h-3 w-3" /> Schedule a Call

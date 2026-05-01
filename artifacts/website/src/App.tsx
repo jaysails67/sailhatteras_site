@@ -11,6 +11,7 @@ import Nda from "@/pages/investors/nda";
 import Pending from "@/pages/investors/pending";
 import Denied from "@/pages/investors/denied";
 import Portal from "@/pages/investors/portal";
+import PrintBusinessPlan from "@/pages/investors/print";
 import Login from "@/pages/login";
 import Buyers from "@/pages/buyers";
 import Reservations from "@/pages/reservations";
@@ -31,6 +32,7 @@ function Router() {
       <Route path="/investors/pending" component={Pending} />
       <Route path="/investors/denied" component={Denied} />
       <Route path="/investors/portal" component={Portal} />
+      <Route path="/investors/print" component={PrintBusinessPlan} />
       <Route path="/login" component={Login} />
       <Route path="/buyers" component={Buyers} />
       <Route path="/reservations" component={Reservations} />
