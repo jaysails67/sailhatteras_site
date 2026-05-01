@@ -323,17 +323,125 @@ export default function PrintBusinessPlan() {
   return (
     <>
       <style>{`
+        /* ── Page setup ──────────────────────────────── */
+        @page {
+          margin: 2.2cm 2.5cm;
+          size: letter;
+        }
+        body {
+          font-family: Georgia, "Times New Roman", serif;
+          background: #f4f5f7;
+        }
+
+        /* ── Print overrides ─────────────────────────── */
         @media print {
           .no-print { display: none !important; }
-          body { margin: 0; }
+          body { margin: 0; background: #fff; }
+          .print-page { box-shadow: none !important; }
           .print-section { page-break-before: always; }
           .print-section:first-of-type { page-break-before: avoid; }
         }
-        @page {
-          margin: 2cm 2.2cm;
-          size: letter;
+
+        /* ── Document typography (applies inside .doc-content) ── */
+        .doc-content h1 {
+          font-family: system-ui, sans-serif;
+          font-size: 1.55rem;
+          font-weight: 700;
+          color: #1a1a2e;
+          margin: 0 0 1.2rem;
+          padding-bottom: 0.4rem;
+          border-bottom: 1px solid #dde3ea;
+          letter-spacing: -0.01em;
         }
-        body { font-family: Georgia, "Times New Roman", serif; }
+        .doc-content h2 {
+          font-family: system-ui, sans-serif;
+          font-size: 1.15rem;
+          font-weight: 700;
+          color: #1e4a7a;
+          margin: 1.8rem 0 0.65rem;
+          padding-left: 0.6rem;
+          border-left: 3px solid #1e4a7a;
+        }
+        .doc-content h3 {
+          font-family: system-ui, sans-serif;
+          font-size: 1rem;
+          font-weight: 700;
+          color: #2d3748;
+          margin: 1.4rem 0 0.5rem;
+        }
+        .doc-content h4 {
+          font-family: system-ui, sans-serif;
+          font-size: 0.9rem;
+          font-weight: 700;
+          color: #4a5568;
+          margin: 1rem 0 0.4rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+        .doc-content p {
+          margin: 0 0 0.85rem;
+          line-height: 1.78;
+          font-size: 0.95rem;
+          color: #1a1a1a;
+        }
+        .doc-content ul,
+        .doc-content ol {
+          margin: 0.5rem 0 1rem;
+          padding-left: 2rem;
+        }
+        .doc-content ul { list-style-type: disc; }
+        .doc-content ol { list-style-type: decimal; }
+        .doc-content li {
+          margin-bottom: 0.45rem;
+          line-height: 1.72;
+          font-size: 0.95rem;
+          color: #1a1a1a;
+        }
+        .doc-content li > ul,
+        .doc-content li > ol {
+          margin-top: 0.3rem;
+          margin-bottom: 0;
+        }
+        .doc-content strong { color: #111; font-weight: 700; }
+        .doc-content em { font-style: italic; color: #444; }
+        .doc-content blockquote {
+          margin: 1rem 0;
+          padding: 0.6rem 1rem;
+          border-left: 4px solid #1e4a7a;
+          background: #f0f5fb;
+          color: #2d3748;
+          font-style: italic;
+        }
+
+        /* Tables */
+        .doc-content table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 1rem 0 1.5rem;
+          font-size: 0.88rem;
+        }
+        .doc-content th {
+          background: #1e4a7a;
+          color: #fff;
+          padding: 7px 12px;
+          text-align: left;
+          font-family: system-ui, sans-serif;
+          font-size: 0.82rem;
+          font-weight: 600;
+          letter-spacing: 0.03em;
+        }
+        .doc-content td {
+          padding: 7px 12px;
+          border-bottom: 1px solid #dde3ea;
+          vertical-align: top;
+        }
+        .doc-content tr:nth-child(even) td { background: #f7f9fc; }
+
+        /* Callout / note divs sometimes used in content */
+        .doc-content div[style*="overflow-x:auto"] {
+          overflow-x: auto;
+          margin: 1rem 0;
+        }
       `}</style>
 
       {/* Print button — hidden when printing */}
@@ -352,7 +460,8 @@ export default function PrintBusinessPlan() {
         </button>
       </div>
 
-      <div style={{ maxWidth: "820px", margin: "0 auto", padding: "2rem 2rem 4rem", fontFamily: "Georgia, 'Times New Roman', serif", color: "#1a1a1a", lineHeight: "1.6" }}>
+      <div style={{ minHeight: "100vh", background: "#f0f2f5", padding: "4rem 1rem 6rem" }}>
+      <div className="print-page" style={{ maxWidth: "860px", margin: "0 auto", padding: "3rem 3.5rem 5rem", fontFamily: "Georgia, 'Times New Roman', serif", color: "#1a1a1a", lineHeight: "1.6", background: "#fff", boxShadow: "0 4px 32px rgba(0,0,0,0.10)" }}>
 
         {/* Cover page */}
         <div style={{ textAlign: "center", minHeight: "85vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", borderBottom: "3px solid #1e4a7a", paddingBottom: "3rem", marginBottom: "0" }}>
@@ -402,13 +511,15 @@ export default function PrintBusinessPlan() {
 
                 {/* Content */}
                 {type === "static" ? (
-                  slug === "management-team" ? <ManagementTeamContent /> :
-                  slug === "the-offering" ? <TheOfferingContent /> :
-                  <SubscriptionAgreementContent />
+                  <div className="doc-content">
+                    {slug === "management-team" ? <ManagementTeamContent /> :
+                     slug === "the-offering" ? <TheOfferingContent /> :
+                     <SubscriptionAgreementContent />}
+                  </div>
                 ) : page ? (
                   <div
+                    className="doc-content"
                     dangerouslySetInnerHTML={{ __html: page.content }}
-                    style={{ lineHeight: "1.75", fontSize: "0.95rem" }}
                   />
                 ) : (
                   <p style={{ color: "#888", fontStyle: "italic" }}>Content for this section is coming soon.</p>
@@ -429,6 +540,7 @@ export default function PrintBusinessPlan() {
           </p>
         </div>
 
+      </div>
       </div>
     </>
   );
