@@ -4,11 +4,8 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Download, Users, Shield, Compass, Anchor } from "lucide-react";
 import hydrofoilShuttle from "@/assets/images/hydrofoil-shuttle.png";
-import interiorFerry from "@/assets/images/interior-ferry.jpg";
-import tSeriesRender from "@/assets/images/t-series-render.png";
-import tSeriesFoiling from "@/assets/images/t-series-foiling.png";
+import tSeriesTaxi from "@/assets/images/t-series-taxi.png";
 import mSeriesPatrol from "@/assets/images/m-series-patrol.jpg";
-import mSeriesFoiling from "@/assets/images/m-series-foiling.jpg";
 import rSeriesFoiling from "@/assets/images/r-series-foiling.png";
 
 export default function Buyers() {
@@ -65,12 +62,9 @@ export default function Buyers() {
                   <Button variant="outline"><Download className="mr-2 h-4 w-4" /> Spec Sheet</Button>
                 </div>
               </div>
-              <div className="order-1 lg:order-2 space-y-4">
+              <div className="order-1 lg:order-2">
                 <div className="rounded-2xl overflow-hidden border border-border aspect-video">
                   <img src={hydrofoilShuttle} alt="Pamli P-Series hydrofoil electric shuttle in flight" className="w-full h-full object-cover" />
-                </div>
-                <div className="rounded-2xl overflow-hidden border border-border" style={{ aspectRatio: '16/7' }}>
-                  <img src={interiorFerry} alt="Pamli P-Series luxury passenger cabin interior" className="w-full h-full object-cover object-center" />
                 </div>
               </div>
             </div>
@@ -81,12 +75,9 @@ export default function Buyers() {
         <section className="py-24 border-b border-border bg-card/50">
           <div className="container px-4 md:px-8">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div className="space-y-4">
+              <div>
                 <div className="rounded-2xl overflow-hidden border border-border aspect-video">
-                  <img src={tSeriesRender} alt="Pamli T-Series water taxi concept render with 20 passengers" className="w-full h-full object-cover" />
-                </div>
-                <div className="rounded-2xl overflow-hidden border border-border" style={{ aspectRatio: '16/7' }}>
-                  <img src={tSeriesFoiling} alt="Pamli T-Series foiling water taxi underway" className="w-full h-full object-cover object-center" />
+                  <img src={tSeriesTaxi} alt="Pamli T-Series electric foiling water taxi with passengers" className="w-full h-full object-cover" />
                 </div>
               </div>
               <div>
@@ -131,12 +122,9 @@ export default function Buyers() {
         <section className="py-24 border-b border-border">
           <div className="container px-4 md:px-8">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div className="space-y-4">
+              <div>
                 <div className="rounded-2xl overflow-hidden border border-border aspect-video">
                   <img src={mSeriesPatrol} alt="Pamli M-Series military patrol vessel" className="w-full h-full object-cover" />
-                </div>
-                <div className="rounded-2xl overflow-hidden border border-border" style={{ aspectRatio: '16/7' }}>
-                  <img src={mSeriesFoiling} alt="Pamli M-Series high-speed foiling intercept craft" className="w-full h-full object-cover object-center" />
                 </div>
               </div>
               <div>
@@ -215,12 +203,9 @@ export default function Buyers() {
                   <Button variant="outline"><Download className="mr-2 h-4 w-4" /> Spec Sheet</Button>
                 </div>
               </div>
-              <div className="order-1 lg:order-2 space-y-4">
+              <div className="order-1 lg:order-2">
                 <div className="rounded-2xl overflow-hidden border border-border aspect-video">
                   <img src={rSeriesFoiling} alt="Pamli R-Series electric foiling boat on the water" className="w-full h-full object-cover" />
-                </div>
-                <div className="rounded-2xl overflow-hidden border border-border" style={{ aspectRatio: '16/7' }}>
-                  <img src={rSeriesFoiling} alt="Pamli R-Series electric hydrofoil cruising above water" className="w-full h-full object-cover object-center" />
                 </div>
               </div>
             </div>
