@@ -51,4 +51,4 @@ SMTP_PORT = "465"
 SMTP_USER = "info@pamliecoconnect.com"
 
 [userenv.production]
-TELEGRAM_WEBHOOK_URL = "https://pamliecoconnect.com"
+TELEGRAM_WEBHOOK_URL = "https://doma-website-builder.replit.app"
