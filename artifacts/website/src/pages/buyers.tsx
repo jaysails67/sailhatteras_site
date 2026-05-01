@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Download, Users, Shield, Compass, Anchor } from "lucide-react";
 import hydrofoilShuttle from "@/assets/images/hydrofoil-shuttle.png";
 import tSeriesTaxi from "@/assets/images/t-series-taxi.png";
-import mSeriesPatrol from "@/assets/images/m-series-patrol.jpg";
+import mSeriesPatrol from "@/assets/images/m-series-patrol.png";
 import rSeriesFoiling from "@/assets/images/r-series-foiling.png";
 
 export default function Buyers() {
@@ -124,7 +124,7 @@ export default function Buyers() {
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
                 <div className="rounded-2xl overflow-hidden border border-border aspect-video">
-                  <img src={mSeriesPatrol} alt="Pamli M-Series military patrol vessel" className="w-full h-full object-cover" />
+                  <img src={mSeriesPatrol} alt="Pamli M-Series electric foiling patrol vessel for coast guard and military" className="w-full h-full object-cover" />
                 </div>
               </div>
               <div>
