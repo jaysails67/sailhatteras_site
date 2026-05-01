@@ -9,8 +9,7 @@ import tSeriesRender from "@/assets/images/t-series-render.png";
 import tSeriesFoiling from "@/assets/images/t-series-foiling.png";
 import mSeriesPatrol from "@/assets/images/m-series-patrol.jpg";
 import mSeriesFoiling from "@/assets/images/m-series-foiling.jpg";
-import rSeriesBuild from "@/assets/images/r-series-build.jpg";
-import rSeriesHull from "@/assets/images/r-series-hull.jpg";
+import rSeriesFoiling from "@/assets/images/r-series-foiling.png";
 
 export default function Buyers() {
   return (
@@ -218,10 +217,10 @@ export default function Buyers() {
               </div>
               <div className="order-1 lg:order-2 space-y-4">
                 <div className="rounded-2xl overflow-hidden border border-border aspect-video">
-                  <img src={rSeriesBuild} alt="Pamli R-Series hull under construction at Phillips Boatworks" className="w-full h-full object-cover" />
+                  <img src={rSeriesFoiling} alt="Pamli R-Series electric foiling boat on the water" className="w-full h-full object-cover" />
                 </div>
                 <div className="rounded-2xl overflow-hidden border border-border" style={{ aspectRatio: '16/7' }}>
-                  <img src={rSeriesHull} alt="Pamli R-Series fiberglass hull detail in workshop" className="w-full h-full object-cover object-center" />
+                  <img src={rSeriesFoiling} alt="Pamli R-Series electric hydrofoil cruising above water" className="w-full h-full object-cover object-center" />
                 </div>
               </div>
             </div>
