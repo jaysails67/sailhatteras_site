@@ -31,14 +31,28 @@ export function buildWebhookUrl(siteOrigin?: string): string | null {
   if (siteOrigin) {
     return `${siteOrigin.replace(/\/$/, "")}/api/telegram/webhook`;
   }
-  // 2. Explicit override via env var (set this to production public domain, e.g. https://pamliecoconnect.com)
+  // 2. Explicit env var — preferred for production. Set TELEGRAM_WEBHOOK_URL to your
+  //    public domain (e.g. https://pamliecoconnect.com). The server registers this URL
+  //    automatically on every restart so no manual dashboard steps are needed.
+  //    IMPORTANT: If your domain uses a 302 redirect, change it to 307 for the
+  //    /api/telegram/webhook path so Telegram's POST method is preserved through
+  //    the redirect. A 302 can silently convert POST → GET, breaking delivery.
   if (process.env.TELEGRAM_WEBHOOK_URL) {
     return `${process.env.TELEGRAM_WEBHOOK_URL.replace(/\/$/, "")}/api/telegram/webhook`;
   }
-  // 3. Fallback: Replit dev domain (correct in dev, but NOT the public production URL in autoscale deployments)
-  const domain = process.env.REPLIT_DEV_DOMAIN;
-  if (!domain) return null;
-  return `https://${domain}/api/telegram/webhook`;
+  // 3. Fallback: first domain listed in REPLIT_DOMAINS (production deployment domain in
+  //    autoscale deployments, same as dev domain in local dev — but dev skips registration
+  //    entirely via the NODE_ENV=development check in registerWebhook, so this only ever
+  //    runs in production where REPLIT_DOMAINS is the correct public-facing host).
+  const domains = process.env.REPLIT_DOMAINS;
+  if (domains) {
+    const firstDomain = domains.split(",")[0].trim();
+    return `https://${firstDomain}/api/telegram/webhook`;
+  }
+  // 4. Last resort fallback
+  const devDomain = process.env.REPLIT_DEV_DOMAIN;
+  if (!devDomain) return null;
+  return `https://${devDomain}/api/telegram/webhook`;
 }
 
 async function setWebhook(webhookUrl: string): Promise<{ ok: boolean; description?: string }> {
