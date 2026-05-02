@@ -68,9 +68,8 @@ router.get("/storage/public-objects/*filePath", async (req: Request, res: Respon
 /**
  * GET /storage/objects/*
  *
- * Serve object entities from PRIVATE_OBJECT_DIR.
- * These are served from a separate path from /public-objects and can optionally
- * be protected with authentication or ACL checks based on the use case.
+ * Serve object entities from PRIVATE_OBJECT_DIR with full Range request support
+ * so that HTML5 audio/video players can stream and seek correctly.
  */
 router.get("/storage/objects/*path", async (req: Request, res: Response) => {
   try {
@@ -79,31 +78,46 @@ router.get("/storage/objects/*path", async (req: Request, res: Response) => {
     const objectPath = `/objects/${wildcardPath}`;
     const objectFile = await objectStorageService.getObjectEntityFile(objectPath);
 
-    // --- Protected route example (uncomment when using replit-auth) ---
-    // if (!req.isAuthenticated()) {
-    //   res.status(401).json({ error: "Unauthorized" });
-    //   return;
-    // }
-    // const canAccess = await objectStorageService.canAccessObjectEntity({
-    //   userId: req.user.id,
-    //   objectFile,
-    //   requestedPermission: ObjectPermission.READ,
-    // });
-    // if (!canAccess) {
-    //   res.status(403).json({ error: "Forbidden" });
-    //   return;
-    // }
+    const [metadata] = await objectFile.getMetadata();
+    const fileSize = metadata.size ? Number(metadata.size) : null;
+    const contentType = (metadata.contentType as string) || "application/octet-stream";
 
-    const response = await objectStorageService.downloadObject(objectFile);
+    res.setHeader("Content-Type", contentType);
+    res.setHeader("Accept-Ranges", "bytes");
+    res.setHeader("Cache-Control", "private, max-age=3600");
 
-    res.status(response.status);
-    response.headers.forEach((value, key) => res.setHeader(key, value));
+    const rangeHeader = req.headers.range;
 
-    if (response.body) {
-      const nodeStream = Readable.fromWeb(response.body as ReadableStream<Uint8Array>);
+    if (rangeHeader && fileSize) {
+      const match = rangeHeader.match(/bytes=(\d+)-(\d*)/);
+      if (!match) {
+        res.status(400).json({ error: "Invalid Range header" });
+        return;
+      }
+
+      const start = parseInt(match[1], 10);
+      const end = match[2] ? parseInt(match[2], 10) : fileSize - 1;
+
+      if (start >= fileSize || end >= fileSize || start > end) {
+        res.setHeader("Content-Range", `bytes */${fileSize}`);
+        res.status(416).end();
+        return;
+      }
+
+      const chunkSize = end - start + 1;
+      res.setHeader("Content-Range", `bytes ${start}-${end}/${fileSize}`);
+      res.setHeader("Content-Length", String(chunkSize));
+      res.status(206);
+
+      const nodeStream = objectFile.createReadStream({ start, end });
       nodeStream.pipe(res);
     } else {
-      res.end();
+      if (fileSize) {
+        res.setHeader("Content-Length", String(fileSize));
+      }
+      res.status(200);
+      const nodeStream = objectFile.createReadStream();
+      nodeStream.pipe(res);
     }
   } catch (error) {
     if (error instanceof ObjectNotFoundError) {
