@@ -1,8 +1,9 @@
+import { useState, useCallback } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { useGetFeaturedPosts, useListPosts, Post } from "@workspace/api-client-react";
 import { format } from "date-fns";
-import { PlayCircle, FileText, Headphones, ExternalLink, Download } from "lucide-react";
+import { PlayCircle, FileText, Headphones, ExternalLink, Download, Link2, Check } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
 
@@ -23,6 +24,32 @@ function getEmbedUrl(url: string): string | null {
   } catch {
     return null;
   }
+}
+
+function CopyLinkButton({ postId }: { postId: number }) {
+  const [copied, setCopied] = useState(false);
+  const copy = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const url = `${window.location.origin}/press/${postId}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }, [postId]);
+
+  return (
+    <button
+      onClick={copy}
+      title={copied ? "Copied!" : "Copy shareable link"}
+      className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors ml-auto"
+    >
+      {copied
+        ? <><Check className="h-3.5 w-3.5 text-green-400" /><span className="text-green-400">Copied!</span></>
+        : <><Link2 className="h-3.5 w-3.5" />Copy link</>
+      }
+    </button>
+  );
 }
 
 export default function Press() {
@@ -62,9 +89,12 @@ export default function Press() {
             <ExternalLink className="h-4 w-4" /> Listen externally
           </a>
         ) : null}
-        <Link href={`/press/${post.id}`} className="mt-auto text-sm font-semibold text-primary hover:underline">
-          View details →
-        </Link>
+        <div className="mt-auto flex items-center">
+          <Link href={`/press/${post.id}`} className="text-sm font-semibold text-primary hover:underline">
+            View details →
+          </Link>
+          <CopyLinkButton postId={post.id} />
+        </div>
       </CardContent>
     </Card>
   );
@@ -121,9 +151,12 @@ export default function Press() {
         </CardHeader>
         <CardContent>
           <CardDescription className="text-sm line-clamp-2">{post.excerpt}</CardDescription>
-          <Link href={`/press/${post.id}`} className="mt-3 inline-block text-sm font-semibold text-primary hover:underline">
-            View details →
-          </Link>
+          <div className="mt-3 flex items-center">
+            <Link href={`/press/${post.id}`} className="text-sm font-semibold text-primary hover:underline">
+              View details →
+            </Link>
+            <CopyLinkButton postId={post.id} />
+          </div>
         </CardContent>
       </Card>
     );
@@ -154,9 +187,12 @@ export default function Press() {
             {isPdf(post.mediaUrl) ? "Download PDF" : "Open document"}
           </a>
         )}
-        <Link href={`/press/${post.id}`} className="mt-auto text-sm font-semibold text-primary hover:underline">
-          Read more →
-        </Link>
+        <div className="mt-auto flex items-center">
+          <Link href={`/press/${post.id}`} className="text-sm font-semibold text-primary hover:underline">
+            Read more →
+          </Link>
+          <CopyLinkButton postId={post.id} />
+        </div>
       </CardContent>
     </Card>
   );
