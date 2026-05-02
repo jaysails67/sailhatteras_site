@@ -6,6 +6,25 @@ import { PlayCircle, FileText, Headphones, ExternalLink, Download } from "lucide
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
 
+function getEmbedUrl(url: string): string | null {
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes("youtube.com") || u.hostname.includes("youtu.be")) {
+      const id = u.hostname.includes("youtu.be")
+        ? u.pathname.slice(1)
+        : u.searchParams.get("v") ?? u.pathname.split("/").pop();
+      return id ? `https://www.youtube.com/embed/${id}` : null;
+    }
+    if (u.hostname.includes("vimeo.com")) {
+      const id = u.pathname.split("/").filter(Boolean).pop();
+      return id ? `https://player.vimeo.com/video/${id}` : null;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 export default function Press() {
   const { data: featuredPosts, isLoading: featuredLoading } = useGetFeaturedPosts();
   const { data: allPosts, isLoading: allLoading } = useListPosts();
@@ -50,45 +69,65 @@ export default function Press() {
     </Card>
   );
 
-  const renderVideoCard = (post: Post) => (
-    <Card key={post.id} className="overflow-hidden border-border bg-card/50 hover:bg-card transition-colors flex flex-col">
-      {post.mediaUrl && (
-        <div className="w-full bg-muted overflow-hidden">
-          {isStoredVideo(post.mediaUrl) ? (
-            <video controls className="w-full max-h-52 object-cover" src={post.mediaUrl} preload="metadata">
-              Your browser does not support video.
-            </video>
-          ) : (
-            <div className="aspect-video">
-              <iframe
-                src={post.mediaUrl}
-                title={post.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
-              />
-            </div>
-          )}
-        </div>
-      )}
-      <CardHeader className="pb-2">
-        <div className="flex items-center justify-between mb-1">
-          <span className="flex items-center gap-2 text-xs font-medium text-primary uppercase tracking-wider">
-            <PlayCircle className="h-4 w-4" />
-            Video Presentation
-          </span>
-          <span className="text-xs text-muted-foreground">{format(new Date(post.publishedAt), "MMM d, yyyy")}</span>
-        </div>
-        <CardTitle className="text-lg leading-tight">{post.title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <CardDescription className="text-sm line-clamp-2">{post.excerpt}</CardDescription>
-        <Link href={`/press/${post.id}`} className="mt-3 inline-block text-sm font-semibold text-primary hover:underline">
-          View details →
-        </Link>
-      </CardContent>
-    </Card>
-  );
+  const renderVideoCard = (post: Post) => {
+    const embedUrl = post.mediaUrl && !isStoredVideo(post.mediaUrl)
+      ? getEmbedUrl(post.mediaUrl)
+      : null;
+
+    return (
+      <Card key={post.id} className="overflow-hidden border-border bg-card/50 hover:bg-card transition-colors flex flex-col">
+        {post.mediaUrl && (
+          <div className="w-full bg-muted overflow-hidden">
+            {isStoredVideo(post.mediaUrl) ? (
+              <video controls className="w-full max-h-52 object-cover" src={post.mediaUrl} preload="metadata">
+                Your browser does not support video.
+              </video>
+            ) : embedUrl ? (
+              <div className="aspect-video">
+                <iframe
+                  src={embedUrl}
+                  title={post.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                />
+              </div>
+            ) : (
+              <a
+                href={post.mediaUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center justify-center gap-3 aspect-video bg-muted hover:bg-accent transition-colors"
+              >
+                <div className="rounded-full bg-primary/10 border border-primary/30 p-4">
+                  <PlayCircle className="h-10 w-10 text-primary" />
+                </div>
+                <span className="text-sm font-medium text-primary flex items-center gap-1.5">
+                  Watch Video <ExternalLink className="h-3.5 w-3.5" />
+                </span>
+              </a>
+            )}
+          </div>
+        )}
+        <CardHeader className="pb-2">
+          <div className="flex items-center justify-between mb-1">
+            <span className="flex items-center gap-2 text-xs font-medium text-primary uppercase tracking-wider">
+              <PlayCircle className="h-4 w-4" />
+              Video Presentation
+            </span>
+            <span className="text-xs text-muted-foreground">{format(new Date(post.publishedAt), "MMM d, yyyy")}</span>
+          </div>
+          <CardTitle className="text-lg leading-tight">{post.title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CardDescription className="text-sm line-clamp-2">{post.excerpt}</CardDescription>
+          <Link href={`/press/${post.id}`} className="mt-3 inline-block text-sm font-semibold text-primary hover:underline">
+            View details →
+          </Link>
+        </CardContent>
+      </Card>
+    );
+  };
 
   const renderResearchCard = (post: Post) => (
     <Card key={post.id} className="overflow-hidden border-border bg-card/50 hover:bg-card transition-colors flex flex-col">

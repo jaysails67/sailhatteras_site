@@ -3,7 +3,26 @@ import { Footer } from "@/components/layout/Footer";
 import { useGetPost } from "@workspace/api-client-react";
 import { useParams, Link } from "wouter";
 import { format } from "date-fns";
-import { ArrowLeft, FileText, PlayCircle, Headphones, Download } from "lucide-react";
+import { ArrowLeft, FileText, PlayCircle, Headphones, Download, ExternalLink } from "lucide-react";
+
+function getEmbedUrl(url: string): string | null {
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes("youtube.com") || u.hostname.includes("youtu.be")) {
+      const id = u.hostname.includes("youtu.be")
+        ? u.pathname.slice(1)
+        : u.searchParams.get("v") ?? u.pathname.split("/").pop();
+      return id ? `https://www.youtube.com/embed/${id}` : null;
+    }
+    if (u.hostname.includes("vimeo.com")) {
+      const id = u.pathname.split("/").filter(Boolean).pop();
+      return id ? `https://player.vimeo.com/video/${id}` : null;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 const TYPE_LABELS: Record<string, string> = {
   video: "Video Presentation",
@@ -75,25 +94,43 @@ export default function PressArticle() {
             <article className="container max-w-3xl mx-auto px-4 md:px-8 py-12">
 
               {/* Video */}
-              {post.mediaUrl && post.type === "video" && (
-                isStoredVideo(post.mediaUrl) ? (
+              {post.mediaUrl && post.type === "video" && (() => {
+                const embedUrl = isStoredVideo(post.mediaUrl) ? null : getEmbedUrl(post.mediaUrl);
+                return isStoredVideo(post.mediaUrl) ? (
                   <div className="mb-10 rounded-xl overflow-hidden bg-muted">
                     <video controls className="w-full" src={post.mediaUrl}>
                       Your browser does not support the video tag.
                     </video>
                   </div>
-                ) : (
+                ) : embedUrl ? (
                   <div className="mb-10 rounded-xl overflow-hidden aspect-video bg-muted">
                     <iframe
-                      src={post.mediaUrl}
+                      src={embedUrl}
                       title={post.title}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                       className="w-full h-full"
                     />
                   </div>
-                )
-              )}
+                ) : (
+                  <div className="mb-10 rounded-xl overflow-hidden bg-muted border border-border">
+                    <a
+                      href={post.mediaUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex flex-col items-center justify-center gap-4 py-16 hover:bg-accent transition-colors"
+                    >
+                      <div className="rounded-full bg-primary/10 border border-primary/30 p-5">
+                        <PlayCircle className="h-12 w-12 text-primary" />
+                      </div>
+                      <span className="text-base font-semibold text-primary flex items-center gap-2">
+                        Watch Video <ExternalLink className="h-4 w-4" />
+                      </span>
+                      <span className="text-xs text-muted-foreground">Opens in a new tab</span>
+                    </a>
+                  </div>
+                );
+              })()}
 
               {/* Audio */}
               {post.mediaUrl && post.type === "presentation" && (
