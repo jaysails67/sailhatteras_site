@@ -3,7 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Download, Users, Shield, Compass, Anchor } from "lucide-react";
-import hydrofoilShuttle from "@/assets/images/hydrofoil-shuttle.png";
+import pSeriesShuttle from "@/assets/images/p-series-shuttle.png";
 import tSeriesTaxi from "@/assets/images/t-series-taxi.png";
 import mSeriesPatrol from "@/assets/images/m-series-patrol.png";
 import rSeriesFoiling from "@/assets/images/r-series-foiling.png";
@@ -64,7 +64,7 @@ export default function Buyers() {
               </div>
               <div className="order-1 lg:order-2">
                 <div className="rounded-2xl overflow-hidden border border-border aspect-video">
-                  <img src={hydrofoilShuttle} alt="Pamli P-Series hydrofoil electric shuttle in flight" className="w-full h-full object-cover" />
+                  <img src={pSeriesShuttle} alt="Pamli P-Series electric foiling passenger shuttle on the water" className="w-full h-full object-cover" />
                 </div>
               </div>
             </div>

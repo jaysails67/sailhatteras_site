@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Anchor, ShieldCheck, Zap } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { events } from "@/lib/analytics";
-import hydrofoilShuttle from "@/assets/images/hydrofoil-shuttle.png";
+import pSeriesShuttle from "@/assets/images/p-series-shuttle.png";
 import interiorFerry from "@/assets/images/interior-ferry.jpg";
 
 interface HomeContent {
@@ -56,7 +56,7 @@ export default function Home() {
         <section className="relative w-full h-[85vh] flex items-center overflow-hidden">
           <div className="absolute inset-0 z-0">
             <img
-              src={hydrofoilShuttle}
+              src={pSeriesShuttle}
               alt="PamliEcoConnect hydrofoil electric shuttle in flight above water"
               className="w-full h-full object-cover object-center"
             />
