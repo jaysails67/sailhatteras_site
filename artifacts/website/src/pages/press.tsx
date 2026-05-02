@@ -2,7 +2,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { useGetFeaturedPosts, useListPosts, Post } from "@workspace/api-client-react";
 import { format } from "date-fns";
-import { PlayCircle, FileText, Presentation } from "lucide-react";
+import { PlayCircle, FileText, Headphones, ExternalLink, Download } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
 
@@ -10,41 +10,132 @@ export default function Press() {
   const { data: featuredPosts, isLoading: featuredLoading } = useGetFeaturedPosts();
   const { data: allPosts, isLoading: allLoading } = useListPosts();
 
-  const getIconForType = (type: string) => {
-    switch(type) {
-      case 'video': return <PlayCircle className="h-5 w-5 text-primary" />;
-      case 'presentation': return <Presentation className="h-5 w-5 text-primary" />;
-      default: return <FileText className="h-5 w-5 text-primary" />;
-    }
-  };
+  const isStoredAudio = (url: string) =>
+    url.startsWith("/api/storage") || /\.(mp3|m4a|wav|ogg|aac)$/i.test(url);
 
-  const renderPostCard = (post: Post) => (
-    <Card key={post.id} className="overflow-hidden border-border bg-card/50 hover:bg-card transition-colors">
+  const isStoredVideo = (url: string) =>
+    url.startsWith("/api/storage") || /\.(mp4|webm|mov)$/i.test(url);
+
+  const isPdf = (url: string) =>
+    url.startsWith("/api/storage") || /\.pdf$/i.test(url);
+
+  const renderAudioCard = (post: Post) => (
+    <Card key={post.id} className="overflow-hidden border-border bg-card/50 hover:bg-card transition-colors flex flex-col">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between mb-2">
+          <span className="flex items-center gap-2 text-xs font-medium text-primary uppercase tracking-wider">
+            <Headphones className="h-4 w-4" />
+            Audio Blog
+          </span>
+          <span className="text-xs text-muted-foreground">{format(new Date(post.publishedAt), "MMM d, yyyy")}</span>
+        </div>
+        <CardTitle className="text-lg leading-tight">{post.title}</CardTitle>
+      </CardHeader>
+      <CardContent className="flex-1 flex flex-col gap-3">
+        <CardDescription className="text-sm line-clamp-2">{post.excerpt}</CardDescription>
+        {post.mediaUrl && isStoredAudio(post.mediaUrl) ? (
+          <audio controls className="w-full mt-1" src={post.mediaUrl} preload="metadata">
+            Your browser does not support the audio element.
+          </audio>
+        ) : post.mediaUrl ? (
+          <a href={post.mediaUrl} target="_blank" rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
+            <ExternalLink className="h-4 w-4" /> Listen externally
+          </a>
+        ) : null}
+        <Link href={`/press/${post.id}`} className="mt-auto text-sm font-semibold text-primary hover:underline">
+          View details →
+        </Link>
+      </CardContent>
+    </Card>
+  );
+
+  const renderVideoCard = (post: Post) => (
+    <Card key={post.id} className="overflow-hidden border-border bg-card/50 hover:bg-card transition-colors flex flex-col">
       {post.mediaUrl && (
-        <div className="w-full h-48 bg-muted overflow-hidden">
-          <img src={post.mediaUrl} alt={post.title} className="w-full h-full object-cover" />
+        <div className="w-full bg-muted overflow-hidden">
+          {isStoredVideo(post.mediaUrl) ? (
+            <video controls className="w-full max-h-52 object-cover" src={post.mediaUrl} preload="metadata">
+              Your browser does not support video.
+            </video>
+          ) : (
+            <div className="aspect-video">
+              <iframe
+                src={post.mediaUrl}
+                title={post.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+              />
+            </div>
+          )}
         </div>
       )}
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between mb-1">
+          <span className="flex items-center gap-2 text-xs font-medium text-primary uppercase tracking-wider">
+            <PlayCircle className="h-4 w-4" />
+            Video Presentation
+          </span>
+          <span className="text-xs text-muted-foreground">{format(new Date(post.publishedAt), "MMM d, yyyy")}</span>
+        </div>
+        <CardTitle className="text-lg leading-tight">{post.title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <CardDescription className="text-sm line-clamp-2">{post.excerpt}</CardDescription>
+        <Link href={`/press/${post.id}`} className="mt-3 inline-block text-sm font-semibold text-primary hover:underline">
+          View details →
+        </Link>
+      </CardContent>
+    </Card>
+  );
+
+  const renderResearchCard = (post: Post) => (
+    <Card key={post.id} className="overflow-hidden border-border bg-card/50 hover:bg-card transition-colors flex flex-col">
       <CardHeader>
         <div className="flex items-center justify-between mb-2">
           <span className="flex items-center gap-2 text-xs font-medium text-primary uppercase tracking-wider">
-            {getIconForType(post.type)}
-            {post.type.replace('_', ' ')}
+            <FileText className="h-4 w-4" />
+            Written Research
           </span>
-          <span className="text-xs text-muted-foreground">{format(new Date(post.publishedAt), 'MMM d, yyyy')}</span>
+          <span className="text-xs text-muted-foreground">{format(new Date(post.publishedAt), "MMM d, yyyy")}</span>
         </div>
-        <CardTitle className="text-xl leading-tight">{post.title}</CardTitle>
+        <CardTitle className="text-lg leading-tight">{post.title}</CardTitle>
       </CardHeader>
-      <CardContent>
-        <CardDescription className="text-muted-foreground text-sm line-clamp-3">
-          {post.excerpt}
-        </CardDescription>
-        <Link href={`/press/${post.id}`} className="mt-4 inline-block text-sm font-semibold text-primary hover:underline" data-testid={`link-post-${post.id}`}>
+      <CardContent className="flex-1 flex flex-col gap-3">
+        <CardDescription className="text-sm line-clamp-3">{post.excerpt}</CardDescription>
+        {post.mediaUrl && (
+          <a
+            href={post.mediaUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+          >
+            <Download className="h-4 w-4" />
+            {isPdf(post.mediaUrl) ? "Download PDF" : "Open document"}
+          </a>
+        )}
+        <Link href={`/press/${post.id}`} className="mt-auto text-sm font-semibold text-primary hover:underline">
           Read more →
         </Link>
       </CardContent>
     </Card>
   );
+
+  const videos = [
+    ...(featuredPosts?.videos ?? []),
+    ...(allPosts?.filter(p => p.type === "video" && !featuredPosts?.videos?.some(f => f.id === p.id)) ?? []),
+  ];
+  const audioPosts = [
+    ...(featuredPosts?.presentations ?? []),
+    ...(allPosts?.filter(p => p.type === "presentation" && !featuredPosts?.presentations?.some(f => f.id === p.id)) ?? []),
+  ];
+  const research = [
+    ...(featuredPosts?.pressReleases ?? []),
+    ...(allPosts?.filter(p => p.type === "press_release" && !featuredPosts?.pressReleases?.some(f => f.id === p.id)) ?? []),
+  ];
+
+  const isEmpty = !videos.length && !audioPosts.length && !research.length;
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -54,7 +145,7 @@ export default function Press() {
           <div className="container px-4 md:px-8 max-w-4xl">
             <h1 className="text-5xl font-display font-bold mb-6">Press & Multimedia</h1>
             <p className="text-xl text-muted-foreground">
-              Latest news, press releases, and media assets from PamliEcoConnect.
+              Audio blogs, video presentations, and written research from Phillips Boatworks.
             </p>
           </div>
         </section>
@@ -63,44 +154,39 @@ export default function Press() {
           {(featuredLoading || allLoading) ? (
             <div className="grid md:grid-cols-3 gap-8 animate-pulse">
               {[1, 2, 3].map(i => (
-                <div key={i} className="h-64 bg-accent rounded-xl"></div>
+                <div key={i} className="h-64 bg-accent rounded-xl" />
               ))}
+            </div>
+          ) : isEmpty ? (
+            <div className="text-center py-12 text-muted-foreground">
+              No media available yet — check back soon.
             </div>
           ) : (
             <div className="space-y-16">
-              {featuredPosts?.pressReleases?.length ? (
+              {videos.length > 0 && (
                 <div>
-                  <h2 className="text-2xl font-display font-bold mb-8 border-b border-border pb-4">Press Releases</h2>
+                  <h2 className="text-2xl font-display font-bold mb-8 border-b border-border pb-4">Video Presentations</h2>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {featuredPosts.pressReleases.map(renderPostCard)}
-                    {allPosts?.filter(p => p.type === 'press_release' && !p.featured).map(renderPostCard)}
+                    {videos.map(renderVideoCard)}
                   </div>
                 </div>
-              ) : null}
+              )}
 
-              {featuredPosts?.videos?.length ? (
+              {audioPosts.length > 0 && (
                 <div>
-                  <h2 className="text-2xl font-display font-bold mb-8 border-b border-border pb-4">Videos</h2>
+                  <h2 className="text-2xl font-display font-bold mb-8 border-b border-border pb-4">Audio Blogs</h2>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {featuredPosts.videos.map(renderPostCard)}
-                    {allPosts?.filter(p => p.type === 'video' && !p.featured).map(renderPostCard)}
+                    {audioPosts.map(renderAudioCard)}
                   </div>
                 </div>
-              ) : null}
-              
-              {featuredPosts?.presentations?.length ? (
+              )}
+
+              {research.length > 0 && (
                 <div>
-                  <h2 className="text-2xl font-display font-bold mb-8 border-b border-border pb-4">Presentations</h2>
+                  <h2 className="text-2xl font-display font-bold mb-8 border-b border-border pb-4">Written Research</h2>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {featuredPosts.presentations.map(renderPostCard)}
-                    {allPosts?.filter(p => p.type === 'presentation' && !p.featured).map(renderPostCard)}
+                    {research.map(renderResearchCard)}
                   </div>
-                </div>
-              ) : null}
-              
-              {(!allPosts || allPosts.length === 0) && (
-                <div className="text-center py-12 text-muted-foreground">
-                  No press releases available at this time.
                 </div>
               )}
             </div>

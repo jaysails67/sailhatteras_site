@@ -668,19 +668,23 @@ export default function Admin() {
                   {/* Type selector */}
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">Content Type</label>
-                    <div className="flex gap-3">
-                      {(["video", "presentation", "press_release"] as const).map((t) => (
+                    <div className="flex flex-wrap gap-3">
+                      {([
+                        { value: "video", label: "Video Presentation" },
+                        { value: "presentation", label: "Audio Blog" },
+                        { value: "press_release", label: "Written Research" },
+                      ] as const).map(({ value, label }) => (
                         <button
-                          key={t}
+                          key={value}
                           type="button"
-                          onClick={() => setPressForm(f => ({ ...f, type: t }))}
+                          onClick={() => setPressForm(f => ({ ...f, type: value, mediaUrl: "", useUploadedFile: true }))}
                           className={`px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
-                            pressForm.type === t
+                            pressForm.type === value
                               ? "border-primary bg-primary/10 text-primary"
                               : "border-border bg-background text-muted-foreground hover:border-primary/50"
                           }`}
                         >
-                          {t === "press_release" ? "Press Release" : t === "video" ? "Video" : "Audio / Presentation"}
+                          {label}
                         </button>
                       ))}
                     </div>
@@ -748,14 +752,32 @@ export default function Admin() {
                           <div className="flex flex-col items-center gap-2 text-muted-foreground">
                             <Upload className="h-6 w-6" />
                             <span className="text-sm">
-                              {isUploading ? `Uploading… ${progress}%` : "Click to upload audio or video file"}
+                              {isUploading ? `Uploading… ${progress}%` : (
+                                pressForm.type === "press_release"
+                                  ? "Click to upload PDF or document"
+                                  : pressForm.type === "presentation"
+                                  ? "Click to upload audio file"
+                                  : "Click to upload video file"
+                              )}
                             </span>
-                            <span className="text-xs">MP3, MP4, M4A, WAV, WEBM, OGG supported</span>
+                            <span className="text-xs text-muted-foreground/70">
+                              {pressForm.type === "press_release"
+                                ? "PDF, DOC, DOCX supported"
+                                : pressForm.type === "presentation"
+                                ? "MP3, M4A, WAV, OGG, AAC supported"
+                                : "MP4, WEBM, MOV supported"}
+                            </span>
                           </div>
                           <input
                             type="file"
                             className="hidden"
-                            accept="audio/*,video/*"
+                            accept={
+                              pressForm.type === "press_release"
+                                ? ".pdf,.doc,.docx,application/pdf,application/msword"
+                                : pressForm.type === "presentation"
+                                ? "audio/*"
+                                : "video/*"
+                            }
                             disabled={isUploading}
                             onChange={handleFileUpload}
                           />
@@ -771,7 +793,13 @@ export default function Admin() {
                       <input
                         type="url"
                         className="w-full rounded-lg border border-border bg-background text-foreground text-sm p-3 focus:outline-none focus:ring-2 focus:ring-primary/50 placeholder:text-muted-foreground"
-                        placeholder={pressForm.type === "video" ? "https://www.youtube.com/embed/… or HeyGen share URL" : "https://drive.google.com/…"}
+                        placeholder={
+                          pressForm.type === "video"
+                            ? "https://www.youtube.com/embed/… or HeyGen share URL"
+                            : pressForm.type === "presentation"
+                            ? "https://notebooklm.google.com/… or audio share link"
+                            : "https://drive.google.com/… or PDF link"
+                        }
                         value={pressForm.mediaUrl}
                         onChange={(e) => setPressForm(f => ({ ...f, mediaUrl: e.target.value }))}
                       />
