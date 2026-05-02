@@ -68,8 +68,13 @@ router.get("/storage/public-objects/*filePath", async (req: Request, res: Respon
 /**
  * GET /storage/objects/*
  *
- * Serve object entities from PRIVATE_OBJECT_DIR with full Range request support
- * so that HTML5 audio/video players can stream and seek correctly.
+ * Serve object entities from PRIVATE_OBJECT_DIR.
+ *
+ * Audio and video files are served via a short-lived signed GCS URL redirect
+ * (307) so that the browser streams directly from Google Cloud Storage, which
+ * has full native Range/seek support and avoids any proxy buffering issues.
+ *
+ * All other files (PDFs, docs, etc.) are streamed directly through this server.
  */
 router.get("/storage/objects/*path", async (req: Request, res: Response) => {
   try {
@@ -79,46 +84,37 @@ router.get("/storage/objects/*path", async (req: Request, res: Response) => {
     const objectFile = await objectStorageService.getObjectEntityFile(objectPath);
 
     const [metadata] = await objectFile.getMetadata();
-    const fileSize = metadata.size ? Number(metadata.size) : null;
     const contentType = (metadata.contentType as string) || "application/octet-stream";
 
-    res.setHeader("Content-Type", contentType);
-    res.setHeader("Accept-Ranges", "bytes");
-    res.setHeader("Cache-Control", "private, max-age=3600");
+    // For audio and video: redirect to a signed GCS URL so the browser can
+    // stream directly with native Range request support (no proxy in the way).
+    const isMedia =
+      contentType.startsWith("audio/") || contentType.startsWith("video/");
 
-    const rangeHeader = req.headers.range;
-
-    if (rangeHeader && fileSize) {
-      const match = rangeHeader.match(/bytes=(\d+)-(\d*)/);
-      if (!match) {
-        res.status(400).json({ error: "Invalid Range header" });
-        return;
-      }
-
-      const start = parseInt(match[1], 10);
-      const end = match[2] ? parseInt(match[2], 10) : fileSize - 1;
-
-      if (start >= fileSize || end >= fileSize || start > end) {
-        res.setHeader("Content-Range", `bytes */${fileSize}`);
-        res.status(416).end();
-        return;
-      }
-
-      const chunkSize = end - start + 1;
-      res.setHeader("Content-Range", `bytes ${start}-${end}/${fileSize}`);
-      res.setHeader("Content-Length", String(chunkSize));
-      res.status(206);
-
-      const nodeStream = objectFile.createReadStream({ start, end });
-      nodeStream.pipe(res);
-    } else {
-      if (fileSize) {
-        res.setHeader("Content-Length", String(fileSize));
-      }
-      res.status(200);
-      const nodeStream = objectFile.createReadStream();
-      nodeStream.pipe(res);
+    if (isMedia) {
+      const signedUrl = await objectStorageService.getSignedReadUrl(objectFile, 300);
+      res.redirect(307, signedUrl);
+      return;
     }
+
+    // For all other files: stream through this server.
+    const fileSize = metadata.size ? Number(metadata.size) : null;
+    res.setHeader("Content-Type", contentType);
+    res.setHeader("Cache-Control", "private, max-age=3600");
+    if (fileSize) {
+      res.setHeader("Content-Length", String(fileSize));
+    }
+    res.status(200);
+    const nodeStream = objectFile.createReadStream();
+    nodeStream.on("error", (err) => {
+      req.log.error({ err }, "Error streaming object");
+      if (!res.headersSent) {
+        res.status(500).json({ error: "Stream error" });
+      } else {
+        res.end();
+      }
+    });
+    nodeStream.pipe(res);
   } catch (error) {
     if (error instanceof ObjectNotFoundError) {
       req.log.warn({ err: error }, "Object not found");

@@ -128,6 +128,13 @@ export class ObjectStorageService {
     });
   }
 
+  async getSignedReadUrl(objectFile: File, ttlSec: number = 300): Promise<string> {
+    const { bucketName, objectName } = parseObjectPath(
+      `/${objectFile.bucket.name}/${objectFile.name}`
+    );
+    return signObjectURL({ bucketName, objectName, method: "GET", ttlSec });
+  }
+
   async getObjectEntityFile(objectPath: string): Promise<File> {
     if (!objectPath.startsWith("/objects/")) {
       throw new ObjectNotFoundError();
