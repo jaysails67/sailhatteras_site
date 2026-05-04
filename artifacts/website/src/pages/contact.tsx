@@ -151,14 +151,14 @@ export default function Contact() {
             </div>
 
             <div className="bg-card border border-border p-8 rounded-xl h-fit">
-              <h2 className="text-2xl font-bold mb-8">Global Headquarters</h2>
+              <h2 className="text-2xl font-bold mb-8">Our Location</h2>
               <div className="space-y-6 text-muted-foreground">
                 <div className="flex items-start gap-4">
                   <MapPin className="h-6 w-6 text-primary shrink-0" />
                   <div>
-                    <p className="font-medium text-foreground">PamliEcoConnect Inc.</p>
-                    <p>100 Maritime Way, Suite 400</p>
-                    <p>San Francisco, CA 94111</p>
+                    <p className="font-medium text-foreground">Phillips Boat Works</p>
+                    <p>210 Scott Town Rd.</p>
+                    <p>New Bern, NC USA</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
