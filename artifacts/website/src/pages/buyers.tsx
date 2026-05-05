@@ -9,6 +9,17 @@ import mSeriesPatrol from "@/assets/images/m-series-patrol.png";
 import rSeriesFoiling from "@/assets/images/r-series-foiling.png";
 import xSeriesCat from "@/assets/images/x-series-cat.jpg";
 import phb85Cat from "@/assets/images/phb-85-cat.jpg";
+import phbLogo from "@/assets/images/phillips-boatworks-icon.png";
+
+function PhbLogo() {
+  return (
+    <img
+      src={phbLogo}
+      alt="Phillips Boatworks"
+      className="inline-block h-9 w-9 rounded-md object-contain align-middle mr-2 -mt-1"
+    />
+  );
+}
 
 export default function Buyers() {
   return (
@@ -35,7 +46,7 @@ export default function Buyers() {
                   <Users className="mr-2 h-4 w-4" />
                   Passenger Transport
                 </div>
-                <h2 className="text-4xl font-display font-bold mb-6">pHb P-Series</h2>
+                <h2 className="text-4xl font-display font-bold mb-6"><PhbLogo />P-Series</h2>
                 <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
                   Redefining urban commuting. The pHb P-Series provides a smooth, silent ride above the waves, cutting travel times and operating costs significantly compared to traditional ferries.
                 </p>
@@ -87,7 +98,7 @@ export default function Buyers() {
                   <Anchor className="mr-2 h-4 w-4" />
                   Water Taxi
                 </div>
-                <h2 className="text-4xl font-display font-bold mb-6">pHb T-Series</h2>
+                <h2 className="text-4xl font-display font-bold mb-6"><PhbLogo />T-Series</h2>
                 <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
                   Urban waterway transit, reimagined. The pHb T-Series is a compact, high-efficiency electric foiling water taxi purpose-built for last-mile connectivity across harbors, rivers, and coastal routes. Quiet, fast, and zero-emission — the perfect fit for busy waterfront cities.
                 </p>
@@ -134,7 +145,7 @@ export default function Buyers() {
                   <Shield className="mr-2 h-4 w-4" />
                   Military & Enforcement
                 </div>
-                <h2 className="text-4xl font-display font-bold mb-6">pHb M-Series</h2>
+                <h2 className="text-4xl font-display font-bold mb-6"><PhbLogo />M-Series</h2>
                 <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
                   Stealth, speed, and absolute stability. The pHb M-Series offers a near-zero acoustic and thermal signature, providing an unparalleled tactical advantage for interception and patrol.
                 </p>
@@ -176,7 +187,7 @@ export default function Buyers() {
                   <Compass className="mr-2 h-4 w-4" />
                   Recreational
                 </div>
-                <h2 className="text-4xl font-display font-bold mb-6">pHb R-Series</h2>
+                <h2 className="text-4xl font-display font-bold mb-6"><PhbLogo />R-Series</h2>
                 <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
                   The ultimate luxury on the water. No slamming against waves, no sea-sickness, just pure, silent flight. A sports car experience translated to the sea.
                 </p>
@@ -228,7 +239,7 @@ export default function Buyers() {
                   <Wind className="mr-2 h-4 w-4" />
                   Sailing Catamaran
                 </div>
-                <h2 className="text-4xl font-display font-bold mb-6">pHb X-Series</h2>
+                <h2 className="text-4xl font-display font-bold mb-6"><PhbLogo />X-Series</h2>
                 <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
                   Where sail meets innovation. The pHb X-Series is a high-performance sailing catamaran built in-house at Phillips Boatworks — a proven platform that demonstrates the composite construction and hull engineering at the core of every pHb vessel.
                 </p>
@@ -270,7 +281,7 @@ export default function Buyers() {
                   <Wind className="mr-2 h-4 w-4" />
                   Foiling Sailing Cat
                 </div>
-                <h2 className="text-4xl font-display font-bold mb-6">pHb 8.5-Series</h2>
+                <h2 className="text-4xl font-display font-bold mb-6"><PhbLogo />8.5-Series</h2>
                 <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
                   The pHb 8.5 is an 8.5-meter foiling sailing catamaran — a compact, high-performance platform that lifts fully above the water under sail. Combining the zero-drag efficiency of foiling with wind power, it represents the leading edge of sustainable high-speed sailing.
                 </p>
