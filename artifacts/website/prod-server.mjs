@@ -42,7 +42,8 @@ function esc(s) {
 
 function serveFile(filePath, res) {
   try {
-    statSync(filePath);
+    const stat = statSync(filePath);
+    if (!stat.isFile()) return false;
     const mime = MIME[extname(filePath)] ?? "application/octet-stream";
     res.writeHead(200, { "Content-Type": mime });
     createReadStream(filePath).pipe(res);
