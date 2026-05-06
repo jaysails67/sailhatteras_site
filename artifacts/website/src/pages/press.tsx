@@ -31,7 +31,7 @@ function CopyLinkButton({ postId }: { postId: number }) {
   const copy = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const url = `${window.location.origin}/press/${postId}`;
+    const url = `https://pamliecoconnect.com/press/${postId}`;
     navigator.clipboard.writeText(url).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
