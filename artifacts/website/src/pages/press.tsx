@@ -83,16 +83,22 @@ export default function Press() {
           <audio controls className="w-full mt-1" src={post.mediaUrl} preload="metadata">
             Your browser does not support the audio element.
           </audio>
-        ) : post.mediaUrl ? (
-          <a href={post.mediaUrl} target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
-            <ExternalLink className="h-4 w-4" /> Listen externally
-          </a>
         ) : null}
         <div className="mt-auto flex items-center">
-          <Link href={`/press/${post.id}`} className="text-sm font-semibold text-primary hover:underline">
-            View details →
-          </Link>
+          {post.mediaUrl ? (
+            <a
+              href={post.mediaUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-semibold text-primary hover:underline inline-flex items-center gap-1"
+            >
+              <Headphones className="h-3.5 w-3.5" /> Listen now →
+            </a>
+          ) : (
+            <Link href={`/press/${post.id}`} className="text-sm font-semibold text-primary hover:underline">
+              View details →
+            </Link>
+          )}
           <CopyLinkButton postId={post.id} />
         </div>
       </CardContent>
@@ -152,9 +158,20 @@ export default function Press() {
         <CardContent>
           <CardDescription className="text-sm line-clamp-2">{post.excerpt}</CardDescription>
           <div className="mt-3 flex items-center">
-            <Link href={`/press/${post.id}`} className="text-sm font-semibold text-primary hover:underline">
-              View details →
-            </Link>
+            {post.mediaUrl ? (
+              <a
+                href={post.mediaUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-semibold text-primary hover:underline inline-flex items-center gap-1"
+              >
+                <PlayCircle className="h-3.5 w-3.5" /> Watch now →
+              </a>
+            ) : (
+              <Link href={`/press/${post.id}`} className="text-sm font-semibold text-primary hover:underline">
+                View details →
+              </Link>
+            )}
             <CopyLinkButton postId={post.id} />
           </div>
         </CardContent>
@@ -188,9 +205,20 @@ export default function Press() {
           </a>
         )}
         <div className="mt-auto flex items-center">
-          <Link href={`/press/${post.id}`} className="text-sm font-semibold text-primary hover:underline">
-            Read more →
-          </Link>
+          {post.mediaUrl ? (
+            <a
+              href={post.mediaUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-semibold text-primary hover:underline inline-flex items-center gap-1"
+            >
+              <FileText className="h-3.5 w-3.5" /> {isPdf(post.mediaUrl) ? "Open PDF →" : "Read now →"}
+            </a>
+          ) : (
+            <Link href={`/press/${post.id}`} className="text-sm font-semibold text-primary hover:underline">
+              Read more →
+            </Link>
+          )}
           <CopyLinkButton postId={post.id} />
         </div>
       </CardContent>
