@@ -56,9 +56,9 @@ export default function PressArticle() {
   const { data: post, isLoading, isError } = useGetPost(id);
   const [copied, setCopied] = useState(false);
 
-  const pageUrl = typeof window !== "undefined"
-    ? `${window.location.origin}/press/${id}`
-    : `https://pamliecoconnect.com/press/${id}`;
+  const CANONICAL_DOMAIN = "https://pamliecoconnect.com";
+  const pageUrl = `${CANONICAL_DOMAIN}/press/${id}`;
+  const ogImage = `${CANONICAL_DOMAIN}/opengraph.jpg`;
 
   const copyLink = () => {
     navigator.clipboard.writeText(pageUrl).then(() => {
@@ -82,14 +82,19 @@ export default function PressArticle() {
         <Helmet>
           <title>{post.title} — PamliEcoConnect</title>
           <meta name="description" content={post.excerpt} />
+          <link rel="canonical" href={pageUrl} />
           <meta property="og:title" content={post.title} />
           <meta property="og:description" content={post.excerpt} />
           <meta property="og:url" content={pageUrl} />
           <meta property="og:type" content="article" />
           <meta property="og:site_name" content="PamliEcoConnect" />
-          <meta name="twitter:card" content="summary" />
+          <meta property="og:image" content={ogImage} />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta name="twitter:card" content="summary_large_image" />
           <meta name="twitter:title" content={post.title} />
           <meta name="twitter:description" content={post.excerpt} />
+          <meta name="twitter:image" content={ogImage} />
         </Helmet>
       )}
       <Navbar />
