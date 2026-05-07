@@ -297,9 +297,9 @@ export default function TripDetail() {
                   </thead>
                   <tbody className="divide-y divide-border">
                     {[
-                      { track: "Sailing Littles", ages: "6–9", actual: "—", fee: "$200", subsidy: "Contact us", highlight: false },
+                      { track: "Sailing Littles", ages: "6–9", actual: "—", fee: "$95", subsidy: "Contact us", highlight: false },
                       { track: "Opti Green Fleet", ages: "9–13", actual: "~$620", fee: "$200", subsidy: "~$420", highlight: false },
-                      { track: "Collegiate 420", ages: "12–18", actual: "~$1,100", fee: "$200", subsidy: "~$900", highlight: false },
+                      { track: "Collegiate 420", ages: "12–18", actual: "~$1,100", fee: "$295", subsidy: "~$805", highlight: false },
                       { track: "SAISA High School", ages: "Gr. 8–12", actual: "~$2,700", fee: "$695", subsidy: "~$2,005", highlight: true },
                     ].map(({ track, ages, actual, fee, subsidy, highlight }) => (
                       <tr key={track} className={highlight ? "bg-primary/5" : "hover:bg-muted/30"}>
@@ -373,9 +373,9 @@ export default function TripDetail() {
                               </thead>
                               <tbody className="divide-y divide-border">
                                 {[
-                                  ["Sailing Littles (ages 6–9)", "Contact us", "$200", "—"],
+                                  ["Sailing Littles (ages 6–9)", "Contact us", "$95", "—"],
                                   ["Opti Green Fleet (ages 9–13)", "~$620", "$200", "~$420"],
-                                  ["Collegiate 420 (ages 12–18)", "~$1,100", "$200", "~$900"],
+                                  ["Collegiate 420 (ages 12–18)", "~$1,100", "$295", "~$805"],
                                   ["SAISA High School (grades 8–12)", "~$2,700", "$695", "~$2,005"],
                                 ].map(([track, actual, fee, subsidy]) => (
                                   <tr key={track} className="hover:bg-muted/30">
