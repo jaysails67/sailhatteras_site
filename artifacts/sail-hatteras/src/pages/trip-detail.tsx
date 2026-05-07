@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useParams, useLocation } from "wouter";
 import {
   Clock, Users, Anchor, ArrowLeft, Check, Heart,
-  ChevronRight, AlertCircle, Loader2, Ship
+  ChevronRight, AlertCircle, Loader2, Ship, Info
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -340,9 +340,64 @@ export default function TripDetail() {
           <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
             {/* Price header */}
             <div className="p-6 bg-primary text-primary-foreground">
-              <div className="flex justify-between items-baseline">
+              <div className="flex justify-between items-start">
                 <div>
-                  <div className="text-3xl font-bold">{effectivePriceDisplay}</div>
+                  <div className="flex items-center gap-2">
+                    <div className="text-3xl font-bold">{effectivePriceDisplay}</div>
+                    {params.slug === "kids-development-program" && (
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <button
+                            title="What this really costs"
+                            className="rounded-full p-1 hover:bg-primary-foreground/20 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-foreground/40"
+                          >
+                            <Info className="h-5 w-5 text-primary-foreground/70 hover:text-primary-foreground" />
+                          </button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-xl">
+                          <DialogHeader>
+                            <DialogTitle className="font-serif text-xl">What This Really Costs</DialogTitle>
+                          </DialogHeader>
+                          <p className="text-sm text-muted-foreground mb-4">
+                            Your $200 program fee covers only a fraction of the real cost. The rest is funded by donors, grants, and the Hatteras sailing community — every family receives a meaningful scholarship just by enrolling.
+                          </p>
+                          <div className="rounded-xl border border-border overflow-hidden text-sm">
+                            <table className="w-full">
+                              <thead>
+                                <tr className="bg-muted text-muted-foreground text-xs uppercase tracking-wide">
+                                  <th className="text-left px-4 py-2.5">Program Track</th>
+                                  <th className="text-right px-4 py-2.5">Actual Cost</th>
+                                  <th className="text-right px-4 py-2.5">Your Fee</th>
+                                  <th className="text-right px-4 py-2.5">HCS Covers</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-border">
+                                {[
+                                  ["Sailing Littles (ages 6–9)", "Contact us", "$200", "—"],
+                                  ["Opti Green Fleet (ages 9–13)", "~$620", "$200", "~$420"],
+                                  ["Collegiate 420 (ages 12–18)", "~$1,100", "$200", "~$900"],
+                                  ["SAISA High School (grades 8–12)", "~$2,700", "$200", "~$2,500"],
+                                ].map(([track, actual, fee, subsidy]) => (
+                                  <tr key={track} className="hover:bg-muted/30">
+                                    <td className="px-4 py-3 text-muted-foreground">{track}</td>
+                                    <td className="px-4 py-3 text-right tabular-nums font-medium">{actual}</td>
+                                    <td className="px-4 py-3 text-right tabular-nums text-primary font-semibold">{fee}</td>
+                                    <td className="px-4 py-3 text-right tabular-nums font-bold text-primary">{subsidy}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-3">
+                            Cost per student assumes minimum enrollment (6–8 participants). SAISA costs include travel, regatta entry fees, and coaching intensity required for competitive interscholastic sailing.
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Figures are based on actual operating costs. Hatteras Community Sailing is a 501(c)3 nonprofit (EIN 85-2684924). Donations are tax-deductible.
+                          </p>
+                        </DialogContent>
+                      </Dialog>
+                    )}
+                  </div>
                   <div className="text-primary-foreground/70 text-sm mt-1">
                     {selectedVessel ? `${selectedVessel.name}` : (trip.pricingNote ?? "per person")}
                   </div>
@@ -350,62 +405,12 @@ export default function TripDetail() {
                 {selectedVessel && (
                   <button
                     onClick={() => { setSelectedVessel(null); setStep(1); }}
-                    className="text-xs text-primary-foreground/70 hover:text-primary-foreground underline"
+                    className="text-xs text-primary-foreground/70 hover:text-primary-foreground underline mt-1"
                   >
                     Change
                   </button>
                 )}
               </div>
-              {params.slug === "kids-development-program" && (
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <button className="mt-3 text-xs text-primary-foreground/80 hover:text-primary-foreground underline flex items-center gap-1">
-                      True cost: $620–$2,700 per child — see how your fee is used
-                    </button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-xl">
-                    <DialogHeader>
-                      <DialogTitle className="font-serif text-xl">Where Your $200 Goes</DialogTitle>
-                    </DialogHeader>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Your $200 program fee is heavily subsidized by Hatteras Community Sailing's donors and grants. Costs vary by track and enrollment — the figures below reflect minimum viable class sizes. Every family receives a significant gift from the Hatteras sailing community.
-                    </p>
-                    <div className="rounded-xl border border-border overflow-hidden text-sm">
-                      <table className="w-full">
-                        <thead>
-                          <tr className="bg-muted text-muted-foreground text-xs uppercase tracking-wide">
-                            <th className="text-left px-4 py-2.5">Program Track</th>
-                            <th className="text-right px-4 py-2.5">Actual Cost</th>
-                            <th className="text-right px-4 py-2.5">Your Fee</th>
-                            <th className="text-right px-4 py-2.5">HCS Provides</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-border">
-                          {[
-                            ["Sailing Littles (ages 6–9)", "Contact us", "$200", "—"],
-                            ["Opti Green Fleet (ages 9–13)", "~$620", "$200", "~$420"],
-                            ["Collegiate 420 (ages 12–18)", "~$1,100", "$200", "~$900"],
-                            ["SAISA High School (grades 8–12)", "~$2,700", "$200", "~$2,500"],
-                          ].map(([track, actual, fee, subsidy]) => (
-                            <tr key={track} className="hover:bg-muted/30">
-                              <td className="px-4 py-3 text-muted-foreground">{track}</td>
-                              <td className="px-4 py-3 text-right tabular-nums font-medium">{actual}</td>
-                              <td className="px-4 py-3 text-right tabular-nums text-primary font-semibold">{fee}</td>
-                              <td className="px-4 py-3 text-right tabular-nums font-bold text-primary">{subsidy}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-3">
-                      Cost per student assumes minimum enrollment (6–8 participants). SAISA costs include travel, regatta entry fees, and the coaching intensity required for competitive interscholastic sailing.
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Figures are based on actual program operating costs. Hatteras Community Sailing is a 501(c)3 nonprofit (EIN 85-2684924). Donations are tax-deductible.
-                    </p>
-                  </DialogContent>
-                </Dialog>
-              )}
             </div>
 
             <div className="p-6 space-y-5">
