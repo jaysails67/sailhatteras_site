@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useGetShTrip, useCreateShCheckout, useShTripVessels } from "@workspace/api-client-react";
 import type { ShVessel } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
@@ -310,6 +311,65 @@ export default function TripDetail() {
                   </button>
                 )}
               </div>
+              {params.slug === "kids-development-program" && (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="mt-3 text-xs text-primary-foreground/80 hover:text-primary-foreground underline flex items-center gap-1">
+                      True cost per child: ~$1,200 — see how your fee is used
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-lg">
+                    <DialogHeader>
+                      <DialogTitle className="font-serif text-xl">Where Your $200 Goes</DialogTitle>
+                    </DialogHeader>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      The actual cost of providing a 12-class youth sailing session is approximately <strong className="text-foreground">$1,200 per child</strong>. Your program fee covers $200. The remaining $1,000 is funded through donations, grants, and community support — so every participant receives over 80% of their program cost as a gift from the Hatteras sailing community.
+                    </p>
+                    <div className="rounded-xl border border-border overflow-hidden text-sm">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="bg-muted text-muted-foreground text-xs uppercase tracking-wide">
+                            <th className="text-left px-4 py-2.5">Cost Item</th>
+                            <th className="text-right px-4 py-2.5">Per Child</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-border">
+                          {[
+                            ["Certified coaching instruction (12 classes)", "$480"],
+                            ["Practice boats & sails (pro-rated)", "$200"],
+                            ["Safety & coach vessel operation", "$180"],
+                            ["Facility, mortgage & upkeep (pro-rated)", "$150"],
+                            ["Regatta travel & coordination", "$120"],
+                            ["Administration, insurance & overhead", "$70"],
+                          ].map(([label, cost]) => (
+                            <tr key={label} className="hover:bg-muted/30">
+                              <td className="px-4 py-3 text-muted-foreground">{label}</td>
+                              <td className="px-4 py-3 text-right font-medium tabular-nums">{cost}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                        <tfoot>
+                          <tr className="bg-muted/50 font-semibold border-t-2 border-border">
+                            <td className="px-4 py-3">Total actual cost per child</td>
+                            <td className="px-4 py-3 text-right tabular-nums">~$1,200</td>
+                          </tr>
+                          <tr className="text-primary font-semibold">
+                            <td className="px-4 py-3">Your program fee</td>
+                            <td className="px-4 py-3 text-right tabular-nums">$200</td>
+                          </tr>
+                          <tr className="bg-primary/5 font-bold text-primary border-t border-primary/20">
+                            <td className="px-4 py-3">HCS provides (subsidy)</td>
+                            <td className="px-4 py-3 text-right tabular-nums">$1,000</td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-3">
+                      Figures are approximate and based on actual program operating costs. Hatteras Community Sailing is a 501(c)3 nonprofit (EIN 85-2684924). Donations are tax-deductible.
+                    </p>
+                  </DialogContent>
+                </Dialog>
+              )}
             </div>
 
             <div className="p-6 space-y-5">
