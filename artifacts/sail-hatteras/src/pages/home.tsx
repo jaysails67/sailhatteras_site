@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { ArrowRight, Compass, Sun, Wind, Clock } from "lucide-react";
+import { ArrowRight, Compass, Sun, Wind, Clock, Anchor, Heart, BookOpen, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useGetShHomeSummary } from "@workspace/api-client-react";
 import heroImg from "@/assets/images/hero-sunset.png";
@@ -43,30 +43,60 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Feature Blocks */}
-      <section className="py-20 md:py-32 px-6">
+      {/* Mission Statement — required for Google Ad Grants nonprofit eligibility */}
+      <section className="py-16 px-6 bg-primary text-primary-foreground">
+        <div className="max-w-5xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 bg-primary-foreground/10 rounded-full px-4 py-1.5 text-sm font-semibold mb-6">
+            <Heart className="h-4 w-4 fill-primary-foreground" />
+            501(c)3 Nonprofit Organization — Hatteras Community Sailing
+          </div>
+          <h2 className="font-serif text-3xl md:text-4xl font-bold mb-5 leading-snug">
+            Our mission: Sailing for everyone on the Outer Banks
+          </h2>
+          <p className="text-primary-foreground/80 text-lg max-w-3xl mx-auto mb-8 leading-relaxed">
+            Hatteras Community Sailing exists to make the art and joy of sailing accessible to every member of the Outer Banks community — regardless of background, income, or experience. Every program fee funds free and reduced-cost sailing for youth and community members. <strong className="text-primary-foreground">No child is turned away for inability to pay.</strong>
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild variant="secondary" size="lg">
+              <Link href="/about">Learn About Our Mission</Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
+              <Link href="/contact">Youth Scholarship Inquiries</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* How Programs Serve the Mission */}
+      <section className="py-20 md:py-28 px-6">
         <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="font-serif text-3xl md:text-4xl font-bold mb-4">How Our Programs Serve the Community</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Every program we offer ties directly to our 501(c)3 mission of community sailing access on the Outer Banks.
+            </p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             <div className="flex flex-col items-center text-center space-y-4">
               <div className="h-16 w-16 rounded-full bg-secondary/10 flex items-center justify-center text-secondary mb-2">
                 <Wind className="h-8 w-8" />
               </div>
-              <h3 className="font-serif text-2xl font-semibold">Perfect Winds</h3>
-              <p className="text-muted-foreground">The Pamlico Sound offers some of the most consistent thermal winds on the East Coast. Smooth, steady, perfect.</p>
+              <h3 className="font-serif text-2xl font-semibold">Community Experiences</h3>
+              <p className="text-muted-foreground">Sunset sails, wildlife tours, and full-day Sound explorations that bring participants to the water — and fund free youth programs with every ticket sold.</p>
             </div>
             <div className="flex flex-col items-center text-center space-y-4">
               <div className="h-16 w-16 rounded-full bg-secondary/10 flex items-center justify-center text-secondary mb-2">
-                <Sun className="h-8 w-8" />
+                <BookOpen className="h-8 w-8" />
               </div>
-              <h3 className="font-serif text-2xl font-semibold">Golden Hours</h3>
-              <p className="text-muted-foreground">End your day watching the sun dip below the horizon line of the Sound, painting the sky and water.</p>
+              <h3 className="font-serif text-2xl font-semibold">Sailing Education</h3>
+              <p className="text-muted-foreground">Hands-on instruction for youth and adults — from Optimist dinghies for beginners to Collegiate 420s for advancing sailors. Scholarships available for all youth programs.</p>
             </div>
             <div className="flex flex-col items-center text-center space-y-4">
               <div className="h-16 w-16 rounded-full bg-secondary/10 flex items-center justify-center text-secondary mb-2">
-                <Compass className="h-8 w-8" />
+                <Users className="h-8 w-8" />
               </div>
-              <h3 className="font-serif text-2xl font-semibold">Local Knowledge</h3>
-              <p className="text-muted-foreground">Our captains grew up on these waters. We don't just take you sailing; we share the history of the Banks.</p>
+              <h3 className="font-serif text-2xl font-semibold">Community Fleet Access</h3>
+              <p className="text-muted-foreground">Low-cost catamaran and skiff rentals for qualified community sailors — keeping independent sailing on Pamlico Sound accessible and affordable for everyone.</p>
             </div>
           </div>
         </div>

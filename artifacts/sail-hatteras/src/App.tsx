@@ -6,15 +6,15 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
 import Home from "@/pages/home";
+import Trips from "@/pages/trips";
+import TripDetail from "@/pages/trip-detail";
+import BookingConfirmation from "@/pages/booking-confirmation";
+import Contact from "@/pages/contact";
+import About from "@/pages/about";
+import Privacy from "@/pages/privacy";
+import Admin from "@/pages/admin";
+import AdminBookings from "@/pages/admin-bookings";
 import NotFound from "@/pages/not-found";
-// Placeholders until we create them
-const Trips = () => <div className="pt-20">Trips</div>;
-const TripDetail = () => <div className="pt-20">Trip Detail</div>;
-const Contact = () => <div className="pt-20">Contact</div>;
-const BookingConfirmation = () => <div className="pt-20">Booking Conf</div>;
-const Admin = () => <div className="pt-20">Admin</div>;
-const AdminBookings = () => <div className="pt-20">Admin Bookings</div>;
-
 
 const queryClient = new QueryClient();
 
@@ -29,6 +29,8 @@ function Router() {
           <Route path="/trips/:slug" component={TripDetail} />
           <Route path="/booking-confirmation" component={BookingConfirmation} />
           <Route path="/contact" component={Contact} />
+          <Route path="/about" component={About} />
+          <Route path="/privacy" component={Privacy} />
           <Route path="/admin" component={Admin} />
           <Route path="/admin/bookings" component={AdminBookings} />
           <Route component={NotFound} />
