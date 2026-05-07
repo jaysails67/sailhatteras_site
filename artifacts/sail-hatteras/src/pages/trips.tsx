@@ -47,6 +47,12 @@ function TripCard({ trip }: { trip: any }) {
                 <span>Up to {trip.maxPassengers}</span>
               </div>
             </div>
+            {trip.slug === "kids-development-program" && (
+              <div className="flex items-center gap-1.5 text-xs text-primary font-medium bg-primary/8 rounded-lg px-3 py-2 mt-1">
+                <Heart className="h-3 w-3 fill-primary text-primary shrink-0" />
+                <span>$200 fee · HCS covers up to $2,500 per student</span>
+              </div>
+            )}
             <div className="flex items-center gap-1 text-primary font-medium mt-1">
               <span>Join this program</span>
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />

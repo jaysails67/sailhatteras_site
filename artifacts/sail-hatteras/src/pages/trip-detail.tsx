@@ -275,6 +275,51 @@ export default function TripDetail() {
             </div>
           )}
 
+          {/* Cost Transparency Section — youth program only */}
+          {params.slug === "kids-development-program" && (
+            <div className="mb-10 rounded-2xl border border-border overflow-hidden">
+              <div className="bg-primary px-6 py-4">
+                <h3 className="font-serif text-xl font-bold text-primary-foreground">What this program actually costs</h3>
+                <p className="text-primary-foreground/80 text-sm mt-1">
+                  Your $200 session fee covers only a fraction of the real cost. The rest is funded by donors, grants, and the Hatteras sailing community — so every family receives a meaningful scholarship just by enrolling.
+                </p>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-muted text-muted-foreground text-xs uppercase tracking-wide border-b border-border">
+                      <th className="text-left px-5 py-3">Program Track</th>
+                      <th className="text-right px-5 py-3">Ages</th>
+                      <th className="text-right px-5 py-3">Actual Cost</th>
+                      <th className="text-right px-5 py-3">Your Fee</th>
+                      <th className="text-right px-5 py-3 text-primary font-bold">HCS Covers</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {[
+                      { track: "Sailing Littles", ages: "6–9", actual: "—", fee: "$200", subsidy: "Contact us", highlight: false },
+                      { track: "Opti Green Fleet", ages: "9–13", actual: "~$620", fee: "$200", subsidy: "~$420", highlight: false },
+                      { track: "Collegiate 420", ages: "12–18", actual: "~$1,100", fee: "$200", subsidy: "~$900", highlight: false },
+                      { track: "SAISA High School", ages: "Gr. 8–12", actual: "~$2,700", fee: "$200", subsidy: "~$2,500", highlight: true },
+                    ].map(({ track, ages, actual, fee, subsidy, highlight }) => (
+                      <tr key={track} className={highlight ? "bg-primary/5" : "hover:bg-muted/30"}>
+                        <td className="px-5 py-3.5 font-medium">{track}</td>
+                        <td className="px-5 py-3.5 text-right text-muted-foreground">{ages}</td>
+                        <td className="px-5 py-3.5 text-right tabular-nums text-muted-foreground">{actual}</td>
+                        <td className="px-5 py-3.5 text-right tabular-nums font-semibold">{fee}</td>
+                        <td className={`px-5 py-3.5 text-right tabular-nums font-bold ${highlight ? "text-primary text-base" : "text-primary"}`}>{subsidy}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="px-6 py-4 bg-muted/30 border-t border-border text-xs text-muted-foreground space-y-1">
+                <p>Costs per student assume minimum enrollment (6–8 participants per session). SAISA costs reflect travel, regatta entry fees, and the coaching intensity required for competitive interscholastic sailing.</p>
+                <p>Hatteras Community Sailing is a 501(c)3 nonprofit (EIN 85-2684924). Donations are tax-deductible.</p>
+              </div>
+            </div>
+          )}
+
           {/* Nonprofit Mission Note */}
           <div className="bg-primary/5 border border-primary/15 rounded-xl p-6">
             <div className="flex items-center gap-2 mb-2">
