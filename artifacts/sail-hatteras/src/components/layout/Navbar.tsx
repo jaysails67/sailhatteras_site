@@ -20,12 +20,12 @@ export function Navbar() {
     <header className="sticky top-0 z-50 shadow-md">
       {/* Top white bar — logo + social + book button */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 h-[88px] flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3" data-testid="link-logo">
             <img
               src={logo}
               alt="Hatteras Community Sailing — SailHatteras.org"
-              className="h-16 w-auto"
+              className="h-[70px] w-auto"
             />
             <span className="text-[10px] font-medium tracking-wider uppercase text-muted-foreground flex items-center gap-1 hidden sm:flex">
               <Heart className="h-2.5 w-2.5 fill-current text-primary" />
