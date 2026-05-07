@@ -217,6 +217,8 @@ router.post("/sh/checkout", async (req, res) => {
   const {
     tripSlug,
     bookingDate,
+    vacationStart,
+    vacationEnd,
     passengers,
     customerName,
     customerEmail,
@@ -274,6 +276,8 @@ router.post("/sh/checkout", async (req, res) => {
       customerEmail,
       customerPhone,
       bookingDate,
+      vacationStart: vacationStart ?? null,
+      vacationEnd: vacationEnd ?? null,
       passengers,
       totalCents,
       status: "pending",

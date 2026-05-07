@@ -614,6 +614,8 @@ export const GetShTripAvailabilityResponse = zod.array(
 export const CreateShCheckoutBody = zod.object({
   tripSlug: zod.string(),
   bookingDate: zod.coerce.date(),
+  vacationStart: zod.string().optional(),
+  vacationEnd: zod.string().optional(),
   passengers: zod.number(),
   customerName: zod.string(),
   customerEmail: zod.string(),

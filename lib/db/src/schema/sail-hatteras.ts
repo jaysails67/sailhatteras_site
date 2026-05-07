@@ -77,6 +77,8 @@ export const shBookingsTable = pgTable("sh_bookings", {
   customerEmail: text("customer_email").notNull(),
   customerPhone: text("customer_phone").notNull(),
   bookingDate: date("booking_date").notNull(),
+  vacationStart: date("vacation_start"),
+  vacationEnd: date("vacation_end"),
   passengers: integer("passengers").notNull(),
   totalCents: integer("total_cents").notNull(),
   status: text("status").notNull().default("pending"),

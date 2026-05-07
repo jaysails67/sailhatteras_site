@@ -96,6 +96,8 @@ export default function TripDetail() {
   const [step, setStep] = useState(1);
   const [selectedVessel, setSelectedVessel] = useState<ShVessel | null>(null);
   const [selectedDate, setSelectedDate] = useState("");
+  const [vacationStart, setVacationStart] = useState("");
+  const [vacationEnd, setVacationEnd] = useState("");
   const [passengers, setPassengers] = useState(2);
   const [form, setForm] = useState({ name: "", email: "", phone: "", notes: "" });
 
@@ -132,6 +134,8 @@ export default function TripDetail() {
         data: {
           tripSlug: trip!.slug,
           bookingDate: new Date(selectedDate + "T12:00:00"),
+          vacationStart: vacationStart || undefined,
+          vacationEnd: vacationEnd || undefined,
           passengers,
           customerName: form.name,
           customerEmail: form.email,
@@ -349,8 +353,10 @@ export default function TripDetail() {
                       <span className="text-muted-foreground ml-auto">{selectedVessel.priceDisplay}/person</span>
                     </div>
                   )}
+
+                  {/* Preferred date */}
                   <div className="space-y-2">
-                    <Label>Preferred Date</Label>
+                    <Label>Preferred Sailing Date <span className="text-destructive">*</span></Label>
                     <select
                       data-testid="select-date"
                       value={selectedDate}
@@ -358,12 +364,48 @@ export default function TripDetail() {
                       className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                     >
                       <option value="">Select a date...</option>
-                      {DATE_OPTIONS.slice(0, 30).map(o => (
+                      {DATE_OPTIONS.slice(0, 60).map(o => (
                         <option key={o.value} value={o.value}>{o.label}</option>
                       ))}
                     </select>
                   </div>
-                  <div className="space-y-2">
+
+                  {/* Vacation window */}
+                  <div className="space-y-2 pt-1">
+                    <div>
+                      <Label className="text-sm">Your Vacation Window <span className="text-muted-foreground font-normal">(optional)</span></Label>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        If weather forces a reschedule, we'll reach out within this window.
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-1">
+                        <Label className="text-xs text-muted-foreground">Arrives</Label>
+                        <input
+                          type="date"
+                          data-testid="input-vacation-start"
+                          value={vacationStart}
+                          onChange={e => setVacationStart(e.target.value)}
+                          min={new Date().toISOString().slice(0, 10)}
+                          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs text-muted-foreground">Departs</Label>
+                        <input
+                          type="date"
+                          data-testid="input-vacation-end"
+                          value={vacationEnd}
+                          onChange={e => setVacationEnd(e.target.value)}
+                          min={vacationStart || new Date().toISOString().slice(0, 10)}
+                          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Participants */}
+                  <div className="space-y-2 pt-1">
                     <Label>Participants</Label>
                     <div className="flex items-center gap-3">
                       <button
@@ -382,6 +424,7 @@ export default function TripDetail() {
                       </span>
                     </div>
                   </div>
+
                   {selectedDate && (
                     <div className="text-xs text-right text-muted-foreground">
                       Subtotal: <span className="font-semibold text-foreground">${((effectivePriceCents * passengers) / 100).toFixed(0)}</span>
