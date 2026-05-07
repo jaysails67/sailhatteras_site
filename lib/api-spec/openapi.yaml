@@ -25,6 +25,10 @@ tags:
     description: Waitlist operations
   - name: admin
     description: Admin operations
+  - name: sail-hatteras
+    description: SailHatteras.org public booking API
+  - name: sail-hatteras-admin
+    description: SailHatteras.org admin operations
 
 paths:
   /healthz:
@@ -1078,6 +1082,290 @@ components:
         - email
         - phone
         - createdAt
+
+    # ─────────────────────────────────────────────────────────
+    # SailHatteras Schemas
+    # ─────────────────────────────────────────────────────────
+
+    ShTrip:
+      type: object
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        name:
+          type: string
+        category:
+          type: string
+          description: "experiences | learn | rentals"
+        type:
+          type: string
+          description: "charter | tour | lesson | rental"
+        shortDescription:
+          type: string
+        description:
+          type: string
+        duration:
+          type: string
+        priceMin:
+          type: integer
+          description: Minimum price in cents
+        priceDisplay:
+          type: string
+          description: Human-readable price (e.g. '$395')
+        pricingNote:
+          type: ["string", "null"]
+        maxPassengers:
+          type: integer
+        boat:
+          type: string
+        highlights:
+          type: array
+          items:
+            type: string
+        imageUrl:
+          type: ["string", "null"]
+        active:
+          type: boolean
+        sortOrder:
+          type: integer
+      required:
+        - id
+        - slug
+        - name
+        - category
+        - type
+        - shortDescription
+        - description
+        - duration
+        - priceMin
+        - priceDisplay
+        - maxPassengers
+        - boat
+        - highlights
+        - active
+        - sortOrder
+
+    ShAvailabilitySlot:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        availableSlots:
+          type: integer
+        isBlocked:
+          type: boolean
+      required:
+        - date
+        - availableSlots
+        - isBlocked
+
+    ShCheckoutRequest:
+      type: object
+      properties:
+        tripSlug:
+          type: string
+        bookingDate:
+          type: string
+          format: date
+        passengers:
+          type: integer
+        customerName:
+          type: string
+        customerEmail:
+          type: string
+        customerPhone:
+          type: string
+        specialRequests:
+          type: ["string", "null"]
+      required:
+        - tripSlug
+        - bookingDate
+        - passengers
+        - customerName
+        - customerEmail
+        - customerPhone
+
+    ShCheckoutResponse:
+      type: object
+      properties:
+        checkoutUrl:
+          type: string
+        bookingId:
+          type: integer
+      required:
+        - checkoutUrl
+        - bookingId
+
+    ShBooking:
+      type: object
+      properties:
+        id:
+          type: integer
+        trip:
+          $ref: "#/components/schemas/ShTrip"
+        customerName:
+          type: string
+        customerEmail:
+          type: string
+        customerPhone:
+          type: string
+        bookingDate:
+          type: string
+          format: date
+        passengers:
+          type: integer
+        totalCents:
+          type: integer
+        status:
+          type: string
+          description: "pending | confirmed | cancelled | refunded"
+        specialRequests:
+          type: ["string", "null"]
+        stripeSessionId:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - trip
+        - customerName
+        - customerEmail
+        - customerPhone
+        - bookingDate
+        - passengers
+        - totalCents
+        - status
+        - createdAt
+
+    ShBookingSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+        tripName:
+          type: string
+        tripSlug:
+          type: string
+        customerName:
+          type: string
+        customerEmail:
+          type: string
+        bookingDate:
+          type: string
+          format: date
+        passengers:
+          type: integer
+        totalCents:
+          type: integer
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - tripName
+        - tripSlug
+        - customerName
+        - customerEmail
+        - bookingDate
+        - passengers
+        - totalCents
+        - status
+        - createdAt
+
+    ShContactBody:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: ["string", "null"]
+        message:
+          type: string
+        tripInterest:
+          type: ["string", "null"]
+      required:
+        - name
+        - email
+        - message
+
+    ShHomeSummary:
+      type: object
+      properties:
+        totalTrips:
+          type: integer
+        categories:
+          type: array
+          items:
+            type: string
+        featuredTrips:
+          type: array
+          items:
+            $ref: "#/components/schemas/ShTrip"
+      required:
+        - totalTrips
+        - categories
+        - featuredTrips
+
+    ShAdminDashboard:
+      type: object
+      properties:
+        totalBookings:
+          type: integer
+        confirmedBookings:
+          type: integer
+        pendingBookings:
+          type: integer
+        revenueThisMonth:
+          type: integer
+        recentBookings:
+          type: array
+          items:
+            $ref: "#/components/schemas/ShBookingSummary"
+        upcomingBookings:
+          type: array
+          items:
+            $ref: "#/components/schemas/ShBookingSummary"
+      required:
+        - totalBookings
+        - confirmedBookings
+        - pendingBookings
+        - revenueThisMonth
+        - recentBookings
+        - upcomingBookings
+
+    ShAvailabilityBlockBody:
+      type: object
+      properties:
+        tripId:
+          type: integer
+        date:
+          type: string
+          format: date
+        availableSlots:
+          type: ["integer", "null"]
+        isBlocked:
+          type: boolean
+      required:
+        - tripId
+        - date
+        - isBlocked
+
+    ShBookingStatusBody:
+      type: object
+      properties:
+        status:
+          type: string
+          description: "pending | confirmed | cancelled | refunded"
+      required:
+        - status
 
     # Admin Dashboard
     AdminDashboard:
