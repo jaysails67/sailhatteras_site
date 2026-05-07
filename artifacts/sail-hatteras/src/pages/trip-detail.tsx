@@ -315,57 +315,48 @@ export default function TripDetail() {
                 <Dialog>
                   <DialogTrigger asChild>
                     <button className="mt-3 text-xs text-primary-foreground/80 hover:text-primary-foreground underline flex items-center gap-1">
-                      True cost per child: ~$1,200 — see how your fee is used
+                      True cost: $1,200–$2,400 per child — see how your fee is used
                     </button>
                   </DialogTrigger>
-                  <DialogContent className="max-w-lg">
+                  <DialogContent className="max-w-xl">
                     <DialogHeader>
                       <DialogTitle className="font-serif text-xl">Where Your $200 Goes</DialogTitle>
                     </DialogHeader>
                     <p className="text-sm text-muted-foreground mb-4">
-                      The actual cost of providing a 12-class youth sailing session is approximately <strong className="text-foreground">$1,200 per child</strong>. Your program fee covers $200. The remaining $1,000 is funded through donations, grants, and community support — so every participant receives over 80% of their program cost as a gift from the Hatteras sailing community.
+                      Your $200 program fee is heavily subsidized by Hatteras Community Sailing's donors and grants. The actual cost per child ranges from <strong className="text-foreground">$1,200 to $2,400</strong> depending on program track — meaning every family receives between $1,000 and $2,200 in community-funded support.
                     </p>
                     <div className="rounded-xl border border-border overflow-hidden text-sm">
                       <table className="w-full">
                         <thead>
                           <tr className="bg-muted text-muted-foreground text-xs uppercase tracking-wide">
-                            <th className="text-left px-4 py-2.5">Cost Item</th>
-                            <th className="text-right px-4 py-2.5">Per Child</th>
+                            <th className="text-left px-4 py-2.5">Program Track</th>
+                            <th className="text-right px-4 py-2.5">Actual Cost</th>
+                            <th className="text-right px-4 py-2.5">Your Fee</th>
+                            <th className="text-right px-4 py-2.5">HCS Provides</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-border">
                           {[
-                            ["Certified coaching instruction (12 classes)", "$480"],
-                            ["Practice boats & sails (pro-rated)", "$200"],
-                            ["Safety & coach vessel operation", "$180"],
-                            ["Facility, mortgage & upkeep (pro-rated)", "$150"],
-                            ["Regatta travel & coordination", "$120"],
-                            ["Administration, insurance & overhead", "$70"],
-                          ].map(([label, cost]) => (
-                            <tr key={label} className="hover:bg-muted/30">
-                              <td className="px-4 py-3 text-muted-foreground">{label}</td>
-                              <td className="px-4 py-3 text-right font-medium tabular-nums">{cost}</td>
+                            ["Sailing Littles (ages 6–9)", "~$1,200", "$200", "$1,000"],
+                            ["Opti Green Fleet (ages 9–13)", "~$1,200", "$200", "$1,000"],
+                            ["Collegiate 420 (ages 12–18)", "~$1,200", "$200", "$1,000"],
+                            ["SAISA High School (grades 8–12)", "~$2,400", "$200", "$2,200"],
+                          ].map(([track, actual, fee, subsidy]) => (
+                            <tr key={track} className="hover:bg-muted/30">
+                              <td className="px-4 py-3 text-muted-foreground">{track}</td>
+                              <td className="px-4 py-3 text-right tabular-nums font-medium">{actual}</td>
+                              <td className="px-4 py-3 text-right tabular-nums text-primary font-semibold">{fee}</td>
+                              <td className="px-4 py-3 text-right tabular-nums font-bold text-primary">{subsidy}</td>
                             </tr>
                           ))}
                         </tbody>
-                        <tfoot>
-                          <tr className="bg-muted/50 font-semibold border-t-2 border-border">
-                            <td className="px-4 py-3">Total actual cost per child</td>
-                            <td className="px-4 py-3 text-right tabular-nums">~$1,200</td>
-                          </tr>
-                          <tr className="text-primary font-semibold">
-                            <td className="px-4 py-3">Your program fee</td>
-                            <td className="px-4 py-3 text-right tabular-nums">$200</td>
-                          </tr>
-                          <tr className="bg-primary/5 font-bold text-primary border-t border-primary/20">
-                            <td className="px-4 py-3">HCS provides (subsidy)</td>
-                            <td className="px-4 py-3 text-right tabular-nums">$1,000</td>
-                          </tr>
-                        </tfoot>
                       </table>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-3">
-                      Figures are approximate and based on actual program operating costs. Hatteras Community Sailing is a 501(c)3 nonprofit (EIN 85-2684924). Donations are tax-deductible.
+                    <p className="text-sm text-muted-foreground mt-3">
+                      SAISA costs are higher due to travel, regatta entry fees, and the coaching intensity required for competitive interscholastic sailing.
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Figures are approximate based on actual operating costs. Hatteras Community Sailing is a 501(c)3 nonprofit (EIN 85-2684924). Donations are tax-deductible.
                     </p>
                   </DialogContent>
                 </Dialog>
