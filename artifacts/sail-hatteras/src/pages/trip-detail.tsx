@@ -297,7 +297,7 @@ export default function TripDetail() {
                   </thead>
                   <tbody className="divide-y divide-border">
                     {[
-                      { track: "Sailing Littles", ages: "6–9", actual: "—", fee: "$95", subsidy: "Contact us", highlight: false },
+                      { track: "Sailing Littles", ages: "6–9", actual: "~$858", fee: "$95", subsidy: "~$763", highlight: false },
                       { track: "Opti Green Fleet", ages: "9–13", actual: "~$858", fee: "$200", subsidy: "~$658", highlight: false },
                       { track: "Collegiate 420", ages: "12–18", actual: "~$1,244", fee: "$295", subsidy: "~$949", highlight: false },
                       { track: "SAISA High School", ages: "Gr. 8–12", actual: "~$3,097", fee: "$695", subsidy: "~$2,402", highlight: true },
@@ -373,7 +373,7 @@ export default function TripDetail() {
                               </thead>
                               <tbody className="divide-y divide-border">
                                 {[
-                                  ["Sailing Littles (ages 6–9)", "Contact us", "$95", "—"],
+                                  ["Sailing Littles (ages 6–9)", "~$858", "$95", "~$763"],
                                   ["Opti Green Fleet (ages 9–13)", "~$858", "$200", "~$658"],
                                   ["Collegiate 420 (ages 12–18)", "~$1,244", "$295", "~$949"],
                                   ["SAISA High School (grades 8–12)", "~$3,097", "$695", "~$2,402"],
