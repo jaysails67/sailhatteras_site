@@ -19,7 +19,7 @@ export default function About() {
             Our Mission: Sailing<br />for Everyone
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Hatteras Community Sailing exists to make the art and joy of sailing accessible to every member of the Outer Banks community — regardless of background, income, or prior experience.
+            The mission of Hatteras Community Sailing is to inspire a passion for lifelong seamanship and the environment — in every member of the Outer Banks community, regardless of background, income, or prior experience.
           </p>
         </div>
       </section>
@@ -32,7 +32,7 @@ export default function About() {
               <h2 className="font-serif text-3xl font-bold mb-6">Who We Are</h2>
               <div className="space-y-4 text-muted-foreground leading-relaxed">
                 <p>
-                  Hatteras Community Sailing is a 501(c)3 tax-exempt nonprofit organization based in Hatteras Village, North Carolina. We operate on the waters of Pamlico Sound — one of the finest sailing environments on the East Coast — with the mission of building community through sailing.
+                  Hatteras Community Sailing is a 501(c)3 tax-exempt nonprofit organization based in Hatteras Village, North Carolina. Our mission is to inspire a passion for lifelong seamanship and the environment. We operate on the waters of Pamlico Sound — one of the finest sailing environments on the East Coast — serving that mission through community programs, youth instruction, and open fleet access.
                 </p>
                 <p>
                   We were founded on the belief that access to the water should not be limited by what you can afford. Our community sailing programs — experiences, instruction, and rentals — generate the revenue that funds free and subsidized sailing for youth and underserved members of our community.

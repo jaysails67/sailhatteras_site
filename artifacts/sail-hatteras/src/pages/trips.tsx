@@ -97,7 +97,7 @@ export default function Trips() {
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">Our Programs</h1>
           <p className="text-lg text-muted-foreground max-w-2xl">
-            Every program we offer serves our nonprofit mission of making sailing accessible to the Outer Banks community. Program fees directly fund free youth sailing and community instruction.
+            Our mission is to inspire a passion for lifelong seamanship and the environment. Every program here serves that mission, and every program fee directly funds free youth sailing and community instruction on the Outer Banks.
           </p>
         </div>
       </section>

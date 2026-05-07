@@ -54,7 +54,7 @@ export default function Home() {
             Our mission: Sailing for everyone on the Outer Banks
           </h2>
           <p className="text-primary-foreground/80 text-lg max-w-3xl mx-auto mb-8 leading-relaxed">
-            Hatteras Community Sailing exists to make the art and joy of sailing accessible to every member of the Outer Banks community — regardless of background, income, or experience. Every program fee funds free and reduced-cost sailing for youth and community members. <strong className="text-primary-foreground">No child is turned away for inability to pay.</strong>
+            Our mission is to inspire a passion for lifelong seamanship and the environment. Every program we run serves that mission — and every program fee funds free and reduced-cost sailing for youth and community members on the Outer Banks. <strong className="text-primary-foreground">No child is turned away for inability to pay.</strong>
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild variant="secondary" size="lg">

@@ -18,7 +18,7 @@ export function Footer() {
               </div>
             </Link>
             <p className="text-primary-foreground/70 text-sm leading-relaxed">
-              We make sailing accessible to the Outer Banks community — from youth development programs to community sailing experiences on Pamlico Sound.
+              Our mission: to inspire a passion for lifelong seamanship and the environment — in every member of the Outer Banks community.
             </p>
             <div className="flex items-center gap-4 pt-2">
               <a href="https://facebook.com/sailhatteras" className="text-primary-foreground/70 hover:text-white transition-colors" aria-label="Facebook">
