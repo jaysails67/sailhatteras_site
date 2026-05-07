@@ -23,6 +23,7 @@ export const shTripsTable = pgTable("sh_trips", {
   priceMin: integer("price_min").notNull(),
   priceDisplay: text("price_display").notNull(),
   pricingNote: text("pricing_note"),
+  pricingModel: text("pricing_model").notNull().default("per_person"),
   maxPassengers: integer("max_passengers").notNull(),
   boat: text("boat").notNull(),
   highlights: jsonb("highlights").notNull().$type<string[]>().default([]),

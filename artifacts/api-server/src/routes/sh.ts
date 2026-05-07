@@ -42,6 +42,7 @@ function tripToApi(trip: typeof shTripsTable.$inferSelect) {
     priceMin: trip.priceMin,
     priceDisplay: trip.priceDisplay,
     pricingNote: trip.pricingNote ?? null,
+    pricingModel: trip.pricingModel ?? "per_person",
     maxPassengers: trip.maxPassengers,
     boat: trip.boat,
     highlights: (trip.highlights as string[]) ?? [],
@@ -155,19 +156,34 @@ router.get("/sh/trips/:slug/vessels", async (req, res) => {
     )
     .orderBy(asc(shVesselsTable.sortOrder));
 
+  const isFlat = trip.pricingModel === "flat";
+
   res.json(
-    tripVessels.map((v) => ({
-      id: v.id,
-      name: v.name,
-      description: v.description,
-      capacity: v.capacity,
-      priceCents: v.priceOverrideCents ?? v.priceCents,
-      priceDisplay: v.priceOverrideCents
-        ? `$${(v.priceOverrideCents / 100).toFixed(0)}/person`
-        : v.priceDisplay,
-      imageUrl: v.imageUrl ?? null,
-      sortOrder: v.sortOrder,
-    })),
+    tripVessels.map((v) => {
+      // For flat-rate charters: price is per-boat override OR the trip's base price
+      // For per-person: price is the vessel's rate (with optional override)
+      const effectivePriceCents = isFlat
+        ? (v.priceOverrideCents ?? trip.priceMin)
+        : (v.priceOverrideCents ?? v.priceCents);
+
+      const effectivePriceDisplay = isFlat
+        ? `$${(effectivePriceCents / 100).toLocaleString("en-US", { minimumFractionDigits: 0 })}`
+        : (v.priceOverrideCents
+            ? `$${(v.priceOverrideCents / 100).toFixed(0)}`
+            : v.priceDisplay);
+
+      return {
+        id: v.id,
+        name: v.name,
+        description: v.description,
+        capacity: v.capacity,
+        priceCents: effectivePriceCents,
+        priceDisplay: effectivePriceDisplay,
+        pricingModel: trip.pricingModel,
+        imageUrl: v.imageUrl ?? null,
+        sortOrder: v.sortOrder,
+      };
+    }),
   );
 });
 
@@ -263,7 +279,10 @@ router.post("/sh/checkout", async (req, res) => {
     }
   }
 
-  const totalCents = priceCents * passengers;
+  // Flat-rate (charter): price is for the boat regardless of passenger count
+  // Per-person (lesson/rental): price multiplies by headcount
+  const totalCents =
+    trip.pricingModel === "flat" ? priceCents : priceCents * passengers;
 
   // Create a pending booking first
   const [booking] = await db
@@ -298,7 +317,9 @@ router.post("/sh/checkout", async (req, res) => {
             unit_amount: totalCents,
             product_data: {
               name: `${trip.name} — ${bookingDate}`,
-              description: `${passengers} passenger${passengers > 1 ? "s" : ""} · ${trip.boat}`,
+              description: trip.pricingModel === "flat"
+                ? `Private charter · ${trip.boat}`
+                : `${passengers} passenger${passengers > 1 ? "s" : ""} · ${trip.boat}`,
             },
           },
           quantity: 1,

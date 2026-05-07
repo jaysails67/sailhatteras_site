@@ -9,6 +9,7 @@ export interface ShVessel {
   capacity: number;
   priceCents: number;
   priceDisplay: string;
+  pricingModel: string;
   imageUrl?: string | null;
   sortOrder: number;
 }

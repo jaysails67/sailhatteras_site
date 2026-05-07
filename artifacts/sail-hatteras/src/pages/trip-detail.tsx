@@ -42,6 +42,7 @@ function VesselCard({
   selected: boolean;
   onSelect: () => void;
 }) {
+  const isFlat = vessel.pricingModel === "flat";
   return (
     <button
       onClick={onSelect}
@@ -75,7 +76,9 @@ function VesselCard({
         <div className={`text-base font-bold ${selected ? "text-primary" : "text-foreground"}`}>
           {vessel.priceDisplay}
         </div>
-        <div className="text-xs text-muted-foreground">per person</div>
+        <div className="text-xs text-muted-foreground">
+          {isFlat ? "private charter" : "per person"}
+        </div>
       </div>
     </button>
   );
@@ -108,6 +111,8 @@ export default function TripDetail() {
     ? ["Choose Vessel", "Select Date", "Your Details", "Review"]
     : ["Select Date", "Your Details", "Review"];
 
+  const isFlat = trip?.pricingModel === "flat";
+
   // Effective price = selected vessel price or trip base price
   const effectivePriceCents = selectedVessel
     ? selectedVessel.priceCents
@@ -115,6 +120,9 @@ export default function TripDetail() {
   const effectivePriceDisplay = selectedVessel
     ? selectedVessel.priceDisplay
     : trip?.priceDisplay ?? "";
+
+  // Total respects pricing model — charters are flat (whole boat), not per-head
+  const totalCents = isFlat ? effectivePriceCents : effectivePriceCents * passengers;
 
   const highlights: string[] = trip?.highlights
     ? (typeof trip.highlights === "string" ? JSON.parse(trip.highlights) : trip.highlights)
@@ -320,7 +328,11 @@ export default function TripDetail() {
               {/* ── Step 1: Vessel Picker (only if vessels available) ── */}
               {hasVessels && step === 1 && (
                 <div className="space-y-3">
-                  <p className="text-sm text-muted-foreground">Select your vessel — prices vary by boat.</p>
+                  <p className="text-sm text-muted-foreground">
+                    {isFlat
+                      ? "Select your vessel — your charter is a private, all-inclusive flat rate for the boat."
+                      : "Select your vessel — prices vary by boat."}
+                  </p>
                   <div className="space-y-2">
                     {vessels!.map((vessel) => (
                       <VesselCard
@@ -350,7 +362,9 @@ export default function TripDetail() {
                     <div className="bg-primary/5 rounded-lg px-3 py-2 flex items-center gap-2 text-sm">
                       <Ship className="h-3.5 w-3.5 text-primary shrink-0" />
                       <span className="font-medium text-foreground">{selectedVessel.name}</span>
-                      <span className="text-muted-foreground ml-auto">{selectedVessel.priceDisplay}/person</span>
+                      <span className="text-muted-foreground ml-auto">
+                        {isFlat ? `${selectedVessel.priceDisplay} flat rate` : `${selectedVessel.priceDisplay}/person`}
+                      </span>
                     </div>
                   )}
 
@@ -500,9 +514,13 @@ export default function TripDetail() {
                     <Separator className="my-2" />
                     <div className="flex justify-between font-semibold text-base">
                       <span>Total</span>
-                      <span>${((effectivePriceCents * passengers) / 100).toFixed(0)}</span>
+                      <span>${(totalCents / 100).toLocaleString("en-US", { minimumFractionDigits: 0 })}</span>
                     </div>
-                    <div className="text-xs text-muted-foreground">{effectivePriceDisplay} × {passengers} person{passengers > 1 ? "s" : ""}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {isFlat
+                        ? `${effectivePriceDisplay} · private charter · up to ${selectedVessel?.capacity ?? trip.maxPassengers} guests`
+                        : `${effectivePriceDisplay} × ${passengers} person${passengers > 1 ? "s" : ""}`}
+                    </div>
                   </div>
                   <p className="text-xs text-muted-foreground">
                     You will be taken to our secure Stripe checkout to complete your payment. Your program fee supports our 501(c)3 nonprofit mission.
