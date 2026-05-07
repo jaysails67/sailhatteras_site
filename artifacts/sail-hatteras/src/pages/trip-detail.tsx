@@ -315,7 +315,7 @@ export default function TripDetail() {
                 <Dialog>
                   <DialogTrigger asChild>
                     <button className="mt-3 text-xs text-primary-foreground/80 hover:text-primary-foreground underline flex items-center gap-1">
-                      True cost: $1,200–$2,400 per child — see how your fee is used
+                      True cost: $620–$2,700 per child — see how your fee is used
                     </button>
                   </DialogTrigger>
                   <DialogContent className="max-w-xl">
@@ -323,7 +323,7 @@ export default function TripDetail() {
                       <DialogTitle className="font-serif text-xl">Where Your $200 Goes</DialogTitle>
                     </DialogHeader>
                     <p className="text-sm text-muted-foreground mb-4">
-                      Your $200 program fee is heavily subsidized by Hatteras Community Sailing's donors and grants. The actual cost per child ranges from <strong className="text-foreground">$1,200 to $2,400</strong> depending on program track — meaning every family receives between $1,000 and $2,200 in community-funded support.
+                      Your $200 program fee is heavily subsidized by Hatteras Community Sailing's donors and grants. Costs vary by track and enrollment — the figures below reflect minimum viable class sizes. Every family receives a significant gift from the Hatteras sailing community.
                     </p>
                     <div className="rounded-xl border border-border overflow-hidden text-sm">
                       <table className="w-full">
@@ -337,10 +337,10 @@ export default function TripDetail() {
                         </thead>
                         <tbody className="divide-y divide-border">
                           {[
-                            ["Sailing Littles (ages 6–9)", "~$1,200", "$200", "$1,000"],
-                            ["Opti Green Fleet (ages 9–13)", "~$1,200", "$200", "$1,000"],
-                            ["Collegiate 420 (ages 12–18)", "~$1,200", "$200", "$1,000"],
-                            ["SAISA High School (grades 8–12)", "~$2,400", "$200", "$2,200"],
+                            ["Sailing Littles (ages 6–9)", "Contact us", "$200", "—"],
+                            ["Opti Green Fleet (ages 9–13)", "~$620", "$200", "~$420"],
+                            ["Collegiate 420 (ages 12–18)", "~$1,100", "$200", "~$900"],
+                            ["SAISA High School (grades 8–12)", "~$2,700", "$200", "~$2,500"],
                           ].map(([track, actual, fee, subsidy]) => (
                             <tr key={track} className="hover:bg-muted/30">
                               <td className="px-4 py-3 text-muted-foreground">{track}</td>
@@ -353,10 +353,10 @@ export default function TripDetail() {
                       </table>
                     </div>
                     <p className="text-sm text-muted-foreground mt-3">
-                      SAISA costs are higher due to travel, regatta entry fees, and the coaching intensity required for competitive interscholastic sailing.
+                      Cost per student assumes minimum enrollment (6–8 participants). SAISA costs include travel, regatta entry fees, and the coaching intensity required for competitive interscholastic sailing.
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Figures are approximate based on actual operating costs. Hatteras Community Sailing is a 501(c)3 nonprofit (EIN 85-2684924). Donations are tax-deductible.
+                      Figures are based on actual program operating costs. Hatteras Community Sailing is a 501(c)3 nonprofit (EIN 85-2684924). Donations are tax-deductible.
                     </p>
                   </DialogContent>
                 </Dialog>
