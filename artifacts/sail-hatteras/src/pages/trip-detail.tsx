@@ -107,8 +107,10 @@ export default function TripDetail() {
   const checkout = useCreateShCheckout();
 
   const totalSteps = hasVessels ? 4 : 3;
+  const isLearnTrip = trip?.category === "learn";
+  const vesselStepLabel = isLearnTrip ? "Choose Program" : "Choose Vessel";
   const stepLabels = hasVessels
-    ? ["Choose Vessel", "Select Date", "Your Details", "Review"]
+    ? [vesselStepLabel, "Select Date", "Your Details", "Review"]
     : ["Select Date", "Your Details", "Review"];
 
   const isFlat = trip?.pricingModel === "flat";
@@ -329,7 +331,9 @@ export default function TripDetail() {
               {hasVessels && step === 1 && (
                 <div className="space-y-3">
                   <p className="text-sm text-muted-foreground">
-                    {isFlat
+                    {isLearnTrip
+                      ? "Select the program track that fits your sailor."
+                      : isFlat
                       ? "Select your vessel — your charter is a private, all-inclusive flat rate for the boat."
                       : "Select your vessel — prices vary by boat."}
                   </p>
