@@ -245,8 +245,18 @@ export default function TripDetail() {
           </div>
 
           {/* Description */}
-          <div className="prose prose-neutral max-w-none mb-10">
-            <p className="text-muted-foreground leading-relaxed text-lg">{trip.description}</p>
+          <div className="prose prose-neutral max-w-none mb-10 space-y-4">
+            {trip.description.split(/\n\n+/).map((para, i) => {
+              if (para.trim() === "---") return <hr key={i} className="border-border" />;
+              const parts = para.split(/\*\*(.+?)\*\*/g);
+              return (
+                <p key={i} className="text-muted-foreground leading-relaxed text-lg">
+                  {parts.map((part, j) =>
+                    j % 2 === 1 ? <strong key={j} className="text-foreground font-semibold">{part}</strong> : part
+                  )}
+                </p>
+              );
+            })}
           </div>
 
           {/* Highlights */}
