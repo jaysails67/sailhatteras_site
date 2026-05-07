@@ -21,7 +21,7 @@ export default function Privacy() {
             <div>
               <h2 className="font-serif text-2xl font-bold text-foreground mb-3">About This Policy</h2>
               <p>
-                Hatteras Community Sailing (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;the organization&rdquo;) is a 501(c)3 nonprofit organization located in Hatteras Village, North Carolina. This Privacy Policy explains how we collect, use, and protect information you provide when using our website at sailhatteras.org and participating in our community sailing programs.
+                Hatteras Community Sailing (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;the organization&rdquo;) is a 501(c)3 nonprofit organization located in Buxton, North Carolina on Hatteras Island. This Privacy Policy explains how we collect, use, and protect information you provide when using our website at sailhatteras.org and participating in our community sailing programs.
               </p>
               <p className="mt-3">
                 We are committed to protecting your privacy and using your data only to support our nonprofit mission of community sailing access on the Outer Banks.
@@ -95,7 +95,8 @@ export default function Privacy() {
               </p>
               <div className="mt-3 space-y-1">
                 <p><strong className="text-foreground">Hatteras Community Sailing</strong></p>
-                <p>Hatteras Village, NC 27943</p>
+                <p>48962 NC-12, Buxton, NC 27920</p>
+                <p>Office: 40039 NC-12, Avon, NC 27915</p>
                 <p>Email: <a href="mailto:info@sailhatteras.org" className="text-primary hover:underline">info@sailhatteras.org</a></p>
                 <p>Phone: (252) 489-8193</p>
               </div>

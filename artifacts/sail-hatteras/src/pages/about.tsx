@@ -32,7 +32,7 @@ export default function About() {
               <h2 className="font-serif text-3xl font-bold mb-6">Who We Are</h2>
               <div className="space-y-4 text-muted-foreground leading-relaxed">
                 <p>
-                  Hatteras Community Sailing is a 501(c)3 nonprofit based in Hatteras Village, North Carolina. We operate on the waters of Pamlico Sound — one of the finest sailing environments on the East Coast — and our name reflects our roots. But our mission is bigger than sailing.
+                  Hatteras Community Sailing is a 501(c)3 nonprofit based in Buxton, North Carolina on Hatteras Island. We operate on the waters of Pamlico Sound — one of the finest sailing environments on the East Coast — and our name reflects our roots. But our mission is bigger than sailing.
                 </p>
                 <p>
                   Hatteras Island is a remote barrier island community defined by the sea. The ocean shapes everything here: the economy, the culture, the weather, the land itself. Yet the same forces pulling young people away from real-world skills and community everywhere — screens, social media, algorithmic entertainment — are pulling at Hatteras kids too. We exist to give them a counterweight.
@@ -63,8 +63,8 @@ export default function About() {
                 <div className="flex items-center gap-3">
                   <Anchor className="h-5 w-5 text-primary shrink-0" />
                   <div>
-                    <div className="font-semibold text-sm">Based in Hatteras Village, NC</div>
-                    <div className="text-xs text-muted-foreground">Outer Banks, North Carolina 27943</div>
+                    <div className="font-semibold text-sm">Based in Buxton, NC — Hatteras Island</div>
+                    <div className="text-xs text-muted-foreground">48962 NC-12, Buxton, NC 27920</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -114,7 +114,7 @@ export default function About() {
               </div>
               <h3 className="font-serif text-xl font-bold mb-3">Community Fleet Access</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Our rental program keeps independent time on Pamlico Sound affordable for experienced community members. Below-market catamaran and skiff rates are made possible by our charter and program revenue — so the water stays part of everyday life in Hatteras Village, not just a tourist attraction.
+                Our rental program keeps independent time on Pamlico Sound affordable for experienced community members. Below-market catamaran and skiff rates are made possible by our charter and program revenue — so the water stays part of everyday life on Hatteras Island, not just a tourist attraction.
               </p>
             </div>
           </div>
@@ -153,7 +153,7 @@ export default function About() {
             </div>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                Our board of directors is composed of community members from Hatteras Village and the surrounding Outer Banks area. All board positions are volunteer, with no compensation.
+                Our board of directors is composed of community members from Buxton, Avon, and the surrounding Hatteras Island area. All board positions are volunteer, with no compensation.
               </p>
               <div className="bg-muted/50 rounded-xl border border-border px-5 py-4">
                 <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">Board Leadership</div>

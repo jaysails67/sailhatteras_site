@@ -72,7 +72,7 @@ export default function Contact() {
                   <MapPin className="h-5 w-5 mt-0.5 text-primary shrink-0" />
                   <div>
                     <div className="font-medium text-foreground">Location</div>
-                    <div>Hatteras Village, NC 27943<br />Outer Banks, North Carolina</div>
+                    <div>48962 NC-12, Buxton, NC 27920<br />Office: 40039 NC-12, Avon, NC 27915</div>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">

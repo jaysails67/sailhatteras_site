@@ -49,7 +49,7 @@ export function Footer() {
             <ul className="space-y-3 text-sm text-primary-foreground/70">
               <li className="flex items-start gap-3">
                 <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
-                <span>Hatteras Village<br />Outer Banks, NC 27943</span>
+                <span>48962 NC-12, Buxton, NC 27920<br />Office: 40039 NC-12, Avon, NC 27915</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-4 w-4 shrink-0" />
