@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Heart, Anchor, Users, BookOpen, Waves, Shield, ArrowRight } from "lucide-react";
+import { Heart, Anchor, Users, BookOpen, Waves, Shield, ArrowRight, Compass, Fish, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useGetShHomeSummary } from "@workspace/api-client-react";
 
@@ -16,10 +16,10 @@ export default function About() {
             501(c)3 Nonprofit Organization
           </div>
           <h1 className="font-serif text-5xl md:text-6xl font-bold mb-6 leading-tight">
-            Our Mission: Sailing<br />for Everyone
+            The Sea for Every<br />Hatteras Child
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            The mission of Hatteras Community Sailing is to inspire a passion for lifelong seamanship and the environment — in every member of the Outer Banks community, regardless of background, income, or prior experience.
+            Hatteras Community Sailing connects island youth to the ocean — and to every skill, career, and way of life it offers — through hands-on programs that grow with them from childhood into adulthood.
           </p>
         </div>
       </section>
@@ -32,13 +32,16 @@ export default function About() {
               <h2 className="font-serif text-3xl font-bold mb-6">Who We Are</h2>
               <div className="space-y-4 text-muted-foreground leading-relaxed">
                 <p>
-                  Hatteras Community Sailing is a 501(c)3 tax-exempt nonprofit organization based in Hatteras Village, North Carolina. Our mission is to inspire a passion for lifelong seamanship and the environment. We operate on the waters of Pamlico Sound — one of the finest sailing environments on the East Coast — serving that mission through community programs, youth instruction, and open fleet access.
+                  Hatteras Community Sailing is a 501(c)3 nonprofit based in Hatteras Village, North Carolina. We operate on the waters of Pamlico Sound — one of the finest sailing environments on the East Coast — and our name reflects our roots. But our mission is bigger than sailing.
                 </p>
                 <p>
-                  We were founded on the belief that access to the water should not be limited by what you can afford. Our community sailing programs — experiences, instruction, and rentals — generate the revenue that funds free and subsidized sailing for youth and underserved members of our community.
+                  Hatteras Island is a remote barrier island community defined by the sea. The ocean shapes everything here: the economy, the culture, the weather, the land itself. Yet the same forces pulling young people away from real-world skills and community everywhere — screens, social media, algorithmic entertainment — are pulling at Hatteras kids too. We exist to give them a counterweight.
                 </p>
                 <p>
-                  <strong className="text-foreground">No child is turned away for inability to pay.</strong> Scholarships and free program spots are available for local Hatteras youth. Reach out to us directly to learn more.
+                  We start the youngest children on sailboats. Sailing is ideal for small kids — it demands attention, teaches consequence, and builds confidence in ways few other activities can. As youth grow with us, we walk alongside them into powerboating, diving, fishing, boatbuilding, maritime technology, and professional seamanship. These aren't hobbies. They're <strong className="text-foreground">pathways</strong> — to careers, to independence, to a life genuinely connected to the place they call home.
+                </p>
+                <p>
+                  <strong className="text-foreground">No child is turned away for inability to pay.</strong> Scholarships and free program spots are available for local Hatteras youth. Contact us directly to learn more.
                 </p>
               </div>
             </div>
@@ -77,13 +80,13 @@ export default function About() {
         </div>
       </section>
 
-      {/* How Programs Support Mission */}
+      {/* Pathways Section */}
       <section className="py-20 px-6 bg-muted/30 border-y border-border">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="font-serif text-3xl md:text-4xl font-bold mb-4">How Our Programs Serve the Mission</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Every program we offer ties directly to our nonprofit mission of community sailing access. Here's how participation translates to impact.
+            <h2 className="font-serif text-3xl md:text-4xl font-bold mb-4">A Lifelong Relationship with the Sea</h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Our programs aren't one-time events — they're entry points to a larger journey. We meet youth where they are and grow with them as their skills and ambitions expand.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -93,16 +96,16 @@ export default function About() {
               </div>
               <h3 className="font-serif text-xl font-bold mb-3">Community Experiences</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Our sailing experiences — sunset sails, wildlife tours, half and full-day charters — bring participants into contact with the unique ecology and culture of the Outer Banks. Program fees fund operational costs and directly subsidize our youth programs. Every ticket you buy keeps a kid sailing.
+                Our sailing experiences — sunset sails, wildlife tours, half and full-day charters — bring visitors and locals into contact with the ecology and culture of the Outer Banks. Every program fee funds youth scholarships and keeps our fleet on the water. Every ticket you buy keeps a kid out here.
               </p>
             </div>
             <div className="bg-card rounded-xl border border-border p-8">
               <div className="h-12 w-12 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-5">
-                <BookOpen className="h-6 w-6" />
+                <Compass className="h-6 w-6" />
               </div>
-              <h3 className="font-serif text-xl font-bold mb-3">Sailing Education</h3>
+              <h3 className="font-serif text-xl font-bold mb-3">Youth Maritime Pathways</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Sailing instruction is the heart of our mission. We operate youth development programs on Optimists and Collegiate 420s, adult learn-to-sail sessions on Hobie catamarans, and visitor intensives that bring the joy of sailing to families vacationing on the Outer Banks. Scholarships ensure no one is excluded.
+                We start the youngest children sailing — Optimist dinghies and beach cats for beginners, building to Collegiate 420s and larger vessels. As youth mature, we open pathways to powerboating, diving, fishing, boatbuilding, maritime technology, and professional seamanship. All youth programs are scholarship-eligible; no one is excluded.
               </p>
             </div>
             <div className="bg-card rounded-xl border border-border p-8">
@@ -111,14 +114,31 @@ export default function About() {
               </div>
               <h3 className="font-serif text-xl font-bold mb-3">Community Fleet Access</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Our rental program makes independent sailing accessible at below-market rates. By maintaining a community fleet of Hobie catamarans and high-performance skiffs, we give experienced sailors affordable access to the water. Fleet fees support maintenance and insurance, keeping boats available for everyone.
+                Our rental program keeps independent time on Pamlico Sound affordable for experienced community members. Below-market catamaran and skiff rates are made possible by our charter and program revenue — so the water stays part of everyday life in Hatteras Village, not just a tourist attraction.
               </p>
+            </div>
+          </div>
+
+          {/* Pathway progression callout */}
+          <div className="mt-12 bg-primary text-primary-foreground rounded-2xl p-8 md:p-10">
+            <div className="max-w-3xl mx-auto text-center">
+              <h3 className="font-serif text-2xl md:text-3xl font-bold mb-4">The Pathway, Year by Year</h3>
+              <p className="text-primary-foreground/80 mb-8 leading-relaxed">
+                A child who joins our Junior Sailing Camp at age 8 doesn't stop there. We walk alongside them — through intermediate sailing, into powerboat seamanship, then diving, fishing, boatbuilding, and maritime technology as their interests and abilities grow. By the time they're ready to enter the workforce, they have skills and credentials that belong to life on a working waterfront.
+              </p>
+              <div className="flex flex-wrap justify-center gap-3 text-sm font-semibold">
+                {["Sailing", "Powerboating", "Diving", "Fishing", "Boatbuilding", "Maritime Technology", "Professional Seamanship"].map((p) => (
+                  <span key={p} className="bg-primary-foreground/15 rounded-full px-4 py-1.5 text-primary-foreground">
+                    {p}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Google Ad Grants / Nonprofit Transparency */}
+      {/* Nonprofit Transparency */}
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-serif text-3xl font-bold mb-8">Nonprofit Transparency</h2>
