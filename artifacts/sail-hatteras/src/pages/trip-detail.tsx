@@ -298,9 +298,9 @@ export default function TripDetail() {
                   <tbody className="divide-y divide-border">
                     {[
                       { track: "Sailing Littles", ages: "6–9", actual: "—", fee: "$95", subsidy: "Contact us", highlight: false },
-                      { track: "Opti Green Fleet", ages: "9–13", actual: "~$620", fee: "$200", subsidy: "~$420", highlight: false },
-                      { track: "Collegiate 420", ages: "12–18", actual: "~$1,100", fee: "$295", subsidy: "~$805", highlight: false },
-                      { track: "SAISA High School", ages: "Gr. 8–12", actual: "~$2,700", fee: "$695", subsidy: "~$2,005", highlight: true },
+                      { track: "Opti Green Fleet", ages: "9–13", actual: "~$1,098", fee: "$200", subsidy: "~$898", highlight: false },
+                      { track: "Collegiate 420", ages: "12–18", actual: "~$1,424", fee: "$295", subsidy: "~$1,129", highlight: false },
+                      { track: "SAISA High School", ages: "Gr. 8–12", actual: "~$3,497", fee: "$695", subsidy: "~$2,802", highlight: true },
                     ].map(({ track, ages, actual, fee, subsidy, highlight }) => (
                       <tr key={track} className={highlight ? "bg-primary/5" : "hover:bg-muted/30"}>
                         <td className="px-5 py-3.5 font-medium">{track}</td>
@@ -374,9 +374,9 @@ export default function TripDetail() {
                               <tbody className="divide-y divide-border">
                                 {[
                                   ["Sailing Littles (ages 6–9)", "Contact us", "$95", "—"],
-                                  ["Opti Green Fleet (ages 9–13)", "~$620", "$200", "~$420"],
-                                  ["Collegiate 420 (ages 12–18)", "~$1,100", "$295", "~$805"],
-                                  ["SAISA High School (grades 8–12)", "~$2,700", "$695", "~$2,005"],
+                                  ["Opti Green Fleet (ages 9–13)", "~$1,098", "$200", "~$898"],
+                                  ["Collegiate 420 (ages 12–18)", "~$1,424", "$295", "~$1,129"],
+                                  ["SAISA High School (grades 8–12)", "~$3,497", "$695", "~$2,802"],
                                 ].map(([track, actual, fee, subsidy]) => (
                                   <tr key={track} className="hover:bg-muted/30">
                                     <td className="px-4 py-3 text-muted-foreground">{track}</td>
