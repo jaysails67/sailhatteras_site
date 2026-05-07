@@ -5,6 +5,8 @@ import {
   shBookingsTable,
   shAvailabilityTable,
   shContactsTable,
+  shVesselsTable,
+  shTripVesselsTable,
 } from "@workspace/db";
 import { eq, and, gte, lte, desc, asc, sql } from "drizzle-orm";
 import {
@@ -111,6 +113,64 @@ router.get("/sh/trips/:slug", async (req, res) => {
   res.json(tripToApi(trip));
 });
 
+// GET /sh/trips/:slug/vessels
+router.get("/sh/trips/:slug/vessels", async (req, res) => {
+  const slug = req.params.slug;
+  if (!slug) {
+    res.status(400).json({ error: "Invalid slug" });
+    return;
+  }
+
+  const [trip] = await db
+    .select()
+    .from(shTripsTable)
+    .where(eq(shTripsTable.slug, slug))
+    .limit(1);
+
+  if (!trip) {
+    res.status(404).json({ error: "Trip not found" });
+    return;
+  }
+
+  const tripVessels = await db
+    .select({
+      id: shVesselsTable.id,
+      name: shVesselsTable.name,
+      description: shVesselsTable.description,
+      capacity: shVesselsTable.capacity,
+      priceCents: shVesselsTable.priceCents,
+      priceDisplay: shVesselsTable.priceDisplay,
+      imageUrl: shVesselsTable.imageUrl,
+      sortOrder: shVesselsTable.sortOrder,
+      priceOverrideCents: shTripVesselsTable.priceOverrideCents,
+    })
+    .from(shTripVesselsTable)
+    .innerJoin(shVesselsTable, eq(shTripVesselsTable.vesselId, shVesselsTable.id))
+    .where(
+      and(
+        eq(shTripVesselsTable.tripId, trip.id),
+        eq(shTripVesselsTable.active, true),
+        eq(shVesselsTable.active, true),
+      ),
+    )
+    .orderBy(asc(shVesselsTable.sortOrder));
+
+  res.json(
+    tripVessels.map((v) => ({
+      id: v.id,
+      name: v.name,
+      description: v.description,
+      capacity: v.capacity,
+      priceCents: v.priceOverrideCents ?? v.priceCents,
+      priceDisplay: v.priceOverrideCents
+        ? `$${(v.priceOverrideCents / 100).toFixed(0)}/person`
+        : v.priceDisplay,
+      imageUrl: v.imageUrl ?? null,
+      sortOrder: v.sortOrder,
+    })),
+  );
+});
+
 // GET /sh/trips/:tripId/availability
 router.get("/sh/trips/:tripId/availability", async (req, res) => {
   const params = GetShTripAvailabilityParams.safeParse(req.params);
@@ -162,6 +222,8 @@ router.post("/sh/checkout", async (req, res) => {
     customerEmail,
     customerPhone,
     specialRequests,
+    vesselId,
+    vesselName,
   } = parsed.data;
 
   const [trip] = await db
@@ -175,13 +237,39 @@ router.post("/sh/checkout", async (req, res) => {
     return;
   }
 
-  const totalCents = trip.priceMin * passengers;
+  // Use vessel price if a vessel was selected, otherwise fall back to trip's base price
+  let priceCents = trip.priceMin;
+  if (vesselId) {
+    const [vessel] = await db
+      .select()
+      .from(shVesselsTable)
+      .where(and(eq(shVesselsTable.id, vesselId), eq(shVesselsTable.active, true)))
+      .limit(1);
+    if (vessel) {
+      // Check for trip-level price override
+      const [tripVessel] = await db
+        .select()
+        .from(shTripVesselsTable)
+        .where(
+          and(
+            eq(shTripVesselsTable.tripId, trip.id),
+            eq(shTripVesselsTable.vesselId, vesselId),
+          ),
+        )
+        .limit(1);
+      priceCents = tripVessel?.priceOverrideCents ?? vessel.priceCents;
+    }
+  }
+
+  const totalCents = priceCents * passengers;
 
   // Create a pending booking first
   const [booking] = await db
     .insert(shBookingsTable)
     .values({
       tripId: trip.id,
+      vesselId: vesselId ?? null,
+      vesselName: vesselName ?? null,
       customerName,
       customerEmail,
       customerPhone,

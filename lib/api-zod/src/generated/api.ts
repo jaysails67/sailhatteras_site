@@ -619,7 +619,21 @@ export const CreateShCheckoutBody = zod.object({
   customerEmail: zod.string(),
   customerPhone: zod.string(),
   specialRequests: zod.string().nullish(),
+  vesselId: zod.number().optional(),
+  vesselName: zod.string().optional(),
 });
+
+export const ShVessel = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  description: zod.string(),
+  capacity: zod.number(),
+  priceCents: zod.number(),
+  priceDisplay: zod.string(),
+  imageUrl: zod.string().nullish(),
+  sortOrder: zod.number(),
+});
+export const ListShTripVesselsResponse = zod.array(ShVessel);
 
 export const CreateShCheckoutResponse = zod.object({
   checkoutUrl: zod.string(),

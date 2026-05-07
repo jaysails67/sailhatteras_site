@@ -39,11 +39,40 @@ export const shTripsTable = pgTable("sh_trips", {
     .$onUpdate(() => new Date()),
 });
 
+export const shVesselsTable = pgTable("sh_vessels", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description").notNull().default(""),
+  capacity: integer("capacity").notNull().default(6),
+  priceCents: integer("price_cents").notNull(),
+  priceDisplay: text("price_display").notNull(),
+  imageUrl: text("image_url"),
+  active: boolean("active").notNull().default(true),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+export const shTripVesselsTable = pgTable("sh_trip_vessels", {
+  id: serial("id").primaryKey(),
+  tripId: integer("trip_id")
+    .notNull()
+    .references(() => shTripsTable.id),
+  vesselId: integer("vessel_id")
+    .notNull()
+    .references(() => shVesselsTable.id),
+  priceOverrideCents: integer("price_override_cents"),
+  active: boolean("active").notNull().default(true),
+});
+
 export const shBookingsTable = pgTable("sh_bookings", {
   id: serial("id").primaryKey(),
   tripId: integer("trip_id")
     .notNull()
     .references(() => shTripsTable.id),
+  vesselId: integer("vessel_id"),
+  vesselName: text("vessel_name"),
   customerName: text("customer_name").notNull(),
   customerEmail: text("customer_email").notNull(),
   customerPhone: text("customer_phone").notNull(),
