@@ -40,10 +40,10 @@ const advisors = [
     icon: Zap,
     area: "Battery & Powerplant Technology",
     prospective: "Battery/Powerplant Technology Lead",
-    name: "Brian Palmer",
+    name: "Role to be filled",
     description:
-      "Brings expertise in energy storage, powertrain architecture, and marine charging systems. His knowledge of battery management and electric propulsion at scale is exactly the capability PamliEcoConnect will need as vessel development progresses.",
-    identified: true,
+      "Seeking an expert in energy storage, powertrain architecture, and marine charging systems to guide battery management and electric propulsion as vessel development progresses.",
+    identified: false,
   },
   {
     icon: TrendingUp,
