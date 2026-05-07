@@ -135,6 +135,16 @@ export default function About() {
               <p>
                 Our board of directors is composed of community members from Hatteras Village and the surrounding Outer Banks area. All board positions are volunteer, with no compensation.
               </p>
+              <div className="bg-muted/50 rounded-xl border border-border px-5 py-4">
+                <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">Board Leadership</div>
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-serif font-bold text-lg shrink-0">J</div>
+                  <div>
+                    <div className="font-semibold text-foreground">Jay Phillips</div>
+                    <div className="text-sm text-muted-foreground">Chairman of the Board of Directors</div>
+                  </div>
+                </div>
+              </div>
               <p>
                 Donations to Hatteras Community Sailing are tax-deductible to the extent permitted by law. Our EIN is <strong className="text-foreground">85-2684924</strong>. Please consult your tax advisor for specific guidance.
               </p>
