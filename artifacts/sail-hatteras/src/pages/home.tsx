@@ -3,16 +3,30 @@ import { ArrowRight, Compass, Sun, Wind, Clock, Heart, BookOpen, Users, Anchor }
 import { Button } from "@/components/ui/button";
 import { useGetShHomeSummary } from "@workspace/api-client-react";
 import { useState, useEffect } from "react";
-import heroImg from "@/assets/images/hero-sunset.png";
-import catamaranImg from "@/assets/images/catamaran.png";
-import learnImg from "@/assets/images/learn-to-sail.png";
-import groupImg from "@/assets/images/group-charter.png";
+
+const BASE = import.meta.env.BASE_URL;
+const slide = (file: string) => `${BASE}slideshow/${file}`;
 
 const SLIDES = [
-  { src: heroImg,      alt: "Sailboat at sunset on Pamlico Sound" },
-  { src: catamaranImg, alt: "Catamaran sailing on calm water" },
-  { src: learnImg,     alt: "Learning to sail on the Outer Banks" },
-  { src: groupImg,     alt: "Group sailing charter on the sound" },
+  { src: slide("s06-catamaran-sunset.jpg"),  alt: "Evening sail on the Pamlico Sound" },
+  { src: slide("s11-junior-girl.jpg"),        alt: "Junior sailor in her Optimist dinghy" },
+  { src: slide("s04-catamaran-beach.jpg"),    alt: "Catamaran beached on the Outer Banks" },
+  { src: slide("s09-junior-boy.jpg"),         alt: "Young sailor at the helm" },
+  { src: slide("s05-sunset-couple.jpg"),      alt: "Sunset sail on the sound" },
+  { src: slide("s14-teens-sailing.jpg"),      alt: "Teen sailors racing on the Pamlico Sound" },
+  { src: slide("s07-aerial-cat.jpg"),         alt: "Aerial view of catamaran on the sound" },
+  { src: slide("s12-team-photo.jpg"),         alt: "Hatteras Community Sailing junior team" },
+  { src: slide("s03-boy-sunset.jpg"),         alt: "Kid and dog aboard at sunset" },
+  { src: slide("s15-girls-dinghy.jpg"),       alt: "Girls sailing together on the Pamlico Sound" },
+  { src: slide("s10-outer-banks-opti.jpg"),   alt: "Sailing an Optimist on the Outer Banks" },
+  { src: slide("s18-awards.jpg"),             alt: "Community sailing awards ceremony" },
+  { src: slide("s16-kid-cockpit.jpg"),        alt: "Young sailor in the cockpit" },
+  { src: slide("s01-youth-group.jpg"),        alt: "Youth sailing program participants" },
+  { src: slide("s13-kid-on-boat.jpg"),        alt: "Kids on the water" },
+  { src: slide("s17-kid-at-dock.jpg"),        alt: "Young sailor rigging at the dock" },
+  { src: slide("s08-kids-on-trailer.jpg"),    alt: "Kids excited about a new boat" },
+  { src: slide("s02-campfire.jpg"),           alt: "Community gathering after a sail" },
+  { src: slide("s19-campfire2.jpg"),          alt: "Hatteras sailing community bonfire" },
 ];
 
 export default function Home() {
