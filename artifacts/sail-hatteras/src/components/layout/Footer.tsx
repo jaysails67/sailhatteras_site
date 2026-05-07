@@ -74,7 +74,7 @@ export function Footer() {
             <p>© {new Date().getFullYear()} Hatteras Community Sailing. All rights reserved.</p>
             <p className="flex items-center gap-1">
               <Heart className="h-3 w-3 fill-current text-primary-foreground/40" />
-              501(c)3 Tax-Exempt Nonprofit Organization
+              501(c)3 Tax-Exempt Nonprofit — EIN: 85-2684924
             </p>
           </div>
           <div className="flex gap-4">

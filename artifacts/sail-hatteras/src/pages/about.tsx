@@ -54,7 +54,7 @@ export default function About() {
                   <Shield className="h-5 w-5 text-primary shrink-0" />
                   <div>
                     <div className="font-semibold text-sm">IRS Tax-Exempt Status</div>
-                    <div className="text-xs text-muted-foreground">501(c)3 Nonprofit — EIN: [Your EIN Here]</div>
+                    <div className="text-xs text-muted-foreground">501(c)3 Nonprofit — EIN: 85-2684924</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -136,7 +136,7 @@ export default function About() {
                 Our board of directors is composed of community members from Hatteras Village and the surrounding Outer Banks area. All board positions are volunteer, with no compensation.
               </p>
               <p>
-                Donations to Hatteras Community Sailing are tax-deductible to the extent permitted by law. Our EIN is <strong className="text-foreground">[Your EIN Here]</strong>. Please consult your tax advisor for specific guidance.
+                Donations to Hatteras Community Sailing are tax-deductible to the extent permitted by law. Our EIN is <strong className="text-foreground">85-2684924</strong>. Please consult your tax advisor for specific guidance.
               </p>
             </div>
           </div>
