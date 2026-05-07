@@ -1,0 +1,111 @@
+import {
+  pgTable,
+  serial,
+  text,
+  integer,
+  boolean,
+  timestamp,
+  date,
+  jsonb,
+} from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod/v4";
+
+export const shTripsTable = pgTable("sh_trips", {
+  id: serial("id").primaryKey(),
+  slug: text("slug").notNull().unique(),
+  name: text("name").notNull(),
+  category: text("category").notNull(),
+  type: text("type").notNull(),
+  shortDescription: text("short_description").notNull(),
+  description: text("description").notNull(),
+  duration: text("duration").notNull(),
+  priceMin: integer("price_min").notNull(),
+  priceDisplay: text("price_display").notNull(),
+  pricingNote: text("pricing_note"),
+  maxPassengers: integer("max_passengers").notNull(),
+  boat: text("boat").notNull(),
+  highlights: jsonb("highlights").notNull().$type<string[]>().default([]),
+  imageUrl: text("image_url"),
+  active: boolean("active").notNull().default(true),
+  sortOrder: integer("sort_order").notNull().default(0),
+  stripePriceId: text("stripe_price_id"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+
+export const shBookingsTable = pgTable("sh_bookings", {
+  id: serial("id").primaryKey(),
+  tripId: integer("trip_id")
+    .notNull()
+    .references(() => shTripsTable.id),
+  customerName: text("customer_name").notNull(),
+  customerEmail: text("customer_email").notNull(),
+  customerPhone: text("customer_phone").notNull(),
+  bookingDate: date("booking_date").notNull(),
+  passengers: integer("passengers").notNull(),
+  totalCents: integer("total_cents").notNull(),
+  status: text("status").notNull().default("pending"),
+  specialRequests: text("special_requests"),
+  stripeSessionId: text("stripe_session_id"),
+  stripePaymentIntentId: text("stripe_payment_intent_id"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+
+export const shAvailabilityTable = pgTable("sh_availability", {
+  id: serial("id").primaryKey(),
+  tripId: integer("trip_id")
+    .notNull()
+    .references(() => shTripsTable.id),
+  date: date("date").notNull(),
+  availableSlots: integer("available_slots").notNull().default(1),
+  isBlocked: boolean("is_blocked").notNull().default(false),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+export const shContactsTable = pgTable("sh_contacts", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  message: text("message").notNull(),
+  tripInterest: text("trip_interest"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+export const insertShTripSchema = createInsertSchema(shTripsTable).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+export type InsertShTrip = z.infer<typeof insertShTripSchema>;
+export type ShTrip = typeof shTripsTable.$inferSelect;
+
+export const insertShBookingSchema = createInsertSchema(shBookingsTable).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+export type InsertShBooking = z.infer<typeof insertShBookingSchema>;
+export type ShBooking = typeof shBookingsTable.$inferSelect;
+
+export const insertShAvailabilitySchema = createInsertSchema(
+  shAvailabilityTable,
+).omit({ id: true, createdAt: true });
+export type InsertShAvailability = z.infer<typeof insertShAvailabilitySchema>;
+export type ShAvailability = typeof shAvailabilityTable.$inferSelect;

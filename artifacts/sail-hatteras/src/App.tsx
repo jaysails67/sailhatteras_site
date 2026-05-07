@@ -2,27 +2,40 @@ import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
+
+import Home from "@/pages/home";
 import NotFound from "@/pages/not-found";
+// Placeholders until we create them
+const Trips = () => <div className="pt-20">Trips</div>;
+const TripDetail = () => <div className="pt-20">Trip Detail</div>;
+const Contact = () => <div className="pt-20">Contact</div>;
+const BookingConfirmation = () => <div className="pt-20">Booking Conf</div>;
+const Admin = () => <div className="pt-20">Admin</div>;
+const AdminBookings = () => <div className="pt-20">Admin Bookings</div>;
+
 
 const queryClient = new QueryClient();
 
-function Home() {
-  return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-900">Replit Agent is building...</h1>
-        <p className="mt-2 text-sm text-gray-600">Your app will appear here once it's ready.</p>
-      </div>
-    </div>
-  );
-}
-
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route component={NotFound} />
-    </Switch>
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-1">
+        <Switch>
+          <Route path="/" component={Home} />
+          <Route path="/trips" component={Trips} />
+          <Route path="/trips/:slug" component={TripDetail} />
+          <Route path="/booking-confirmation" component={BookingConfirmation} />
+          <Route path="/contact" component={Contact} />
+          <Route path="/admin" component={Admin} />
+          <Route path="/admin/bookings" component={AdminBookings} />
+          <Route component={NotFound} />
+        </Switch>
+      </main>
+      <Footer />
+    </div>
   );
 }
 

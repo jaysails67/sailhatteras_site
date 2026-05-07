@@ -276,7 +276,6 @@ export const CreatePostBody = zod.object({
   type: zod.enum(["press_release", "video", "presentation"]),
   mediaUrl: zod.string().nullish(),
   featured: zod.boolean().optional(),
-  publishedAt: zod.coerce.date().optional(),
 });
 
 /**
@@ -312,7 +311,6 @@ export const UpdatePostBody = zod.object({
   type: zod.enum(["press_release", "video", "presentation"]),
   mediaUrl: zod.string().nullish(),
   featured: zod.boolean().optional(),
-  publishedAt: zod.coerce.date().optional(),
 });
 
 export const UpdatePostResponse = zod.object({
@@ -508,4 +506,346 @@ export const GetAdminDashboardResponse = zod.object({
       createdAt: zod.coerce.date(),
     }),
   ),
+});
+
+/**
+ * @summary Homepage summary — featured trips and category counts
+ */
+export const GetShHomeSummaryResponse = zod.object({
+  totalTrips: zod.number(),
+  categories: zod.array(zod.string()),
+  featuredTrips: zod.array(
+    zod.object({
+      id: zod.number(),
+      slug: zod.string(),
+      name: zod.string(),
+      category: zod.string().describe("experiences | learn | rentals"),
+      type: zod.string().describe("charter | tour | lesson | rental"),
+      shortDescription: zod.string(),
+      description: zod.string(),
+      duration: zod.string(),
+      priceMin: zod.number().describe("Minimum price in cents"),
+      priceDisplay: zod.string().describe("Human-readable price (e.g. '$395')"),
+      pricingNote: zod.string().nullish(),
+      maxPassengers: zod.number(),
+      boat: zod.string(),
+      highlights: zod.array(zod.string()),
+      imageUrl: zod.string().nullish(),
+      active: zod.boolean(),
+      sortOrder: zod.number(),
+    }),
+  ),
+});
+
+/**
+ * @summary List all active trips, optionally filtered by category
+ */
+export const ListShTripsQueryParams = zod.object({
+  category: zod.coerce.string().optional(),
+});
+
+export const ListShTripsResponseItem = zod.object({
+  id: zod.number(),
+  slug: zod.string(),
+  name: zod.string(),
+  category: zod.string().describe("experiences | learn | rentals"),
+  type: zod.string().describe("charter | tour | lesson | rental"),
+  shortDescription: zod.string(),
+  description: zod.string(),
+  duration: zod.string(),
+  priceMin: zod.number().describe("Minimum price in cents"),
+  priceDisplay: zod.string().describe("Human-readable price (e.g. '$395')"),
+  pricingNote: zod.string().nullish(),
+  maxPassengers: zod.number(),
+  boat: zod.string(),
+  highlights: zod.array(zod.string()),
+  imageUrl: zod.string().nullish(),
+  active: zod.boolean(),
+  sortOrder: zod.number(),
+});
+export const ListShTripsResponse = zod.array(ListShTripsResponseItem);
+
+/**
+ * @summary Get a single trip by slug
+ */
+export const GetShTripParams = zod.object({
+  slug: zod.coerce.string(),
+});
+
+export const GetShTripResponse = zod.object({
+  id: zod.number(),
+  slug: zod.string(),
+  name: zod.string(),
+  category: zod.string().describe("experiences | learn | rentals"),
+  type: zod.string().describe("charter | tour | lesson | rental"),
+  shortDescription: zod.string(),
+  description: zod.string(),
+  duration: zod.string(),
+  priceMin: zod.number().describe("Minimum price in cents"),
+  priceDisplay: zod.string().describe("Human-readable price (e.g. '$395')"),
+  pricingNote: zod.string().nullish(),
+  maxPassengers: zod.number(),
+  boat: zod.string(),
+  highlights: zod.array(zod.string()),
+  imageUrl: zod.string().nullish(),
+  active: zod.boolean(),
+  sortOrder: zod.number(),
+});
+
+/**
+ * @summary Get available booking dates for a trip (next 90 days)
+ */
+export const GetShTripAvailabilityParams = zod.object({
+  tripId: zod.coerce.number(),
+});
+
+export const GetShTripAvailabilityResponseItem = zod.object({
+  date: zod.coerce.date(),
+  availableSlots: zod.number(),
+  isBlocked: zod.boolean(),
+});
+export const GetShTripAvailabilityResponse = zod.array(
+  GetShTripAvailabilityResponseItem,
+);
+
+/**
+ * @summary Create a Stripe checkout session for a trip booking
+ */
+export const CreateShCheckoutBody = zod.object({
+  tripSlug: zod.string(),
+  bookingDate: zod.coerce.date(),
+  passengers: zod.number(),
+  customerName: zod.string(),
+  customerEmail: zod.string(),
+  customerPhone: zod.string(),
+  specialRequests: zod.string().nullish(),
+});
+
+export const CreateShCheckoutResponse = zod.object({
+  checkoutUrl: zod.string(),
+  bookingId: zod.number(),
+});
+
+/**
+ * @summary Get a booking by ID (used on confirmation page)
+ */
+export const GetShBookingParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GetShBookingResponse = zod.object({
+  id: zod.number(),
+  trip: zod.object({
+    id: zod.number(),
+    slug: zod.string(),
+    name: zod.string(),
+    category: zod.string().describe("experiences | learn | rentals"),
+    type: zod.string().describe("charter | tour | lesson | rental"),
+    shortDescription: zod.string(),
+    description: zod.string(),
+    duration: zod.string(),
+    priceMin: zod.number().describe("Minimum price in cents"),
+    priceDisplay: zod.string().describe("Human-readable price (e.g. '$395')"),
+    pricingNote: zod.string().nullish(),
+    maxPassengers: zod.number(),
+    boat: zod.string(),
+    highlights: zod.array(zod.string()),
+    imageUrl: zod.string().nullish(),
+    active: zod.boolean(),
+    sortOrder: zod.number(),
+  }),
+  customerName: zod.string(),
+  customerEmail: zod.string(),
+  customerPhone: zod.string(),
+  bookingDate: zod.coerce.date(),
+  passengers: zod.number(),
+  totalCents: zod.number(),
+  status: zod.string().describe("pending | confirmed | cancelled | refunded"),
+  specialRequests: zod.string().nullish(),
+  stripeSessionId: zod.string().nullish(),
+  createdAt: zod.coerce.date(),
+});
+
+/**
+ * @summary Submit a contact/inquiry form for SailHatteras
+ */
+export const CreateShContactBody = zod.object({
+  name: zod.string(),
+  email: zod.string(),
+  phone: zod.string().nullish(),
+  message: zod.string(),
+  tripInterest: zod.string().nullish(),
+});
+
+export const CreateShContactResponse = zod.object({
+  ok: zod.boolean(),
+});
+
+/**
+ * @summary Admin dashboard — booking stats and upcoming trips
+ */
+export const GetShAdminDashboardResponse = zod.object({
+  totalBookings: zod.number(),
+  confirmedBookings: zod.number(),
+  pendingBookings: zod.number(),
+  revenueThisMonth: zod.number(),
+  recentBookings: zod.array(
+    zod.object({
+      id: zod.number(),
+      tripName: zod.string(),
+      tripSlug: zod.string(),
+      customerName: zod.string(),
+      customerEmail: zod.string(),
+      bookingDate: zod.coerce.date(),
+      passengers: zod.number(),
+      totalCents: zod.number(),
+      status: zod.string(),
+      createdAt: zod.coerce.date(),
+    }),
+  ),
+  upcomingBookings: zod.array(
+    zod.object({
+      id: zod.number(),
+      tripName: zod.string(),
+      tripSlug: zod.string(),
+      customerName: zod.string(),
+      customerEmail: zod.string(),
+      bookingDate: zod.coerce.date(),
+      passengers: zod.number(),
+      totalCents: zod.number(),
+      status: zod.string(),
+      createdAt: zod.coerce.date(),
+    }),
+  ),
+});
+
+/**
+ * @summary List all bookings with optional status filter
+ */
+export const ListShAdminBookingsQueryParams = zod.object({
+  status: zod.coerce.string().optional(),
+});
+
+export const ListShAdminBookingsResponseItem = zod.object({
+  id: zod.number(),
+  tripName: zod.string(),
+  tripSlug: zod.string(),
+  customerName: zod.string(),
+  customerEmail: zod.string(),
+  bookingDate: zod.coerce.date(),
+  passengers: zod.number(),
+  totalCents: zod.number(),
+  status: zod.string(),
+  createdAt: zod.coerce.date(),
+});
+export const ListShAdminBookingsResponse = zod.array(
+  ListShAdminBookingsResponseItem,
+);
+
+/**
+ * @summary Update booking status (confirm, cancel, refund)
+ */
+export const UpdateShAdminBookingParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateShAdminBookingBody = zod.object({
+  status: zod.string().describe("pending | confirmed | cancelled | refunded"),
+});
+
+export const UpdateShAdminBookingResponse = zod.object({
+  id: zod.number(),
+  tripName: zod.string(),
+  tripSlug: zod.string(),
+  customerName: zod.string(),
+  customerEmail: zod.string(),
+  bookingDate: zod.coerce.date(),
+  passengers: zod.number(),
+  totalCents: zod.number(),
+  status: zod.string(),
+  createdAt: zod.coerce.date(),
+});
+
+/**
+ * @summary Block or set available slots for a trip on a specific date
+ */
+export const SetShAvailabilityBody = zod.object({
+  tripId: zod.number(),
+  date: zod.coerce.date(),
+  availableSlots: zod.number().nullish(),
+  isBlocked: zod.boolean(),
+});
+
+export const SetShAvailabilityResponse = zod.object({
+  date: zod.coerce.date(),
+  availableSlots: zod.number(),
+  isBlocked: zod.boolean(),
+});
+
+/**
+ * @summary Create a new trip/service offering
+ */
+export const CreateShAdminTripBody = zod.object({
+  slug: zod.string(),
+  name: zod.string(),
+  category: zod.string(),
+  type: zod.string(),
+  shortDescription: zod.string(),
+  description: zod.string(),
+  duration: zod.string(),
+  priceMin: zod.number(),
+  priceDisplay: zod.string(),
+  pricingNote: zod.string().nullish(),
+  maxPassengers: zod.number(),
+  boat: zod.string(),
+  highlights: zod.array(zod.string()),
+  imageUrl: zod.string().nullish(),
+  active: zod.boolean().optional(),
+  sortOrder: zod.number().optional(),
+});
+
+/**
+ * @summary Update a trip
+ */
+export const UpdateShAdminTripParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateShAdminTripBody = zod.object({
+  slug: zod.string(),
+  name: zod.string(),
+  category: zod.string(),
+  type: zod.string(),
+  shortDescription: zod.string(),
+  description: zod.string(),
+  duration: zod.string(),
+  priceMin: zod.number(),
+  priceDisplay: zod.string(),
+  pricingNote: zod.string().nullish(),
+  maxPassengers: zod.number(),
+  boat: zod.string(),
+  highlights: zod.array(zod.string()),
+  imageUrl: zod.string().nullish(),
+  active: zod.boolean().optional(),
+  sortOrder: zod.number().optional(),
+});
+
+export const UpdateShAdminTripResponse = zod.object({
+  id: zod.number(),
+  slug: zod.string(),
+  name: zod.string(),
+  category: zod.string().describe("experiences | learn | rentals"),
+  type: zod.string().describe("charter | tour | lesson | rental"),
+  shortDescription: zod.string(),
+  description: zod.string(),
+  duration: zod.string(),
+  priceMin: zod.number().describe("Minimum price in cents"),
+  priceDisplay: zod.string().describe("Human-readable price (e.g. '$395')"),
+  pricingNote: zod.string().nullish(),
+  maxPassengers: zod.number(),
+  boat: zod.string(),
+  highlights: zod.array(zod.string()),
+  imageUrl: zod.string().nullish(),
+  active: zod.boolean(),
+  sortOrder: zod.number(),
 });

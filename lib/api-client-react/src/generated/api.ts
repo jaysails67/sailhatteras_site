@@ -23,6 +23,7 @@ import type {
   ContactSubmission,
   ContentPage,
   ContentPageBody,
+  CreateShContact200,
   DenyBody,
   ErrorResponse,
   FeaturedPostsResponse,
@@ -31,12 +32,26 @@ import type {
   InvestorStats,
   ListInvestorsParams,
   ListPostsParams,
+  ListShAdminBookingsParams,
+  ListShTripsParams,
   LoginBody,
   MessageResponse,
   MyApplication,
   Post,
   PostBody,
   RegisterBody,
+  ShAdminDashboard,
+  ShAvailabilityBlockBody,
+  ShAvailabilitySlot,
+  ShBooking,
+  ShBookingStatusBody,
+  ShBookingSummary,
+  ShCheckoutRequest,
+  ShCheckoutResponse,
+  ShContactBody,
+  ShHomeSummary,
+  ShTrip,
+  ShTripBody,
   TeamMember,
   TeamMemberBody,
   User,
@@ -2511,3 +2526,1129 @@ export function useGetAdminDashboard<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * @summary Homepage summary — featured trips and category counts
+ */
+export const getGetShHomeSummaryUrl = () => {
+  return `/api/sh/summary`;
+};
+
+export const getShHomeSummary = async (
+  options?: RequestInit,
+): Promise<ShHomeSummary> => {
+  return customFetch<ShHomeSummary>(getGetShHomeSummaryUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetShHomeSummaryQueryKey = () => {
+  return [`/api/sh/summary`] as const;
+};
+
+export const getGetShHomeSummaryQueryOptions = <
+  TData = Awaited<ReturnType<typeof getShHomeSummary>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getShHomeSummary>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetShHomeSummaryQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getShHomeSummary>>
+  > = ({ signal }) => getShHomeSummary({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getShHomeSummary>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetShHomeSummaryQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getShHomeSummary>>
+>;
+export type GetShHomeSummaryQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Homepage summary — featured trips and category counts
+ */
+
+export function useGetShHomeSummary<
+  TData = Awaited<ReturnType<typeof getShHomeSummary>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getShHomeSummary>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetShHomeSummaryQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary List all active trips, optionally filtered by category
+ */
+export const getListShTripsUrl = (params?: ListShTripsParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/sh/trips?${stringifiedParams}`
+    : `/api/sh/trips`;
+};
+
+export const listShTrips = async (
+  params?: ListShTripsParams,
+  options?: RequestInit,
+): Promise<ShTrip[]> => {
+  return customFetch<ShTrip[]>(getListShTripsUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListShTripsQueryKey = (params?: ListShTripsParams) => {
+  return [`/api/sh/trips`, ...(params ? [params] : [])] as const;
+};
+
+export const getListShTripsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listShTrips>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: ListShTripsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof listShTrips>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListShTripsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listShTrips>>> = ({
+    signal,
+  }) => listShTrips(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listShTrips>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListShTripsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listShTrips>>
+>;
+export type ListShTripsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary List all active trips, optionally filtered by category
+ */
+
+export function useListShTrips<
+  TData = Awaited<ReturnType<typeof listShTrips>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: ListShTripsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof listShTrips>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListShTripsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Get a single trip by slug
+ */
+export const getGetShTripUrl = (slug: string) => {
+  return `/api/sh/trips/${slug}`;
+};
+
+export const getShTrip = async (
+  slug: string,
+  options?: RequestInit,
+): Promise<ShTrip> => {
+  return customFetch<ShTrip>(getGetShTripUrl(slug), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetShTripQueryKey = (slug: string) => {
+  return [`/api/sh/trips/${slug}`] as const;
+};
+
+export const getGetShTripQueryOptions = <
+  TData = Awaited<ReturnType<typeof getShTrip>>,
+  TError = ErrorType<void>,
+>(
+  slug: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getShTrip>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetShTripQueryKey(slug);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getShTrip>>> = ({
+    signal,
+  }) => getShTrip(slug, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!slug,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof getShTrip>>, TError, TData> & {
+    queryKey: QueryKey;
+  };
+};
+
+export type GetShTripQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getShTrip>>
+>;
+export type GetShTripQueryError = ErrorType<void>;
+
+/**
+ * @summary Get a single trip by slug
+ */
+
+export function useGetShTrip<
+  TData = Awaited<ReturnType<typeof getShTrip>>,
+  TError = ErrorType<void>,
+>(
+  slug: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getShTrip>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetShTripQueryOptions(slug, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Get available booking dates for a trip (next 90 days)
+ */
+export const getGetShTripAvailabilityUrl = (tripId: number) => {
+  return `/api/sh/trips/${tripId}/availability`;
+};
+
+export const getShTripAvailability = async (
+  tripId: number,
+  options?: RequestInit,
+): Promise<ShAvailabilitySlot[]> => {
+  return customFetch<ShAvailabilitySlot[]>(
+    getGetShTripAvailabilityUrl(tripId),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
+
+export const getGetShTripAvailabilityQueryKey = (tripId: number) => {
+  return [`/api/sh/trips/${tripId}/availability`] as const;
+};
+
+export const getGetShTripAvailabilityQueryOptions = <
+  TData = Awaited<ReturnType<typeof getShTripAvailability>>,
+  TError = ErrorType<unknown>,
+>(
+  tripId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getShTripAvailability>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetShTripAvailabilityQueryKey(tripId);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getShTripAvailability>>
+  > = ({ signal }) =>
+    getShTripAvailability(tripId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!tripId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getShTripAvailability>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetShTripAvailabilityQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getShTripAvailability>>
+>;
+export type GetShTripAvailabilityQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get available booking dates for a trip (next 90 days)
+ */
+
+export function useGetShTripAvailability<
+  TData = Awaited<ReturnType<typeof getShTripAvailability>>,
+  TError = ErrorType<unknown>,
+>(
+  tripId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getShTripAvailability>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetShTripAvailabilityQueryOptions(tripId, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Create a Stripe checkout session for a trip booking
+ */
+export const getCreateShCheckoutUrl = () => {
+  return `/api/sh/checkout`;
+};
+
+export const createShCheckout = async (
+  shCheckoutRequest: ShCheckoutRequest,
+  options?: RequestInit,
+): Promise<ShCheckoutResponse> => {
+  return customFetch<ShCheckoutResponse>(getCreateShCheckoutUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(shCheckoutRequest),
+  });
+};
+
+export const getCreateShCheckoutMutationOptions = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createShCheckout>>,
+    TError,
+    { data: BodyType<ShCheckoutRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createShCheckout>>,
+  TError,
+  { data: BodyType<ShCheckoutRequest> },
+  TContext
+> => {
+  const mutationKey = ["createShCheckout"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createShCheckout>>,
+    { data: BodyType<ShCheckoutRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createShCheckout(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateShCheckoutMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createShCheckout>>
+>;
+export type CreateShCheckoutMutationBody = BodyType<ShCheckoutRequest>;
+export type CreateShCheckoutMutationError = ErrorType<void>;
+
+/**
+ * @summary Create a Stripe checkout session for a trip booking
+ */
+export const useCreateShCheckout = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createShCheckout>>,
+    TError,
+    { data: BodyType<ShCheckoutRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createShCheckout>>,
+  TError,
+  { data: BodyType<ShCheckoutRequest> },
+  TContext
+> => {
+  return useMutation(getCreateShCheckoutMutationOptions(options));
+};
+
+/**
+ * @summary Get a booking by ID (used on confirmation page)
+ */
+export const getGetShBookingUrl = (id: number) => {
+  return `/api/sh/bookings/${id}`;
+};
+
+export const getShBooking = async (
+  id: number,
+  options?: RequestInit,
+): Promise<ShBooking> => {
+  return customFetch<ShBooking>(getGetShBookingUrl(id), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetShBookingQueryKey = (id: number) => {
+  return [`/api/sh/bookings/${id}`] as const;
+};
+
+export const getGetShBookingQueryOptions = <
+  TData = Awaited<ReturnType<typeof getShBooking>>,
+  TError = ErrorType<void>,
+>(
+  id: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getShBooking>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetShBookingQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getShBooking>>> = ({
+    signal,
+  }) => getShBooking(id, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getShBooking>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetShBookingQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getShBooking>>
+>;
+export type GetShBookingQueryError = ErrorType<void>;
+
+/**
+ * @summary Get a booking by ID (used on confirmation page)
+ */
+
+export function useGetShBooking<
+  TData = Awaited<ReturnType<typeof getShBooking>>,
+  TError = ErrorType<void>,
+>(
+  id: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getShBooking>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetShBookingQueryOptions(id, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Submit a contact/inquiry form for SailHatteras
+ */
+export const getCreateShContactUrl = () => {
+  return `/api/sh/contact`;
+};
+
+export const createShContact = async (
+  shContactBody: ShContactBody,
+  options?: RequestInit,
+): Promise<CreateShContact200> => {
+  return customFetch<CreateShContact200>(getCreateShContactUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(shContactBody),
+  });
+};
+
+export const getCreateShContactMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createShContact>>,
+    TError,
+    { data: BodyType<ShContactBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createShContact>>,
+  TError,
+  { data: BodyType<ShContactBody> },
+  TContext
+> => {
+  const mutationKey = ["createShContact"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createShContact>>,
+    { data: BodyType<ShContactBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createShContact(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateShContactMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createShContact>>
+>;
+export type CreateShContactMutationBody = BodyType<ShContactBody>;
+export type CreateShContactMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Submit a contact/inquiry form for SailHatteras
+ */
+export const useCreateShContact = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createShContact>>,
+    TError,
+    { data: BodyType<ShContactBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createShContact>>,
+  TError,
+  { data: BodyType<ShContactBody> },
+  TContext
+> => {
+  return useMutation(getCreateShContactMutationOptions(options));
+};
+
+/**
+ * @summary Admin dashboard — booking stats and upcoming trips
+ */
+export const getGetShAdminDashboardUrl = () => {
+  return `/api/sh/admin/dashboard`;
+};
+
+export const getShAdminDashboard = async (
+  options?: RequestInit,
+): Promise<ShAdminDashboard> => {
+  return customFetch<ShAdminDashboard>(getGetShAdminDashboardUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetShAdminDashboardQueryKey = () => {
+  return [`/api/sh/admin/dashboard`] as const;
+};
+
+export const getGetShAdminDashboardQueryOptions = <
+  TData = Awaited<ReturnType<typeof getShAdminDashboard>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getShAdminDashboard>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetShAdminDashboardQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getShAdminDashboard>>
+  > = ({ signal }) => getShAdminDashboard({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getShAdminDashboard>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetShAdminDashboardQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getShAdminDashboard>>
+>;
+export type GetShAdminDashboardQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Admin dashboard — booking stats and upcoming trips
+ */
+
+export function useGetShAdminDashboard<
+  TData = Awaited<ReturnType<typeof getShAdminDashboard>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getShAdminDashboard>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetShAdminDashboardQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary List all bookings with optional status filter
+ */
+export const getListShAdminBookingsUrl = (
+  params?: ListShAdminBookingsParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/sh/admin/bookings?${stringifiedParams}`
+    : `/api/sh/admin/bookings`;
+};
+
+export const listShAdminBookings = async (
+  params?: ListShAdminBookingsParams,
+  options?: RequestInit,
+): Promise<ShBookingSummary[]> => {
+  return customFetch<ShBookingSummary[]>(getListShAdminBookingsUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListShAdminBookingsQueryKey = (
+  params?: ListShAdminBookingsParams,
+) => {
+  return [`/api/sh/admin/bookings`, ...(params ? [params] : [])] as const;
+};
+
+export const getListShAdminBookingsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listShAdminBookings>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: ListShAdminBookingsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof listShAdminBookings>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getListShAdminBookingsQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof listShAdminBookings>>
+  > = ({ signal }) =>
+    listShAdminBookings(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listShAdminBookings>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListShAdminBookingsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listShAdminBookings>>
+>;
+export type ListShAdminBookingsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary List all bookings with optional status filter
+ */
+
+export function useListShAdminBookings<
+  TData = Awaited<ReturnType<typeof listShAdminBookings>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: ListShAdminBookingsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof listShAdminBookings>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListShAdminBookingsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Update booking status (confirm, cancel, refund)
+ */
+export const getUpdateShAdminBookingUrl = (id: number) => {
+  return `/api/sh/admin/bookings/${id}`;
+};
+
+export const updateShAdminBooking = async (
+  id: number,
+  shBookingStatusBody: ShBookingStatusBody,
+  options?: RequestInit,
+): Promise<ShBookingSummary> => {
+  return customFetch<ShBookingSummary>(getUpdateShAdminBookingUrl(id), {
+    ...options,
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(shBookingStatusBody),
+  });
+};
+
+export const getUpdateShAdminBookingMutationOptions = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateShAdminBooking>>,
+    TError,
+    { id: number; data: BodyType<ShBookingStatusBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateShAdminBooking>>,
+  TError,
+  { id: number; data: BodyType<ShBookingStatusBody> },
+  TContext
+> => {
+  const mutationKey = ["updateShAdminBooking"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateShAdminBooking>>,
+    { id: number; data: BodyType<ShBookingStatusBody> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateShAdminBooking(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateShAdminBookingMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateShAdminBooking>>
+>;
+export type UpdateShAdminBookingMutationBody = BodyType<ShBookingStatusBody>;
+export type UpdateShAdminBookingMutationError = ErrorType<void>;
+
+/**
+ * @summary Update booking status (confirm, cancel, refund)
+ */
+export const useUpdateShAdminBooking = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateShAdminBooking>>,
+    TError,
+    { id: number; data: BodyType<ShBookingStatusBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateShAdminBooking>>,
+  TError,
+  { id: number; data: BodyType<ShBookingStatusBody> },
+  TContext
+> => {
+  return useMutation(getUpdateShAdminBookingMutationOptions(options));
+};
+
+/**
+ * @summary Block or set available slots for a trip on a specific date
+ */
+export const getSetShAvailabilityUrl = () => {
+  return `/api/sh/admin/availability`;
+};
+
+export const setShAvailability = async (
+  shAvailabilityBlockBody: ShAvailabilityBlockBody,
+  options?: RequestInit,
+): Promise<ShAvailabilitySlot> => {
+  return customFetch<ShAvailabilitySlot>(getSetShAvailabilityUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(shAvailabilityBlockBody),
+  });
+};
+
+export const getSetShAvailabilityMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof setShAvailability>>,
+    TError,
+    { data: BodyType<ShAvailabilityBlockBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof setShAvailability>>,
+  TError,
+  { data: BodyType<ShAvailabilityBlockBody> },
+  TContext
+> => {
+  const mutationKey = ["setShAvailability"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof setShAvailability>>,
+    { data: BodyType<ShAvailabilityBlockBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return setShAvailability(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SetShAvailabilityMutationResult = NonNullable<
+  Awaited<ReturnType<typeof setShAvailability>>
+>;
+export type SetShAvailabilityMutationBody = BodyType<ShAvailabilityBlockBody>;
+export type SetShAvailabilityMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Block or set available slots for a trip on a specific date
+ */
+export const useSetShAvailability = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof setShAvailability>>,
+    TError,
+    { data: BodyType<ShAvailabilityBlockBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof setShAvailability>>,
+  TError,
+  { data: BodyType<ShAvailabilityBlockBody> },
+  TContext
+> => {
+  return useMutation(getSetShAvailabilityMutationOptions(options));
+};
+
+/**
+ * @summary Create a new trip/service offering
+ */
+export const getCreateShAdminTripUrl = () => {
+  return `/api/sh/admin/trips`;
+};
+
+export const createShAdminTrip = async (
+  shTripBody: ShTripBody,
+  options?: RequestInit,
+): Promise<ShTrip> => {
+  return customFetch<ShTrip>(getCreateShAdminTripUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(shTripBody),
+  });
+};
+
+export const getCreateShAdminTripMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createShAdminTrip>>,
+    TError,
+    { data: BodyType<ShTripBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createShAdminTrip>>,
+  TError,
+  { data: BodyType<ShTripBody> },
+  TContext
+> => {
+  const mutationKey = ["createShAdminTrip"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createShAdminTrip>>,
+    { data: BodyType<ShTripBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createShAdminTrip(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateShAdminTripMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createShAdminTrip>>
+>;
+export type CreateShAdminTripMutationBody = BodyType<ShTripBody>;
+export type CreateShAdminTripMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Create a new trip/service offering
+ */
+export const useCreateShAdminTrip = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createShAdminTrip>>,
+    TError,
+    { data: BodyType<ShTripBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createShAdminTrip>>,
+  TError,
+  { data: BodyType<ShTripBody> },
+  TContext
+> => {
+  return useMutation(getCreateShAdminTripMutationOptions(options));
+};
+
+/**
+ * @summary Update a trip
+ */
+export const getUpdateShAdminTripUrl = (id: number) => {
+  return `/api/sh/admin/trips/${id}`;
+};
+
+export const updateShAdminTrip = async (
+  id: number,
+  shTripBody: ShTripBody,
+  options?: RequestInit,
+): Promise<ShTrip> => {
+  return customFetch<ShTrip>(getUpdateShAdminTripUrl(id), {
+    ...options,
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(shTripBody),
+  });
+};
+
+export const getUpdateShAdminTripMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateShAdminTrip>>,
+    TError,
+    { id: number; data: BodyType<ShTripBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateShAdminTrip>>,
+  TError,
+  { id: number; data: BodyType<ShTripBody> },
+  TContext
+> => {
+  const mutationKey = ["updateShAdminTrip"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateShAdminTrip>>,
+    { id: number; data: BodyType<ShTripBody> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateShAdminTrip(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateShAdminTripMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateShAdminTrip>>
+>;
+export type UpdateShAdminTripMutationBody = BodyType<ShTripBody>;
+export type UpdateShAdminTripMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Update a trip
+ */
+export const useUpdateShAdminTrip = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateShAdminTrip>>,
+    TError,
+    { id: number; data: BodyType<ShTripBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateShAdminTrip>>,
+  TError,
+  { id: number; data: BodyType<ShTripBody> },
+  TContext
+> => {
+  return useMutation(getUpdateShAdminTripMutationOptions(options));
+};

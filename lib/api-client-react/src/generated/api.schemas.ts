@@ -238,6 +238,144 @@ export interface WaitlistEntry {
   createdAt: string;
 }
 
+export interface ShTrip {
+  id: number;
+  slug: string;
+  name: string;
+  /** experiences | learn | rentals */
+  category: string;
+  /** charter | tour | lesson | rental */
+  type: string;
+  shortDescription: string;
+  description: string;
+  duration: string;
+  /** Minimum price in cents */
+  priceMin: number;
+  /** Human-readable price (e.g. '$395') */
+  priceDisplay: string;
+  /** @nullable */
+  pricingNote?: string | null;
+  maxPassengers: number;
+  boat: string;
+  highlights: string[];
+  /** @nullable */
+  imageUrl?: string | null;
+  active: boolean;
+  sortOrder: number;
+}
+
+export interface ShAvailabilitySlot {
+  date: string;
+  availableSlots: number;
+  isBlocked: boolean;
+}
+
+export interface ShCheckoutRequest {
+  tripSlug: string;
+  bookingDate: string;
+  passengers: number;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  /** @nullable */
+  specialRequests?: string | null;
+}
+
+export interface ShCheckoutResponse {
+  checkoutUrl: string;
+  bookingId: number;
+}
+
+export interface ShBooking {
+  id: number;
+  trip: ShTrip;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  bookingDate: string;
+  passengers: number;
+  totalCents: number;
+  /** pending | confirmed | cancelled | refunded */
+  status: string;
+  /** @nullable */
+  specialRequests?: string | null;
+  /** @nullable */
+  stripeSessionId?: string | null;
+  createdAt: string;
+}
+
+export interface ShBookingSummary {
+  id: number;
+  tripName: string;
+  tripSlug: string;
+  customerName: string;
+  customerEmail: string;
+  bookingDate: string;
+  passengers: number;
+  totalCents: number;
+  status: string;
+  createdAt: string;
+}
+
+export interface ShContactBody {
+  name: string;
+  email: string;
+  /** @nullable */
+  phone?: string | null;
+  message: string;
+  /** @nullable */
+  tripInterest?: string | null;
+}
+
+export interface ShHomeSummary {
+  totalTrips: number;
+  categories: string[];
+  featuredTrips: ShTrip[];
+}
+
+export interface ShAdminDashboard {
+  totalBookings: number;
+  confirmedBookings: number;
+  pendingBookings: number;
+  revenueThisMonth: number;
+  recentBookings: ShBookingSummary[];
+  upcomingBookings: ShBookingSummary[];
+}
+
+export interface ShAvailabilityBlockBody {
+  tripId: number;
+  date: string;
+  /** @nullable */
+  availableSlots?: number | null;
+  isBlocked: boolean;
+}
+
+export interface ShBookingStatusBody {
+  /** pending | confirmed | cancelled | refunded */
+  status: string;
+}
+
+export interface ShTripBody {
+  slug: string;
+  name: string;
+  category: string;
+  type: string;
+  shortDescription: string;
+  description: string;
+  duration: string;
+  priceMin: number;
+  priceDisplay: string;
+  /** @nullable */
+  pricingNote?: string | null;
+  maxPassengers: number;
+  boat: string;
+  highlights: string[];
+  /** @nullable */
+  imageUrl?: string | null;
+  active?: boolean;
+  sortOrder?: number;
+}
+
 export interface AdminDashboard {
   investorStats: InvestorStats;
   totalContacts: number;
@@ -270,3 +408,15 @@ export const ListPostsType = {
   video: "video",
   presentation: "presentation",
 } as const;
+
+export type ListShTripsParams = {
+  category?: string;
+};
+
+export type CreateShContact200 = {
+  ok: boolean;
+};
+
+export type ListShAdminBookingsParams = {
+  status?: string;
+};

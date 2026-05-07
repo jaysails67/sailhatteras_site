@@ -663,6 +663,276 @@ paths:
               schema:
                 $ref: "#/components/schemas/AdminDashboard"
 
+  # ─── SailHatteras Public Routes ───────────────────────────
+
+  /sh/summary:
+    get:
+      operationId: getShHomeSummary
+      tags: [sail-hatteras]
+      summary: Homepage summary — featured trips and category counts
+      responses:
+        "200":
+          description: Summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShHomeSummary"
+
+  /sh/trips:
+    get:
+      operationId: listShTrips
+      tags: [sail-hatteras]
+      summary: List all active trips, optionally filtered by category
+      parameters:
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of trips
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ShTrip"
+
+  /sh/trips/{slug}:
+    get:
+      operationId: getShTrip
+      tags: [sail-hatteras]
+      summary: Get a single trip by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Trip detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShTrip"
+        "404":
+          description: Trip not found
+
+  /sh/trips/{tripId}/availability:
+    get:
+      operationId: getShTripAvailability
+      tags: [sail-hatteras]
+      summary: Get available booking dates for a trip (next 90 days)
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of availability slots
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ShAvailabilitySlot"
+
+  /sh/checkout:
+    post:
+      operationId: createShCheckout
+      tags: [sail-hatteras]
+      summary: Create a Stripe checkout session for a trip booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShCheckoutRequest"
+      responses:
+        "200":
+          description: Checkout session created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShCheckoutResponse"
+        "400":
+          description: Validation error or trip unavailable
+
+  /sh/bookings/{id}:
+    get:
+      operationId: getShBooking
+      tags: [sail-hatteras]
+      summary: Get a booking by ID (used on confirmation page)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Booking detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShBooking"
+        "404":
+          description: Booking not found
+
+  /sh/contact:
+    post:
+      operationId: createShContact
+      tags: [sail-hatteras]
+      summary: Submit a contact/inquiry form for SailHatteras
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShContactBody"
+      responses:
+        "200":
+          description: Message sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                required:
+                  - ok
+
+  # ─── SailHatteras Admin Routes ─────────────────────────────
+
+  /sh/admin/dashboard:
+    get:
+      operationId: getShAdminDashboard
+      tags: [sail-hatteras-admin]
+      summary: Admin dashboard — booking stats and upcoming trips
+      responses:
+        "200":
+          description: Admin dashboard
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShAdminDashboard"
+
+  /sh/admin/bookings:
+    get:
+      operationId: listShAdminBookings
+      tags: [sail-hatteras-admin]
+      summary: List all bookings with optional status filter
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ShBookingSummary"
+
+  /sh/admin/bookings/{id}:
+    patch:
+      operationId: updateShAdminBooking
+      tags: [sail-hatteras-admin]
+      summary: Update booking status (confirm, cancel, refund)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShBookingStatusBody"
+      responses:
+        "200":
+          description: Booking updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShBookingSummary"
+        "404":
+          description: Booking not found
+
+  /sh/admin/availability:
+    post:
+      operationId: setShAvailability
+      tags: [sail-hatteras-admin]
+      summary: Block or set available slots for a trip on a specific date
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShAvailabilityBlockBody"
+      responses:
+        "200":
+          description: Availability updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShAvailabilitySlot"
+
+  /sh/admin/trips:
+    post:
+      operationId: createShAdminTrip
+      tags: [sail-hatteras-admin]
+      summary: Create a new trip/service offering
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShTripBody"
+      responses:
+        "201":
+          description: Trip created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShTrip"
+
+  /sh/admin/trips/{id}:
+    patch:
+      operationId: updateShAdminTrip
+      tags: [sail-hatteras-admin]
+      summary: Update a trip
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShTripBody"
+      responses:
+        "200":
+          description: Trip updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShTrip"
+
 components:
   schemas:
     HealthStatus:
@@ -1366,6 +1636,57 @@ components:
           description: "pending | confirmed | cancelled | refunded"
       required:
         - status
+
+    ShTripBody:
+      type: object
+      properties:
+        slug:
+          type: string
+        name:
+          type: string
+        category:
+          type: string
+        type:
+          type: string
+        shortDescription:
+          type: string
+        description:
+          type: string
+        duration:
+          type: string
+        priceMin:
+          type: integer
+        priceDisplay:
+          type: string
+        pricingNote:
+          type: ["string", "null"]
+        maxPassengers:
+          type: integer
+        boat:
+          type: string
+        highlights:
+          type: array
+          items:
+            type: string
+        imageUrl:
+          type: ["string", "null"]
+        active:
+          type: boolean
+        sortOrder:
+          type: integer
+      required:
+        - slug
+        - name
+        - category
+        - type
+        - shortDescription
+        - description
+        - duration
+        - priceMin
+        - priceDisplay
+        - maxPassengers
+        - boat
+        - highlights
 
     # Admin Dashboard
     AdminDashboard:

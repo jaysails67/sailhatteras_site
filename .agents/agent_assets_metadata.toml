@@ -24,3 +24,27 @@ id = "26XczU0UEhcmHPGiJklql"
 uri = "file://artifacts/website/src/assets/images/recreational-boat.png"
 type = "image"
 title = "Recreational foiling boat"
+
+[[generated]]
+id = "VLya019FoFduR6hsawwop"
+uri = "file://artifacts/sail-hatteras/src/assets/images/hero-sunset.png"
+type = "image"
+title = "Hero background golden hour"
+
+[[generated]]
+id = "zReHvg_axWfYJAsiYFcRA"
+uri = "file://artifacts/sail-hatteras/src/assets/images/catamaran.png"
+type = "image"
+title = "Sailing catamaran daytime"
+
+[[generated]]
+id = "c3haT62GbsKzSEeZUayc5"
+uri = "file://artifacts/sail-hatteras/src/assets/images/learn-to-sail.png"
+type = "image"
+title = "People learning to sail"
+
+[[generated]]
+id = "nd22J1DQRzlIei4gxgUEq"
+uri = "file://artifacts/sail-hatteras/src/assets/images/group-charter.png"
+type = "image"
+title = "Sailboat charter group"

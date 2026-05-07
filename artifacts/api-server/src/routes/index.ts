@@ -10,6 +10,7 @@ import waitlistRouter from "./waitlist";
 import adminRouter from "./admin";
 import telegramRouter from "./telegram";
 import storageRouter from "./storage";
+import shRouter from "./sh";
 
 const router: IRouter = Router();
 
@@ -24,5 +25,6 @@ router.use(waitlistRouter);
 router.use(adminRouter);
 router.use(telegramRouter);
 router.use(storageRouter);
+router.use(shRouter);
 
 export default router;
