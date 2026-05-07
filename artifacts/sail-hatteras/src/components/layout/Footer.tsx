@@ -1,5 +1,6 @@
 import { Link } from "wouter";
-import { Anchor, Facebook, Instagram, Mail, Phone, MapPin, Heart } from "lucide-react";
+import { Facebook, Instagram, Mail, Phone, MapPin, Heart } from "lucide-react";
+import logo from "/logo.png";
 
 export function Footer() {
   return (
@@ -8,14 +9,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="md:col-span-1 space-y-4">
             <Link href="/" className="flex items-center gap-2 group">
-              <Anchor className="h-6 w-6 group-hover:rotate-12 transition-transform" />
-              <div className="flex flex-col leading-none">
-                <span className="font-serif text-lg font-bold tracking-tight">Hatteras Community Sailing</span>
-                <span className="text-[10px] text-primary-foreground/60 uppercase tracking-widest flex items-center gap-1 mt-0.5">
-                  <Heart className="h-2.5 w-2.5 fill-current" />
-                  501(c)3 Nonprofit
-                </span>
-              </div>
+              <img src={logo} alt="Hatteras Community Sailing — SailHatteras.org" className="h-14 w-auto brightness-0 invert" />
             </Link>
             <p className="text-primary-foreground/70 text-sm leading-relaxed">
               Our mission: to inspire a passion for lifelong seamanship and the environment — in every member of the Outer Banks community.

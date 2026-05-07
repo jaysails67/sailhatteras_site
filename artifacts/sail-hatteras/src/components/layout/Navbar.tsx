@@ -1,7 +1,8 @@
 import { Link, useLocation } from "wouter";
-import { Menu, X, Anchor, Heart } from "lucide-react";
+import { Menu, X, Heart } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import logo from "/logo.png";
 
 export function Navbar() {
   const [location] = useLocation();
@@ -35,14 +36,11 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5 group" data-testid="link-logo">
-          <Anchor className="h-6 w-6 group-hover:rotate-12 transition-transform" />
-          <div className="flex flex-col leading-none">
-            <span className="font-serif text-lg font-bold tracking-tight">Hatteras Community Sailing</span>
-            <span className={`text-[10px] font-medium tracking-wider uppercase flex items-center gap-1 ${transparent ? "text-white/70" : "text-muted-foreground"}`}>
-              <Heart className="h-2.5 w-2.5 fill-current" />
-              501(c)3 Nonprofit
-            </span>
-          </div>
+          <img src={logo} alt="Hatteras Community Sailing — SailHatteras.org" className="h-14 w-auto" />
+          <span className={`text-[10px] font-medium tracking-wider uppercase flex items-center gap-1 hidden sm:flex ${transparent ? "text-white/70" : "text-muted-foreground"}`}>
+            <Heart className="h-2.5 w-2.5 fill-current" />
+            501(c)3 Nonprofit
+          </span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-6">
