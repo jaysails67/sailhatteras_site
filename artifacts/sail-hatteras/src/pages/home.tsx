@@ -1,43 +1,64 @@
 import { Link } from "wouter";
-import { ArrowRight, Compass, Sun, Wind, Clock, Anchor, Heart, BookOpen, Users } from "lucide-react";
+import { ArrowRight, Compass, Sun, Wind, Clock, Heart, BookOpen, Users, Anchor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useGetShHomeSummary } from "@workspace/api-client-react";
+import { useState, useEffect } from "react";
 import heroImg from "@/assets/images/hero-sunset.png";
 import catamaranImg from "@/assets/images/catamaran.png";
 import learnImg from "@/assets/images/learn-to-sail.png";
 import groupImg from "@/assets/images/group-charter.png";
 
+const SLIDES = [
+  { src: heroImg,      alt: "Sailboat at sunset on Pamlico Sound" },
+  { src: catamaranImg, alt: "Catamaran sailing on calm water" },
+  { src: learnImg,     alt: "Learning to sail on the Outer Banks" },
+  { src: groupImg,     alt: "Group sailing charter on the sound" },
+];
+
 export default function Home() {
   const { data: summary, isLoading } = useGetShHomeSummary();
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const t = setInterval(() => setCurrent(i => (i + 1) % SLIDES.length), 4500);
+    return () => clearInterval(t);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="relative h-[90vh] min-h-[600px] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src={heroImg}
-            alt="Sailboat at sunset on the Pamlico Sound"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-primary/40 mix-blend-multiply" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+      {/* Hero Slideshow */}
+      <section className="relative h-[68vh] min-h-[480px] overflow-hidden">
+        {SLIDES.map((slide, i) => (
+          <div
+            key={i}
+            className={`absolute inset-0 transition-opacity duration-1000 ${i === current ? "opacity-100" : "opacity-0"}`}
+          >
+            <img src={slide.src} alt={slide.alt} className="w-full h-full object-cover" />
+          </div>
+        ))}
+        <div className="absolute inset-0 bg-primary/25" />
+
+        {/* Slide dots */}
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+          {SLIDES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className={`w-2.5 h-2.5 rounded-full transition-all ${i === current ? "bg-white scale-125" : "bg-white/50"}`}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
         </div>
-        
-        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto mt-20">
-          <h1 className="font-serif text-5xl md:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-lg animate-in fade-in slide-in-from-bottom-8 duration-1000">
-            Real sailing.<br />
-            <span className="text-secondary">Right here in Hatteras.</span>
-          </h1>
-          <p className="text-lg md:text-xl text-white/90 mb-10 max-w-2xl mx-auto font-medium drop-shadow-md animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-150 fill-mode-both">
-            Leave the engine behind. Experience the steady winds and warm waters of the Pamlico Sound with local captains who know it best.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300 fill-mode-both">
-            <Button asChild size="lg" className="h-14 px-8 text-base bg-secondary text-secondary-foreground hover:bg-secondary/90 w-full sm:w-auto">
-              <Link href="/trips">Book Your Sail</Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="h-14 px-8 text-base bg-white/10 text-white border-white/20 hover:bg-white/20 hover:text-white backdrop-blur-sm w-full sm:w-auto">
-              <Link href="/trips?category=experiences">Explore Experiences</Link>
+
+        {/* Bottom bar — org name + CTA (matches original design) */}
+        <div className="absolute bottom-0 left-0 right-0 bg-primary/85 text-white z-10">
+          <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div>
+              <p className="font-serif text-xl md:text-2xl font-bold">Hatteras Community Sailing</p>
+              <p className="text-sm text-white/75">Pamlico Sound, Outer Banks, NC &mdash; 501(c)3 Nonprofit</p>
+            </div>
+            <Button asChild size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 font-bold shrink-0">
+              <Link href="/trips">Book Here</Link>
             </Button>
           </div>
         </div>
