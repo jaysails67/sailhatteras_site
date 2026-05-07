@@ -97,7 +97,7 @@ export default function Privacy() {
                 <p><strong className="text-foreground">Hatteras Community Sailing</strong></p>
                 <p>Hatteras Village, NC 27943</p>
                 <p>Email: <a href="mailto:info@sailhatteras.org" className="text-primary hover:underline">info@sailhatteras.org</a></p>
-                <p>Phone: (252) 555-SAIL</p>
+                <p>Phone: (252) 489-8193</p>
               </div>
             </div>
           </div>

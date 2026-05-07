@@ -79,7 +79,7 @@ export default function Contact() {
                   <Phone className="h-5 w-5 mt-0.5 text-primary shrink-0" />
                   <div>
                     <div className="font-medium text-foreground">Phone</div>
-                    <a href="tel:+12525555245" className="hover:text-primary transition-colors">(252) 555-SAIL</a>
+                    <a href="tel:+12524898193" className="hover:text-primary transition-colors">(252) 489-8193</a>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
