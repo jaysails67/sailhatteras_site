@@ -29,6 +29,15 @@ import { logger } from "../lib/logger";
 
 const router = Router();
 
+const BASE_PATH = (process.env.BASE_PATH ?? "/sail-hatteras").replace(/\/$/, "");
+
+function resolveImageUrl(imageUrl: string | null | undefined): string | null {
+  if (!imageUrl) return null;
+  if (imageUrl.startsWith("http")) return imageUrl;
+  const withoutLegacyBase = imageUrl.replace(/^\/sail-hatteras/, "");
+  return `${BASE_PATH}${withoutLegacyBase}`;
+}
+
 function tripToApi(trip: typeof shTripsTable.$inferSelect) {
   return {
     id: trip.id,
@@ -46,7 +55,7 @@ function tripToApi(trip: typeof shTripsTable.$inferSelect) {
     maxPassengers: trip.maxPassengers,
     boat: trip.boat,
     highlights: (trip.highlights as string[]) ?? [],
-    imageUrl: trip.imageUrl ?? null,
+    imageUrl: resolveImageUrl(trip.imageUrl),
     active: trip.active,
     comingSoon: trip.comingSoon ?? false,
     sortOrder: trip.sortOrder,
@@ -142,7 +151,7 @@ router.get("/sh/trips/:slug/vessels", async (req, res) => {
       capacity: shVesselsTable.capacity,
       priceCents: shVesselsTable.priceCents,
       priceDisplay: shVesselsTable.priceDisplay,
-      imageUrl: shVesselsTable.imageUrl,
+      imageUrl: resolveImageUrl(shVesselsTable.imageUrl),
       sortOrder: shVesselsTable.sortOrder,
       priceOverrideCents: shTripVesselsTable.priceOverrideCents,
     })
@@ -333,8 +342,8 @@ router.post("/sh/checkout", async (req, res) => {
         tripId: String(trip.id),
         tripSlug: trip.slug,
       },
-      success_url: `${baseUrl}/sail-hatteras/booking-confirmation?bookingId=${booking.id}&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/sail-hatteras/trips/${trip.slug}`,
+      success_url: `${baseUrl}${BASE_PATH}/booking-confirmation?bookingId=${booking.id}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}${BASE_PATH}/trips/${trip.slug}`,
     });
 
     await db
