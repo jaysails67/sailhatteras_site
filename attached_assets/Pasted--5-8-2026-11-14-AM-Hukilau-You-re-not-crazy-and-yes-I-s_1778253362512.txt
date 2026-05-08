@@ -1,0 +1,148 @@
+[5/8/2026 11:14 AM] Hukilau: You’re not crazy, and yes — I saw and agree with the Replit agent’s note about the 406s: those ModSecurity 406 errors from curl are a red herring. They were blocking curl’s user‑agent, not real browsers. I’ve switched to browser‑style tests and, more importantly, we now have the config in the right place for both HTTP and HTTPS.
+
+Here’s where things stand right now, in plain language.
+
+───
+
+1. What’s working (server‑side)
+
+On the server I have:
+
+1. PostgreSQL
+
+  • PostgreSQL 10 is installed and running:
+    • Service: postgresql.service active
+    • Data dir: /var/lib/pgsql/data
+  • Database + user:
+    • DB: sailhatteras
+    • User: sailhatteras_app
+    • Password: gYi4HQwQqpE40bEyWkzvhDhw
+    • Owner and grants fixed so the app user can actually read/write.
+  • Your imported dump is loaded and tables have data (users, trips, etc.).
+2. Node API (backend)
+
+  • Built from artifacts/api-server.
+  • Running under PM2 as user ca12a15:
+    • Process name: sailhatteras-api
+    • Port: 3001
+  • Env vars loaded from .env:
+    • PORT=3001
+    • BASE_PATH=/
+    • DATABASE_URL=postgresql://sailhatteras_app:gYi4HQwQqpE40bEyWkzvhDhw@127.0.0.1:5432/sailhatteras
+    • NODE_ENV=production
+    • SESSION_SECRET=… (now a real random string, not the broken shell command)
+    • ADMIN_PASSWORD / ADMIN_EMAIL set so the admin user is seeded.
+  • Seed script has run; logs show:
+    • Server listening on port 3001
+    • Admin user seeded
+    • Press release content seeded
+    • Seed complete
+API checks via HTTPS (browser‑like UA):
+
+  • /api/posts → returns JSON (press releases).
+  • /api/sh/trips → returns a list of trips.
+  • /api/sh/trips?category=rentals → returns trips in rentals.
+  • /api/sh/trips?category=experiences → returns trips in experiences.
+  • /api/sh/trips?category=learn-to-sail → returns [] (no trips) — this is important.
+3. Frontend (React SPA)
+
+  • Built from artifacts/sail-hatteras with:
+    • PORT=8080 and BASE_PATH=/ during build, as the Replit agent specified.
+  • Static build output:
+    • /home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras/dist/public
+    • Contains index.html, CSS/JS assets, trips/ images, etc.
+4. Apache / HTTPS / Proxy
+
+  • DNS: sailhatteras.org and www.sailhatteras.org → 192.249.121.207 (your server).
+
+  • Let’s Encrypt cert active for *.sailhatteras.org.
+
+  • cPanel vhosts for sailhatteras.org (HTTP & HTTPS) point to:
+
+    • DocumentRoot /home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras/dist/public
+  • WHM‑safe includes added so they survive rebuilds:
+
+For SSL vhost:
+/usr/local/apache/conf/userdata/ssl/2_4/ca12a15/sailhatteras.org/sailhatteras_spa.conf
+
+For non‑SSL vhost:
+/usr/local/apache/conf/userdata/std/2_4/ca12a15/sailhatteras.org/sailhatteras_spa.conf
+
+Both contain:
+
+<Directory /home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras/dist/public>
+  Options -Indexes
+  AllowOverride None
+  Require all granted
+  FallbackResource /index.html
+</Directory>
+
+ProxyPreserveHost On
+ProxyPass /api/ http://127.0.0.1:3001/api/
+ProxyPassReverse /api/ http://127.0.0.1:3001/api/
+  • Apache config has been rebuilt via rebuildhttpdconf and httpd restarted.
+
+  • From the server, with a browser‑style User‑Agent:
+
+    • https://sailhatteras.org/ → serves the SPA index.html.
+    • https://sailhatteras.org/api/posts → returns JSON successfully.
+[5/8/2026 11:14 AM] Hukilau: So: front end + API + DB + HTTPS are wired up and working together.
+The 406s you saw from curl are just ModSecurity being suspicious of curl’s UA, not browsers.
+
+───
+
+2. About the issues you’re still seeing
+
+You mentioned two behaviors:
+
+1. Cards on Experiences / Rentals / Learn to Sail:
+
+  • “They show briefly, then ‘No programs available’ appears.”
+2. Directory listing when refreshing a page like Rentals / Experiences.
+
+2.1 “No programs available”
+
+This is almost certainly app‑logic + data, not web server misconfiguration:
+
+• The backend API endpoints we just tested:
+
+  • /api/sh/trips?category=rentals → returns data.
+[5/8/2026 11:14 AM] Hukilau: • /api/sh/trips?category=experiences → returns data.
+  • /api/sh/trips?category=learn-to-sail → returns an empty list ([]).
+• That means:
+
+  • Rentals + experiences do exist in the sh_trips table.
+  • Learn‑to‑sail has no trips in the database right now.
+So “No programs available” for learn‑to‑sail is just the frontend rendering “empty result”.
+• Separately, I saw earlier that sh_availability had 0 rows in the imported dump. Many booking UIs do:
+
+  • “Show some cards” from /trips, but
+  • If a follow‑up call like /sh/trips/:tripId/availability returns no future slots, they swap to “No programs available”.
+
+So it’s very likely:
+
+• The site code is working as written, but your DB currently has:
+  • No learn‑to‑sail trips, and/or
+  • No availability entries, so the UI decides “nothing bookable right now”.
+
+This part isn’t a server config problem; it’s content / schedule data. That’s exactly the sort of thing the Replit agent can help you adjust (either via a new DB seed or via the admin UI once you log in as the seeded admin).
+
+2.2 Directory listing on refresh
+
+Earlier, directory listing made sense because Apache was seeing /trips/ as a real directory and auto‑indexing it. That’s what we fixed with:
+
+• Options -Indexes
+• FallbackResource /index.html
+
+Those directives are now in the SSL vhost includes for sailhatteras.org (http://sailhatteras.org/) as well as the non‑SSL vhost, and Apache has been rebuilt and restarted.
+
+What that means in practice:
+
+• For normal browser traffic over HTTPS:
+  • /trips or /trips/ should now be served via index.html.
+  • React Router handles the route and shows the correct page.
+  • You should no longer see a directory listing from Apache.
+
+If you still see a directory listing in a real browser:
+
+• Tell me the exact URL you’re hitting when
