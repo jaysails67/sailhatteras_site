@@ -439,9 +439,9 @@ export default function TripDetail() {
                     <Check className="h-7 w-7 text-primary" />
                   </div>
                   <div>
-                    <div className="font-semibold text-foreground text-base">Request Received!</div>
+                    <div className="font-semibold text-foreground text-base">Thank you for your registration!</div>
                     <div className="text-sm text-muted-foreground mt-1">
-                      We'll email <span className="font-medium text-foreground">{form.email}</span> with payment instructions within 24–48 hours if space is available.
+                      We will check that there is a spot for you and send you an email with payment instructions. Welcome aboard!
                     </div>
                   </div>
                   <div className="rounded-lg border bg-muted/50 px-4 py-3 text-xs text-left space-y-2">
