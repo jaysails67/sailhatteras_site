@@ -240,7 +240,7 @@ export default function TripDetail() {
           {/* Image */}
           <div className="aspect-[16/9] rounded-2xl overflow-hidden bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center mb-10">
             {trip.imageUrl
-              ? <img src={trip.imageUrl} alt={trip.name} className="w-full h-full object-cover" />
+              ? <img src={`${import.meta.env.BASE_URL}${trip.imageUrl.replace(/^\//, "")}`} alt={trip.name} className="w-full h-full object-cover" />
               : <Anchor className="h-20 w-20 text-primary/20" />
             }
           </div>

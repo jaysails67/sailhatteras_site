@@ -17,7 +17,7 @@ function TripCard({ trip }: { trip: any }) {
     <div className={`bg-card rounded-xl overflow-hidden border border-border shadow-sm transition-all h-full flex flex-col ${trip.comingSoon ? "opacity-75" : "hover:shadow-md hover-elevate"}`}>
       <div className="aspect-[16/9] relative overflow-hidden bg-muted">
         {trip.imageUrl ? (
-          <img src={trip.imageUrl} alt={trip.name} className={`w-full h-full object-cover transition-transform duration-700 ${!trip.comingSoon ? "group-hover:scale-105" : ""}`} />
+          <img src={`${import.meta.env.BASE_URL}${trip.imageUrl.replace(/^\//, "")}`} alt={trip.name} className={`w-full h-full object-cover transition-transform duration-700 ${!trip.comingSoon ? "group-hover:scale-105" : ""}`} />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
             <Anchor className="h-12 w-12 text-primary/30" />

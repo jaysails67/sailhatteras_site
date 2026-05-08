@@ -1,0 +1,283 @@
+[5/8/2026 12:32 PM] Hukilau: Here’s a clean status report you can paste to the Replit agent, plus answers to your Git/coordination questions.
+
+───
+
+Status for Replit agent
+
+Environment
+
+• Domain: https://sailhatteras.org
+
+• Host: cPanel/WHM on 192.249.121.207
+
+• App layout (as of now):
+
+/home/ca12a15/sites/sailhatteras_site
+  artifacts/
+    sail-hatteras/       # frontend
+      dist/public/
+        index.html
+        assets/index-*.js + .css
+        slideshow/*.jpg
+        trip-photos/*.jpg
+    api-server/          # backend
+      dist/index.mjs
+• Repo: origin/main at commit beb7412
+(Update SQL dump: image_url paths now use /trip-photos/)
+
+───
+
+1) Backend (API + DB)
+
+API process
+
+• Running under PM2 as user ca12a15:
+
+pm2 list:
+name: sailhatteras-api
+status: online
+pid: 1036807 (latest restart)
+• Started with env from .env:
+
+PORT=3001
+BASE_PATH=/
+DATABASE_URL=postgresql://sailhatteras_app:...@127.0.0.1:5432/sailhatteras
+NODE_ENV=production
+SESSION_SECRET=… (valid random value)
+STRIPE_* / SMTP_* / TELEGRAM_* = placeholders for now
+ADMIN_EMAIL=admin@sailhatteras.org
+ADMIN_PASSWORD=ChangeThisAdminPass!
+• app.ts confirms:
+
+  • Express mounted at /api (no frontend served by Node).
+  • CORS allows sailhatteras.org.
+  • /api/sh/... routes as in your source.
+
+PostgreSQL
+
+• Service: postgresql.service running, listening on 127.0.0.1:5432 and 127.0.0.200:5432.
+
+• DB/user:
+
+database: sailhatteras
+user:     sailhatteras_app
+• pg_hba.conf has explicit entry for app user from localhost:
+
+host    sailhatteras   sailhatteras_app   127.0.0.1/32   md5
+• Permissions: sailhatteras_app owns the db and has privileges on tables/sequences; seed ran successfully earlier (admin user seeded, press releases inserted, etc.).
+
+API behavior
+
+• https://sailhatteras.org/api/sh/trips and category filters are working:
+
+GET /api/sh/trips?category=rentals
+GET /api/sh/trips?category=experiences
+GET /api/sh/trips?category=learn-to-sail
+• Sample response (truncated) for category=experiences:
+
+{
+  "id": 1,
+  "slug": "sunset-sail",
+  "category": "experiences",
+  "imageUrl": "/sail-hatteras/trips/sunset-sail.jpg",
+  ...
+}
+
+Important mismatch (bug still present)
+
+• Built static files now live at:
+
+/trip-photos/sunset-sail.jpg etc.
+• But the API still returns imageUrl values like:
+
+"/sail-hatteras/trips/sunset-sail.jpg"
+• We ran the suggested DB UPDATE:
+
+UPDATE sh_trips
+SET image_url = replace(image_url, '/sail-hatteras/trips/', '/trip-photos/')
+WHERE image_url LIKE '%/trips/%';
+but the current API output is still reporting /sail-hatteras/trips/..., which implies:
+
+  • Either the DB rows still hold the legacy values, or
+  • Your resolveImageUrl/tripToApi logic is re-inserting /sail-hatteras (current sh.ts on disk still shows the resolveImageUrl helper that strips ^/sail-hatteras and prepends BASE_PATH, but the JSON we get does not reflect /trip-photos yet).
+
+Conclusion for backend
+
+• Good:
+  • API is up and serving JSON correctly for all /api/sh/... routes.
+  • DB is populated and reachable with the production credentials.
+• Outstanding bug:
+  • imageUrl values in API responses don’t match the static file layout (/trip-photos/...), so the frontend points at paths that don’t exist.
+
+───
+
+2) Frontend / SPA routing
+
+Static build
+
+• Latest build completed with:
+[5/8/2026 12:32 PM] Hukilau: PORT=8080 BASE_PATH=/ pnpm --filter @workspace/sail-hatteras build
+• Output:
+
+artifacts/sail-hatteras/dist/public/
+  index.html
+  assets/index-*.js, *.css
+  slideshow/*.jpg
+  trip-photos/*.jpg          # trip images renamed here
+
+Apache configuration
+
+We are now using WHM-safe include files for both HTTP and HTTPS vhosts:
+
+• Non-SSL include:
+
+/usr/local/apache/conf/userdata/std/2_4/ca12a15/sailhatteras.org/sailhatteras_spa.conf
+• SSL include:
+
+/usr/local/apache/conf/userdata/ssl/2_4/ca12a15/sailhatteras.org/sailhatteras_spa.conf
+
+Current contents (identical in both):
+
+<Directory /home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras/dist/public>
+  Options -Indexes
+  AllowOverride None
+  Require all granted
+  RewriteEngine On
+[5/8/2026 12:32 PM] Hukilau: RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^ /index.html [L]
+</Directory>
+
+ProxyPreserveHost On
+ProxyPass /api/ http://127.0.0.1:3001/api/
+ProxyPassReverse /api/ http://127.0.0.1:3001/api/
+
+• rebuildhttpdconf + restartsrv_httpd both succeed and httpd -t is clean.
+• HTTPS vhosts for sailhatteras.org & www.sailhatteras.org are present and using these includes.
+
+Routing behavior
+
+• From the server, with a browser-like UA:
+
+curl -ks -H 'User-Agent: Mozilla/5.0' https://sailhatteras.org/
+# returns index.html (React app)
+
+curl -ks -H 'User-Agent: Mozilla/5.0' https://sailhatteras.org/api/sh/trips?category=rentals
+# returns JSON trips array
+• You report that in a real browser:
+
+  • Cards render, but images are broken → consistent with the imageUrl mismatch.
+  • Hitting refresh on /trips?category=... still shows a directory listing of images in some cases.
+
+Given the Apache config above and the latest build:
+
+• The directory listing should be suppressed by Options -Indexes.
+• The SPA routing should serve index.html for /trips and /trips/... when REQUEST_FILENAME is not a real file.
+• If you’re still seeing a directory listing, it’s likely:
+  • Either coming from another layer (there is an nginx instance responding on plain http://127.0.0.1 with the default nginx welcome page), or
+  • From a cached vhost config on the InMotion side not yet using the include files for HTTPS.
+
+From the server’s perspective, with curl + Host: sailhatteras.org, I’m now seeing the SPA index rather than the raw directory. Your live browser behavior is the next authoritative test.
+
+───
+
+3) Git / Replit vs server changes
+
+You asked: “With lots of Replit git pushes, do we risk overwriting what you fix locally?”
+
+Right now the answer is:
+
+• Code-level changes:
+
+  • We have explicitly moved to a “GitHub is source of truth” model.
+
+  • When deploying, I did:
+
+git fetch origin
+git reset --hard origin/main
+pnpm --filter @workspace/sail-hatteras build
+pnpm --filter @workspace/api-server build
+  • That means:
+
+    • Any code changes I make on the server must also be pushed back to GitHub, or they will be overwritten.
+    • To avoid conflict, I am no longer editing code locally; I’m only deploying what Replit pushes.
+• Infra / secrets (safe from Replit pushes):
+
+  • .env is untracked (shows as ?? .env in git status), so git reset --hard does not touch it.
+  • Apache vhost include files live under /usr/local/apache/conf/userdata/..., outside the repo.
+  • PM2 process definitions are managed via commands, not committed into the repo.
+
+So:
+
+• Replit can safely keep pushing changes to main.
+• I will keep deploying with git fetch && git reset --hard origin/main plus rebuilds.
+• Your local environment settings and Apache/PM2 wiring will not be overwritten by Replit changes.
+
+If you want a clean workflow:
+
+1. Replit agent owns the code (TypeScript, routing, image URL logic, etc.).
+2. Server agent (me) only deploys:
+  • Pull from GitHub
+  • Build frontend + API
+  • Restart PM2
+3. Any infra fixes (Apache, Postgres, PM2, .env) happen here and are kept out of Git.
+
+───
+
+What still needs fixing (for Replit agent)
+
+You can forward this summary:
+
+1. Image URLs still wrong in API responses
+
+  • Built static images are at:
+
+/trip-photos/*.jpg
+  • API currently returns imageUrl like:
+
+"/sail-hatteras/trips/sunset-sail.jpg"
+  • Suggestion:
+[5/8/2026 12:32 PM] Hukilau: • Either update resolveImageUrl in artifacts/api-server/src/routes/sh.ts to emit /trip-photos/... when BASE_PATH=/, or
+    • Ensure the DB values are /trip-photos/... and resolveImageUrl no longer hardcodes or strips /sail-hatteras.
+Once that commit is pushed, I’ll redeploy via the same git fetch && git reset --hard origin/main; build; pm2 restart pipeline.
+
+2. Directory listing on refresh in Jay’s browser
+
+  • Apache includes are now set to:
+
+Options -Indexes
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ /index.html [L]
+[5/8/2026 12:32 PM] Hukilau: • From the server, HTTPS + Host header looks correct, but Jay still sees a directory listing in the browser for /trips....
+
+  • That suggests either:
+
+    • Another front-end (nginx) layer is serving that listing, or
+    • Some vhost caching/Alt vhost is active for HTTPS that bypasses the include.
+If you want to test from your side, hit:
+
+fetch('https://sailhatteras.org/trips', { headers: { 'User-Agent': 'Mozilla/5.0' } })
+and confirm what HTML comes back. From here, I now see SPA index from Apache; Jay’s experience is the remaining discrepancy.
+
+───
+
+Answer to “Can Replit email you directly?”
+
+Right now, there isn’t an automatic channel where the Replit agent can email this server agent and have me auto-deploy. We could wire that up later using AgentMail and a small “deploy-on-email” skill, but that’s extra plumbing.
+
+For now, the reliable integration point is GitHub:
+
+• Replit makes commits → pushes to main.
+• I deploy from GitHub and report status back to you.
+
+If you want, we can later move towards:
+
+• A simple convention like: “Any time Replit tags a commit deploy, server agent auto-deploys that hash.”
+• Or a small webhook listener on this server.
+
+───
+
+TL;DR for you
+
+• Site is live at https://sailhatteras.org.
+•

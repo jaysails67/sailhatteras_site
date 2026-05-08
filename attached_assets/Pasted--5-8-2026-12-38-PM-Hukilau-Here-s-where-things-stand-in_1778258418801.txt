@@ -1,0 +1,248 @@
+[5/8/2026 12:38 PM] Hukilau: Here’s where things stand, in a way you can paste straight to the Replit agent, and also what this means for future Git changes so you’re not stuck in the middle.
+
+───
+
+1. Current server status (for the Replit agent)
+
+Infrastructure
+
+• Domain & DNS
+
+  • sailhatteras.org → 192.249.121.207 (nameservers ns1/ns2.inmotionhosting.com) – OK.
+  • Let’s Encrypt wildcard cert *.sailhatteras.org is installed – HTTPS works.
+• PostgreSQL
+
+  • Service: postgresql.service running.
+  • DB: sailhatteras exists.
+  • App user: sailhatteras_app with working access (tested).
+  • Data: sh_trips, sh_vessels, etc. seeded and returning rows.
+• Node / PM2
+
+  • Node app: sailhatteras-api managed by PM2 under user ca12a15.
+  • Listening on: 0.0.0.0:3001 (internal API port).
+  • Environment (loaded from .env and confirmed in logs):
+    • PORT=3001
+    • BASE_PATH=/
+    • DATABASE_URL=postgresql://sailhatteras_app:…@127.0.0.1:5432/sailhatteras
+    • NODE_ENV=production
+    • SESSION_SECRET set to a long random value
+    • ADMIN_PASSWORD / ADMIN_EMAIL set so the admin user seeds correctly.
+  • Logs show:
+    • “Server listening” on port 3001
+    • “Admin user seeded”
+    • “Database seed complete”
+    • Expected 404s for /, /health, /api/health (no such routes); 200 on /api/posts and /api/sh/trips.
+• Apache / SSL vhosts
+
+  • Using WHM/cPanel-style vhosts; both HTTP (8080) and HTTPS (8443) for sailhatteras.org have includes configured here:
+
+    • /usr/local/apache/conf/userdata/std/2_4/ca12a15/sailhatteras.org/sailhatteras_spa.conf
+    • /usr/local/apache/conf/userdata/ssl/2_4/ca12a15/sailhatteras.org/sailhatteras_spa.conf
+  • Those include files now contain (identical):
+
+<Directory /home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras/dist/public>
+  Options -Indexes
+  AllowOverride None
+  Require all granted
+  RewriteEngine On
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^ /index.html [L]
+</Directory>
+
+ProxyPreserveHost On
+ProxyPass /api/ http://127.0.0.1:3001/api/
+ProxyPassReverse /api/ http://127.0.0.1:3001/api/
+  • httpd -t → Syntax OK.
+
+  • Apache config rebuilt with /usr/local/cpanel/scripts/rebuildhttpdconf and restarted via restartsrv_httpd.
+
+  • Result:
+
+    • SPA routing is handled with mod_rewrite (no more directory listings on refresh).
+    • /api/... calls from the browser are correctly proxied to the Node app on 3001.
+    • ModSecurity is still active, but browser-like User-Agent requests to /api/sh/trips and /api/posts succeed (we’re ignoring the curl/UA 406 noise as you suggested).
+
+───
+
+2. Frontend & static files
+
+On the server (post–latest git reset --hard origin/main and rebuild):
+
+• Project: /home/ca12a15/sites/sailhatteras_site
+
+• Frontend build directory:
+
+artifacts/sail-hatteras/dist/public/
+  assets/
+  index.html
+  favicon.svg
+  logo.png
+  opengraph.jpg
+  slideshow/
+  trip-photos/
+• Trip photos live at:
+
+artifacts/sail-hatteras/dist/public/trip-photos/*.jpg
+e.g. adult-sailing-program.jpg, sunset-sail.jpg, etc.
+
+• Hitting them directly from the web server:
+
+  • https://sailhatteras.org/trip-photos/adult-sailing-program.jpg → 200 OK (when tested with a browser-like User-Agent).
+
+So: the images are on disk in /trip-photos and are web-accessible.
+
+───
+
+3. API behavior for trips (images)
+
+• The API endpoint:
+[5/8/2026 12:38 PM] Hukilau: • GET https://sailhatteras.org/api/sh/trips?category=experiences
+• Current payload on the server (after the DB UPDATE and BASE_PATH=/):
+
+  • Still returns:
+
+{
+  "id": 1,
+  "slug": "sunset-sail",
+  "category": "experiences",
+  "imageUrl": "/sail-hatteras/trips/sunset-sail.jpg",
+  ...
+}
+(Same for other trips: /sail-hatteras/trips/...)
+
+• On disk, images are at:
+
+  • /trip-photos/sunset-sail.jpg
+not /sail-hatteras/trips/sunset-sail.jpg.
+• That mismatch is almost certainly why the cards still show broken images, even though:
+
+  • The cards themselves and data load.
+  • Refresh no longer shows a directory listing.
+
+Important:
+[5/8/2026 12:38 PM] Hukilau: On the server, the current artifacts/api-server/src/routes/sh.ts (after reset to origin/main at commit beb7412) is:
+
+const BASE_PATH = (process.env.BASE_PATH ?? "/sail-hatteras").replace(/\/$/, "");
+
+function resolveImageUrl(imageUrl: string | null | undefined): string | null {
+  if (!imageUrl) return null;
+  if (imageUrl.startsWith("http")) return imageUrl;
+  const withoutLegacyBase = imageUrl.replace(/^\/sail-hatteras/, "");
+  return `${BASE_PATH}${withoutLegacyBase}`;
+}
+
+And tripToApi uses:
+
+imageUrl: resolveImageUrl(trip.imageUrl),
+
+Given:
+
+• BASE_PATH=/ (from .env and confirmed in PM2 restart logs),
+
+• and DB image_url was updated via:
+
+UPDATE sh_trips
+SET image_url = replace(image_url, '/sail-hatteras/trips/', '/trip-photos/')
+WHERE image_url LIKE '%/trips/%';
+
+We would expect the API to now emit:
+
+• "/trip-photos/sunset-sail.jpg"
+
+…but the live payload is still showing:
+
+• "/sail-hatteras/trips/sunset-sail.jpg"
+
+So from the server perspective, one of these must be true:
+
+1. The image_url in sh_trips didn’t actually contain /sail-hatteras/trips/, so the SQL UPDATE didn’t affect the rows that the API is reading (despite the UPDATE 12 message).
+2. Or the compiled dist being executed by PM2 does not include the resolveImageUrl logic yet (older build). But we just rebuilt @workspace/api-server after resetting to origin/main, so this seems less likely unless the commit on GitHub differs from what you expect.
+3. Or the GitHub main branch still has an older version of tripToApi that passes trip.imageUrl straight through without resolveImageUrl.
+
+Either way, from the server’s observation:
+
+• Static is at /trip-photos/...
+• API is still telling the frontend to request /sail-hatteras/trips/...
+
+→ which 404s / gets blocked, hence broken images.
+
+───
+
+4. Directory listing on refresh
+
+• After moving to mod_rewrite in the Apache includes, and after rebuilding the frontend (which now uses trip-photos), refreshing https://sailhatteras.org/trips (or any of the trips pages) no longer produces a directory listing on the server side.
+• Your observation that the directory listing has stopped matches what I’m seeing.
+
+So Bug #1 (directory listing on refresh) is resolved.
+
+The remaining visible issue is Bug #2: image URLs from the API don’t match the actual static path.
+
+───
+
+5. Git / deployment coordination (so you’re not in the middle)
+
+Your concern:
+
+There are going to be a lot of Git pushes from changes made by the Replit agent. Do we risk these overwriting things that you fix locally? Will we need an update for Replit to catch up to the changes before sending future revisions? How does this work?
+
+The answer:
+
+1. Treat GitHub main as the single source of truth for code.
+
+  • Replit agent edits only through GitHub.
+
+  • I do not make code changes directly on the server; I only:
+
+    • Pull from origin/main
+    • Build
+    • Restart services
+  • That’s exactly what I just did with:
+
+git fetch origin
+git reset --hard origin/main
+pnpm --filter @workspace/sail-hatteras build
+pnpm --filter @workspace/api-server build
+pm2 restart sailhatteras-api
+2. Server-only config lives outside the repo:
+
+  • .env with secrets, ports, BASE_PATH.
+  • Apache include files under /usr/local/apache/conf/userdata/....
+  • PostgreSQL config and data.
+  • Those are not in the Git repo, so Replit’s pushes cannot overwrite them.
+3. Replit never needs to “catch up” to my server-specific changes.
+[5/8/2026 12:38 PM] Hukilau: • My changes that matter (Apache, PM2 env, DB user/password, etc.) are not in the repo.
+  • When Replit pushes code, I’ll just:
+    • git fetch && git reset --hard origin/main
+    • pnpm build
+    • restart PM2
+  • No merge conflicts, no manual diffing.
+
+In practice:
+
+• You tell Replit agent: “Commit fix to GitHub main.”
+• I run a standard deploy script on the server:cd /home/ca12a15/sites/sailhatteras_site
+git fetch origin
+git reset --hard origin/main
+PORT=8080 BASE_PATH=/ pnpm --filter @workspace/sail-hatteras build
+pnpm --filter @workspace/api-server build
+[5/8/2026 12:38 PM] Hukilau: pm2 restart sailhatteras-api
+• That’s it. No more local code edits from me; only deployment + infra.
+
+───
+
+6. Your direct questions
+
+Can Replit use your new email address to send you update instructions?
+
+I don’t have a real email inbox you or Replit can send to in a way that my server agent can read automatically. The reliable channel is:
+
+• Replit → push to GitHub
+• You (or eventually an automated agent) → tell me “deploy latest main”
+• I pull and deploy from Git.
+
+If, later, you want fully automated coordination between a “Replit agent” and this server agent, we’d do that via:
+
+• A shared GitHub repo, plus
+• Either a webhook / API, or an AgentMail-based workflow wired into OpenClaw.
+
+But that’s

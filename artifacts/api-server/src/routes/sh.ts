@@ -29,13 +29,13 @@ import { logger } from "../lib/logger";
 
 const router = Router();
 
-const BASE_PATH = (process.env.BASE_PATH ?? "/sail-hatteras").replace(/\/$/, "");
-
 function resolveImageUrl(imageUrl: string | null | undefined): string | null {
   if (!imageUrl) return null;
   if (imageUrl.startsWith("http")) return imageUrl;
-  const withoutLegacyBase = imageUrl.replace(/^\/sail-hatteras/, "");
-  return `${BASE_PATH}${withoutLegacyBase}`;
+  // Normalize: strip any legacy /sail-hatteras prefix, migrate /trips/ → /trip-photos/
+  return imageUrl
+    .replace(/^\/sail-hatteras/, "")
+    .replace(/^\/trips\//, "/trip-photos/");
 }
 
 function tripToApi(trip: typeof shTripsTable.$inferSelect) {
@@ -342,8 +342,8 @@ router.post("/sh/checkout", async (req, res) => {
         tripId: String(trip.id),
         tripSlug: trip.slug,
       },
-      success_url: `${baseUrl}${BASE_PATH}/booking-confirmation?bookingId=${booking.id}&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}${BASE_PATH}/trips/${trip.slug}`,
+      success_url: `${baseUrl}/booking-confirmation?bookingId=${booking.id}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/trips/${trip.slug}`,
     });
 
     await db
