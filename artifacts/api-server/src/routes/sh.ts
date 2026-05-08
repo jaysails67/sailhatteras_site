@@ -29,6 +29,13 @@ import { logger } from "../lib/logger";
 
 const router = Router();
 
+/** Always return /trip-photos/<filename> regardless of what legacy value is stored in the DB */
+function normalizeImageUrl(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  const filename = raw.split("/").pop();
+  return filename ? `/trip-photos/${filename}` : null;
+}
+
 function tripToApi(trip: typeof shTripsTable.$inferSelect) {
   return {
     id: trip.id,
@@ -46,7 +53,7 @@ function tripToApi(trip: typeof shTripsTable.$inferSelect) {
     maxPassengers: trip.maxPassengers,
     boat: trip.boat,
     highlights: (trip.highlights as string[]) ?? [],
-    imageUrl: trip.imageUrl ?? null,
+    imageUrl: normalizeImageUrl(trip.imageUrl),
     active: trip.active,
     comingSoon: trip.comingSoon ?? false,
     sortOrder: trip.sortOrder,
