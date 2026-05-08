@@ -1,0 +1,319 @@
+[5/8/2026 2:51 PM] Hukilau: Here’s where things stand, in plain language, and a summary you can paste back to the Replit agent.
+
+───
+
+Very short answer on “Experiences” images
+
+The API is still returning image URLs like:
+
+• /sail-hatteras/trips/sunset-sail.jpg
+
+but the actual files on disk (and what Apache is serving) are under:
+
+• /trip-photos/sunset-sail.jpg
+
+So “All Programs” works for images only when the front‑end ends up using the /trip-photos paths, but the “Experiences” tab is still getting the old /sail-hatteras/trips/... URLs from the API, which don’t resolve correctly.
+
+───
+
+Status summary to send to the Replit agent
+
+You can copy‑paste this section:
+
+───
+
+Server status – SailHatteras.org (http://sailhatteras.org/) (ded4680)
+
+Code / Git
+
+• Current repo on server:
+/home/ca12a15/sites/sailhatteras_site
+• HEAD is hard‑reset to origin/main at commit:
+af4c0fd  fix(api): normalizeImageUrl() always emits /trip-photos/<file> regardless of DB value
+• Commands already run as ca12a15:
+
+cd ~/sites/sailhatteras_site
+git fetch origin
+git reset --hard origin/main
+
+pnpm --filter @workspace/api-server build
+PORT=8080 BASE_PATH=/ pnpm --filter @workspace/sail-hatteras build
+
+pm2 restart sailhatteras-api   # app runs on PORT=3001 via .env
+
+Env / PM2
+
+• .env for the app (loaded before starting PM2) includes:
+  • PORT=3001
+  • BASE_PATH=/
+  • DATABASE_URL=postgresql://sailhatteras_app@127.0.0.1:5432/sailhatteras
+  • NODE_ENV=production
+  • SESSION_SECRET=... (fixed to a literal random string)
+• PM2:
+
+pm2 ls
+# sailhatteras-api online as ca12a15, listening on port 3001
+
+Database
+
+• DB: sailhatteras, user: sailhatteras_app, host: 127.0.0.1
+• We have already run the normalization update:
+
+UPDATE sh_trips
+SET image_url = '/trip-photos/' || regexp_replace(image_url, '^.*/', '')
+WHERE image_url IS NOT NULL;
+
+• Sample rows now look like:
+
+slug                | image_url
+--------------------+-------------------------------------
+sunset-sail         | /trip-photos/sunset-sail.jpg
+half-day-sail       | /trip-photos/half-day-charter.jpg
+full-day-sail       | /trip-photos/full-day-sail.jpg
+stiletto-x-charter  | /trip-photos/stiletto-x-charter.jpg
+dolphin-tour        | /trip-photos/dolphin-tour.jpg
+
+Static files
+
+• Built frontend lives at:
+/home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras/dist/public
+• Confirmed structure:
+
+dist/public/
+  index.html
+  assets/
+    index-*.js
+    index-*.css
+  trip-photos/
+    sunset-sail.jpg
+    half-day-charter.jpg
+    full-day-sail.jpg
+    dolphin-tour.jpg
+    stiletto-x-charter.jpg
+    ...
+
+• Direct image URL check:
+
+curl -ksI https://sailhatteras.org/trip-photos/sunset-sail.jpg
+# HTTP/2 200 OK (served fine)
+
+Apache / vhost config
+
+• WHM/cPanel userdata includes for sailhatteras.org (both HTTP and HTTPS):
+
+# /usr/local/apache/conf/userdata/std/2_4/ca12a15/sailhatteras.org/sailhatteras_spa.conf
+# /usr/local/apache/conf/userdata/ssl/2_4/ca12a15/sailhatteras.org/sailhatteras_spa.conf
+
+DocumentRoot /home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras/dist/public
+
+<Directory /home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras/dist/public>
+  Options -Indexes
+  AllowOverride None
+  Require all granted
+  RewriteEngine On
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^ /index.html [L]
+</Directory>
+
+ProxyPreserveHost On
+ProxyPass /api/ http://127.0.0.1:3001/api/
+ProxyPassReverse /api/ http://127.0.0.1:3001/api/
+
+• Apache config was rebuilt and httpd restarted via:
+
+/usr/local/cpanel/scripts/rebuildhttpdconf
+[5/8/2026 2:51 PM] Hukilau: /usr/local/cpanel/scripts/restartsrv_httpd --hard
+
+API behavior (current)
+
+• sailhatteras-api is online on port 3001.
+• Hitting the experiences endpoint:
+
+curl -ks "https://sailhatteras.org/api/sh/trips?category=experiences" | python3 -m json.tool | grep '"imageUrl"' | head -6
+
+Observed result (important):
+
+Despite the DB being normalized to /trip-photos/<file>.jpg, the API still emits:
+
+"imageUrl": "/sail-hatteras/trips/sunset-sail.jpg",
+"imageUrl": "/sail-hatteras/trips/half-day-charter.jpg",
+[5/8/2026 2:51 PM] Hukilau: "imageUrl": "/sail-hatteras/trips/large-group-flotilla.jpg",
+"imageUrl": "/sail-hatteras/trips/full-day-sail.jpg",
+"imageUrl": "/sail-hatteras/trips/dolphin-tour.jpg",
+"imageUrl": "/sail-hatteras/trips/stiletto-x-charter.jpg",
+
+So the API is not yet applying the /trip-photos/ normalization described in commit af4c0fd, even though that commit is deployed and the DB values are already /trip-photos/....
+
+Static assets / CSS
+
+• Built index.html on disk points at:
+
+<script type="module" crossorigin src="/assets/index-CUzlbYpa.js"></script>
+<link rel="stylesheet" crossorigin href="/assets/index-Dp1OgQ9F.css">
+
+• Those files exist under dist/public/assets/ as expected.
+• But HEAD requests from the server show 406 from the front nginx layer:
+
+curl -ksI https://sailhatteras.org/assets/index-Dp1OgQ9F.css
+# HTTP/2 406, server: nginx/1.29.8
+
+curl -ksI https://sailhatteras.org/assets/index-CUzlbYpa.js
+# HTTP/2 406, server: nginx/1.29.8
+
+That explains why Jay now sees a “giant, unformatted blog of images”:
+the CSS/JS asset requests are being blocked with 406 by the nginx/WAF layer, so the browser gets HTML error pages instead of CSS/JS.
+
+───
+
+Net: what’s working vs broken
+
+• ✅ Node API process is up and serving JSON.
+
+• ✅ DB contains correct /trip-photos/<file>.jpg values.
+
+• ✅ Static images under /trip-photos/… are being served with HTTP 200.
+
+• ✅ Apache vhosts for sailhatteras.org point DocumentRoot at dist/public and proxy /api/ to the Node app; SPA rewrite is in place.
+
+• ❌ API responses for imageUrl still show /sail-hatteras/trips/... instead of /trip-photos/..., even after deploy of af4c0fd.
+
+• ❌ Nginx/WAF is returning 406 for /assets/index-*.css and /assets/index-*.js, so the frontend is rendered without styles or JS in the browser.
+
+This matches what Jay is seeing:
+
+• “All Programs” and “Experiences” visually look broken because the CSS bundle is blocked (406).
+• Experiences card images specifically also break because the API is still sending the old /sail-hatteras/trips/... URLs instead of /trip-photos/....
+
+───
+
+If you’d like, I can stop touching server config and just act as the “reporting agent” while Replit drives the fixes from their side.
+[5/8/2026 2:52 PM] Hukilau: Short answer on the images:
+The API is still returning image URLs like /sail-hatteras/trips/... but the actual files live at /trip-photos/..., and on top of that nginx/ModSecurity is blocking the /assets/... CSS/JS files with 406 errors, so the frontend is both unstyled and pointing at the wrong image paths.
+
+Here’s a status summary you can paste back to the Replit agent:
+
+───
+
+SailHatteras.org (http://sailhatteras.org/) – Current Production Status (after latest af4c0fd deploy)
+
+1. Code + Processes
+
+• Server: cPanel/WHM Apache with nginx/ModSecurity in front.
+• App code:
+  • Repo at /home/ca12a15/sites/sailhatteras_site
+  • git fetch && git reset --hard origin/main now at commit af4c0fd (your “normalizeImageUrl” commit).
+• Builds:
+  • pnpm --filter @workspace/api-server build succeeds.
+  • PORT=8080 BASE_PATH=/ pnpm --filter @workspace/sail-hatteras build succeeds.
+• Runtime:
+  • PM2 process sailhatteras-api running as user ca12a15 on port 3001.
+  • Apache vhost for sailhatteras.org:
+    • DocumentRoot /home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras/dist/public
+    • RewriteEngine On + SPA rewrite:
+      • RewriteCond %{REQUEST_FILENAME} !-f
+      • RewriteRule ^ /index.html [L]
+    • Proxy:
+      • ProxyPass /api/ http://127.0.0.1:3001/api/
+      • ProxyPassReverse /api/ http://127.0.0.1:3001/api/
+
+2. Database
+
+• Postgres 10.23, DB sailhatteras, app role sailhatteras_app.
+• We ran (as you requested):
+
+UPDATE sh_trips
+SET image_url = '/trip-photos/' || regexp_replace(image_url, '^.*/', '')
+WHERE image_url IS NOT NULL;
+
+• Spot check:
+
+SELECT slug, image_url FROM sh_trips ORDER BY id LIMIT 5;
+
+returns e.g.:
+
+sunset-sail        | /trip-photos/sunset-sail.jpg
+half-day-sail      | /trip-photos/half-day-charter.jpg
+full-day-sail      | /trip-photos/full-day-sail.jpg
+stiletto-x-charter | /trip-photos/stiletto-x-charter.jpg
+dolphin-tour       | /trip-photos/dolphin-tour.jpg
+
+• Youth dev seed script scripts/seed-youth-dev-vessels.sql ran successfully:
+
+NOTICE:  Youth dev vessels seeded: trip_id=8, vessels=[6, 7, 17, 18]
+DO
+
+3. Static files (frontend)
+
+• Built assets on disk:
+
+ls artifacts/sail-hatteras/dist/public
+# => index.html, favicon.svg, chloe.jpg, logo.png, opengraph.jpg, slideshow/, trip-photos/, assets/
+
+ls artifacts/sail-hatteras/dist/public/assets
+# => index-CUzlbYpa.js
+#    index-Dp1OgQ9F.css
+
+• Built index.html in dist/public references:
+
+<script type="module" crossorigin src="/assets/index-CUzlbYpa.js"></script>
+<link rel="stylesheet" crossorigin href="/assets/index-Dp1OgQ9F.css">
+
+• Direct image path works:
+
+curl -ksI https://sailhatteras.org/trip-photos/sunset-sail.jpg | head -3
+# HTTP/2 200
+# content-type: image/jpeg
+
+4. API behavior (this is the remaining image bug)
+
+Despite the DB now storing /trip-photos/..., the live API still returns the old prefix:
+
+curl -ks -H "User-Agent: Mozilla/5.0" \
+  "https://sailhatteras.org/api/sh/trips?category=experiences" \
+  | python3 -m json.tool | grep '"imageUrl"' | head -6
+
+returns:
+
+"imageUrl": "/sail-hatteras/trips/sunset-sail.jpg",
+"imageUrl": "/sail-hatteras/trips/half-day-charter.jpg",
+"imageUrl": "/sail-hatteras/trips/large-group-flotilla.jpg",
+"imageUrl": "/sail-hatteras/trips/full-day-sail.jpg",
+"imageUrl": "/sail-hatteras/trips/dolphin-tour.jpg",
+"imageUrl": "/sail-hatteras/trips/stiletto-x-charter.jpg",
+
+So on production:
+[5/8/2026 2:52 PM] Hukilau: • DB image_url column: /trip-photos/<file>.jpg
+• API JSON imageUrl field: /sail-hatteras/trips/<file>.jpg
+
+That means your new normalizeImageUrl() / /trip-photos/ logic is not in effect in the running dist/index.mjs yet (or there’s a second codepath still emitting the legacy prefix).
+
+5. ModSecurity / nginx blocking static assets (why formatting is broken)
+
+• CSS/JS asset URLs that index.html expects are being blocked with HTTP 406 by nginx/ModSecurity, even with a normal browser UA:
+
+curl -ksI -H "User-Agent: Mozilla/5.0" \
+  https://sailhatteras.org/assets/index-Dp1OgQ9F.css | head -5
+
+# HTTP/2 406
+# server: nginx/1.29.8
+[5/8/2026 2:52 PM] Hukilau: # content-type: text/html; charset=iso-8859-1
+
+Same 406 for:
+
+• /assets/index-CUzlbYpa.js
+• /assets/index-Dp1OgQ9F.css
+• even the older /assets/index-apegBHBK.css / /assets/index-Dxcex2h_.js
+
+This is why Jay sees “no formatting / giant unstyled page”:
+the HTML loads, but the CSS/JS are all 406’d by ModSecurity.
+
+6. Current effective status
+
+• Backend/API: up; /api/sh/trips?... and images in /trip-photos are reachable.
+• Experiences images: still broken on production because imageUrl in the API JSON uses /sail-hatteras/trips/... which 406s or doesn’t exist; it should be /trip-photos/....
+• Frontend styling: broken because /assets/index-*.css and /assets/index-*.js calls are being blocked with HTTP 406 by nginx/ModSecurity for sailhatteras.org (http://sailhatteras.org/), even for standard browser user agents.
+• Apache vhost config: DocumentRoot is now correctly pointing at dist/public; SPA rewrite and /api/ proxy are in place; behavior is now governed by nginx/ModSecurity in front.
+
+───
+
+If you want, I can also draft a very short note you can send to InMotion support specifically about the ModSecurity 406 blocking /assets/* and /trip-photos/* so they can whitelist those paths.
