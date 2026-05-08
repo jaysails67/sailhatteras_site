@@ -1,0 +1,32 @@
+[root@ded4680 sailhatteras_site]# su - ca12a15 -c "cd /home/ca12a15/sites/sailhatteras_site && git pull && pnpm --filter @workspace/sail-hatteras run build" && find /var/nginx/cache/ca12a15 -type f -delete && nginx -s reload && echo "Done"
+remote: Enumerating objects: 13, done.
+remote: Counting objects: 100% (13/13), done.
+remote: Compressing objects: 100% (7/7), done.
+remote: Total 7 (delta 6), reused 0 (delta 0), pack-reused 0 (from 0)
+Unpacking objects: 100% (7/7), 719 bytes | 359.00 KiB/s, done.
+From https://github.com/jaysails67/sailhatteras_site
+   70d2187..180efc1  main       -> origin/main
+Updating 70d2187..180efc1
+Fast-forward
+ artifacts/sail-hatteras/src/pages/trip-detail.tsx | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+> @workspace/sail-hatteras@0.0.0 build /home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras
+> vite build --config vite.config.ts
+
+failed to load config from /home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras/vite.config.ts
+error during build:
+Error: PORT environment variable is required but was not provided.
+    at file:///home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras/node_modules/.vite-temp/vite.config.ts.timestamp-1778270676326-091b26c846e77.mjs:10:9
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async loadConfigFromBundledFile (file:///home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/vite@7.3.2_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:35920:12)
+    at async bundleAndLoadConfigFile (file:///home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/vite@7.3.2_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:35808:17)
+    at async loadConfigFromFile (file:///home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/vite@7.3.2_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:35775:42)
+    at async resolveConfig (file:///home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/vite@7.3.2_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:35424:22)
+    at async createBuilder (file:///home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/vite@7.3.2_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:33879:19)
+    at async CAC.<anonymous> (file:///home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/vite@7.3.2_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/cli.js:629:10)
+/home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/sail-hatteras@0.0.0 build: `vite build --config vite.config.ts`
+Exit status 1
+[root@ded4680 sailhatteras_site]#
