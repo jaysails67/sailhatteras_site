@@ -1,0 +1,77 @@
+Here’s a clean status report you can paste to the Replit agent, plus answers to your Git/coordination question.
+
+───
+
+For Replit Agent – Current Server Status
+
+Environment
+
+• Host: ded4680.inmotionhosting.com (cPanel/WHM + nginx → Apache)
+
+• App repo: /home/ca12a15/sites/sailhatteras_site (Git remote: jaysails67/sailhatteras_site on main)
+
+• DocumentRoot for sailhatteras.org:
+
+  • /home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras/dist/public
+• Node API:
+
+  • Running under PM2 as sailhatteras-api (user ca12a15)
+
+  • Bound on port 3001
+
+  • .env (not in Git) currently:
+
+PORT=3001
+BASE_PATH=/
+DATABASE_URL=postgresql://sailhatteras_app:gYi4HQwQqpE40bEyWkzvhDhw@127.0.0.1:5432/sailhatteras
+NODE_ENV=production
+SESSION_SECRET=<random 48-char string>
+STRIPE_SECRET_KEY=REPLACE_ME
+STRIPE_WEBHOOK_SECRET=REPLACE_ME
+SMTP_PASS=REPLACE_ME
+TELEGRAM_BOT_TOKEN=REPLACE_ME
+TELEGRAM_CHAT_ID=REPLACE_ME
+ADMIN_PASSWORD=ChangeThisAdminPass!
+ADMIN_EMAIL=admin@sailhatteras.org
+• Postgres:
+
+  • Service postgresql running
+  • DB: sailhatteras
+  • User: sailhatteras_app with full privileges on DB
+  • Data imported from sailhatteras_replit.sql and seeded by your seed.ts
+
+1) API + DB Status
+
+Good news: API and DB look healthy.
+
+• https://sailhatteras.org/api/sh/trips?category=experiences returns the expected objects:
+
+[
+  {
+    "id": 1,
+    "slug": "sunset-sail",
+    "category": "experiences",
+    ...
+    "imageUrl": "/sail-hatteras/trips/sunset-sail.jpg",
+    "active": true
+  },
+  ...
+]
+• Filters:
+
+  • GET /api/sh/trips?category=rentals → non-empty array (as expected).
+  • GET /api/sh/trips?category=experiences → non-empty array (as expected).
+  • GET /api/sh/trips?category=learn-to-sail → [] (no learn-to-sail records in DB, which matches the “no programs available” message Jay is seeing).
+• Booking-related endpoints, Stripe client, etc., are not exercised yet, but basic trip listing + seed logs all look correct.
+
+Important detail: despite BASE_PATH=/ in .env, the API is still returning:
+
+"imageUrl": "/sail-hatteras/trips/...jpg"
+
+so the /sail-hatteras prefix is still present in responses.
+
+2) Static assets and image URLs
+
+Files on disk under DocumentRoot:
+
+/home/ca12a15/sites/sailhatteras_site/art

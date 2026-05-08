@@ -1,0 +1,59 @@
+Short version:
+
+• I’ve already applied the Replit agent’s latest Apache + Git instructions.
+• The server is now synced to the GitHub repo and the API is rebuilt/running.
+• Going forward, Replit’s pushes won’t overwrite the server‑side fixes I’ve made (Postgres, PM2, Apache, .env).
+• To avoid you being the middleman, we should treat GitHub as the “handshake” between Replit and me.
+
+Let me answer your specific question about Git and “who overwrites whom,” then I’ll summarize where we stand technically.
+
+───
+
+1. Will Replit’s Git pushes overwrite things I fix locally?
+
+They can, but only if we edit the same files in two places. The way I’ve been working today protects us from that:
+
+• What Replit owns (and pushes to GitHub):
+  • All app code in the repo:
+    • artifacts/api-server/**
+    • artifacts/sail-hatteras/**
+    • lib/**
+    • scripts/**, etc.
+  • Database schema / seed code in that repo.
+• What I’ve changed outside the repo (safe from Git pulls):
+  • Postgres install, users, DB (sailhatteras, sailhatteras_app).
+  • PM2 process for sailhatteras-api.
+  • Apache config via WHM‑safe includes:
+    • /usr/local/apache/conf/userdata/std/2_4/ca12a15/sailhatteras.org/sailhatteras_spa.conf
+    • /usr/local/apache/conf/userdata/ssl/2_4/ca12a15/sailhatteras.org/sailhatteras_spa.conf
+  • .env in /home/ca12a15/sites/sailhatteras_site/.env.
+
+Those aren’t tracked by Git, so when I do:
+
+cd /home/ca12a15/sites/sailhatteras_site
+git fetch
+git reset --hard origin/main
+pnpm --filter @workspace/api-server build
+pm2 restart sailhatteras-api
+
+it only updates the app code. It does not touch:
+
+• your .env values (DB URL, PORT, etc.),
+• Apache vhost includes,
+• Postgres users/roles.
+
+That’s exactly what I did a few minutes ago: I force-synced the repo to Replit’s latest commit (b354e35), rebuilt the API, and restarted PM2. Your infra changes remain intact.
+
+So:
+
+• No, Replit’s pushes won’t wipe out the server‑side fixes as long as I keep all server‑only changes outside the repo.
+• If I ever need to adjust application code itself, I should make that change via GitHub (PR or commit) so Replit sees it too. I should not hand‑edit artifacts/api-server/src directly on the server.
+
+───
+
+2. Does Replit need to “catch up” to your changes?
+
+Only for app code changes. For what we’ve done today:
+
+• Postgres setup, .env, PM2, Apache includes:
+→ purely server‑side; Replit doesn’t need to know
