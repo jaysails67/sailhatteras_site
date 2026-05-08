@@ -1,0 +1,211 @@
+[5/8/2026 1:03 PM] Hukilau: Here’s the status you can paste to the Replit agent, plus a quick answer to your coordination question.
+
+───
+
+Current server status (for Replit dev)
+
+Environment / routing
+
+• Domain: sailhatteras.org → 192.249.121.207 (nameservers ns1/ns2.inmotionhosting.com).
+• SSL: Let’s Encrypt wildcard *.sailhatteras.org is working; HTTPS loads fine.
+• Node API: running under PM2 as sailhatteras-api on PORT=3001, BASE_PATH=/, NODE_ENV=production, etc.
+• Apache:
+  • Uses WHM-safe includes:
+
+    • /usr/local/apache/conf/userdata/std/2_4/ca12a15/sailhatteras.org/sailhatteras_spa.conf
+    • /usr/local/apache/conf/userdata/ssl/2_4/ca12a15/sailhatteras.org/sailhatteras_spa.conf
+  • Those files currently contain:
+
+<Directory /home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras/dist/public>
+  Options -Indexes
+  AllowOverride None
+  Require all granted
+  RewriteEngine On
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^ /index.html [L]
+</Directory>
+
+ProxyPreserveHost On
+ProxyPass /api/ http://127.0.0.1:3001/api/
+ProxyPassReverse /api/ http://127.0.0.1:3001/api/
+  • So SPA routing is now via mod_rewrite, and directory listings are disabled. Refreshing /trips no longer shows the image directory.
+
+Code + build state
+
+As ca12a15, I just ran exactly this:
+
+cd /home/ca12a15/sites/sailhatteras_site
+
+git fetch origin
+git reset --hard origin/main
+# HEAD is now at 9266b8d  (latest main from your repo)
+
+# Rebuild API
+pnpm --filter @workspace/api-server build
+
+# Rebuild frontend (SPA)
+PORT=8080 BASE_PATH=/ pnpm --filter @workspace/sail-hatteras build
+
+# Restart API
+pm2 restart sailhatteras-api
+
+Builds complete successfully. Frontend output:
+
+ls artifacts/sail-hatteras/dist/public
+# => assets, index.html, favicon.svg, logo.png, opengraph.jpg, slideshow, trip-photos
+
+Static images on disk
+
+Under the built frontend, the trip photos live at:
+
+artifacts/sail-hatteras/dist/public/trip-photos:
+  adult-sailing-program.jpg
+  beach-cat-lesson.jpg
+  beach-cat-rental.jpg
+  cape-explorers-camp.jpg
+  dolphin-tour.jpg
+  full-day-sail.jpg
+  half-day-charter.jpg
+  kids-development-program.jpg
+  large-group-flotilla.jpg
+  skiff-rental.jpg
+  stiletto-x-charter.jpg
+  sunset-sail.jpg
+  youth-development.jpg
+
+From the outside via HTTPS:
+
+curl -ksI -H 'User-Agent: Mozilla/5.0' https://sailhatteras.org/trip-photos/sunset-sail.jpg | head -3
+# HTTP/2 200
+# server: nginx/1.29.8
+# content-type: image/jpeg
+
+So the static image files and paths /trip-photos/*.jpg are correct and live.
+
+Database state
+
+As sailhatteras_app on DB sailhatteras, I ran the normalization you requested:
+
+UPDATE sh_trips
+SET image_url = '/trip-photos/' || regexp_replace(image_url, '^.*/', '')
+WHERE image_url IS NOT NULL;
+
+SELECT slug, image_url FROM sh_trips ORDER BY id LIMIT 5;
+
+Result:
+
+ slug             | image_url
+------------------+-------------------------------
+ sunset-sail      | /trip-photos/sunset-sail.jpg
+ half-day-sail    | /trip-photos/half-day-charter.jpg
+ full-day-sail    | /trip-photos/full-day-sail.jpg
+ stiletto-x-charter | /trip-photos/stiletto-x-charter.jpg
+ dolphin-tour     | /trip-photos/dolphin-tour.jpg
+
+So the DB rows now universally point to /trip-photos/<filename>.jpg, regardless of their previous history.
+
+API behavior (important mismatch)
+
+After the reset/build/restart, I checked the API:
+
+curl -ks -H 'User-Agent: Mozilla/5.0' \
+  "https://sailhatteras.org/api/sh/trips?category=experiences" | sed -n '1,40p'
+
+Sample output (trimmed):
+
+[
+  {
+    "slug": "sunset-sail",
+    ...
+[5/8/2026 1:03 PM] Hukilau:     "imageUrl": "/sail-hatteras/trips/sunset-sail.jpg",
+    ...
+  },
+  {
+    "slug": "half-day-sail",
+    ...
+    "imageUrl": "/sail-hatteras/trips/half-day-charter.jpg",
+    ...
+  },
+  {
+    "slug": "large-group-flotilla",
+    ...
+    "imageUrl": "/sail-hatteras/trips/large-group-flotilla.jpg",
+    ...
+  }
+  ...
+]
+
+So:
+
+• DB now has /trip-photos/...
+• API is still emitting /sail-hatteras/trips/...
+
+I then confirmed that those old-style URLs 406, while the new ones 200:
+
+# Old path:
+[5/8/2026 1:03 PM] Hukilau: curl -ksI -H 'User-Agent: Mozilla/5.0' \
+  https://sailhatteras.org/sail-hatteras/trips/sunset-sail.jpg | head -3
+# HTTP/2 406 (blocked / not found)
+
+# New path:
+curl -ksI -H 'User-Agent: Mozilla/5.0' \
+  https://sailhatteras.org/trip-photos/sunset-sail.jpg | head -3
+# HTTP/2 200
+
+This strongly suggests:
+
+• The running API code (artifacts/api-server/dist/index.mjs) is still rewriting image URLs to /sail-hatteras/trips/... somewhere in tripToApi/resolveImageUrl, or
+• The API isn’t using the image_url column as normalized, and is reconstructing from some legacy path.
+
+Either way, the server is now in the correct state (files + DB) but the API logic is still producing old /sail-hatteras/trips/... URLs.
+
+That matches Jay’s symptom:
+
+• “All Programs” tab: working images (likely using a different endpoint / cached path that happens to line up).
+• “Experiences” filter: calls /api/sh/trips?category=experiences, gets /sail-hatteras/trips/..., which don’t exist → broken.
+
+From server side, I’ve already:
+
+1. Reset to your latest origin/main.
+2. Normalized sh_trips.image_url to /trip-photos/<filename>.
+3. Rebuilt both @workspace/api-server and @workspace/sail-hatteras.
+4. Restarted PM2 (sailhatteras-api).
+5. Confirmed /trip-photos/*.jpg is live (HTTP 200).
+6. Confirmed /api/sh/trips?category=experiences still emits /sail-hatteras/trips/....
+
+So the remaining work is purely in code: the API should either:
+
+• stop rewriting image_url and just expose the DB value, or
+• rewrite based on /trip-photos/ instead of /sail-hatteras/trips/.
+
+Once you push that to GitHub, I can run the same short deploy sequence again:
+
+cd /home/ca12a15/sites/sailhatteras_site
+git fetch && git reset --hard origin/main
+pnpm --filter @workspace/api-server build
+PORT=8080 BASE_PATH=/ pnpm --filter @workspace/sail-hatteras build
+pm2 restart sailhatteras-api
+
+and we should be done.
+
+───
+
+On “not wanting to be in the middle” / future workflow
+
+• I can’t receive email directly from Replit or anyone else. The only way updates reach me is:
+
+  • via this chat, or
+  • via code pushed to GitHub that I then deploy.
+• To avoid you relaying step-by-step instructions in future, the ideal setup is:
+
+  • Replit agent treats GitHub main as the source of truth and pushes all app changes there.
+  • I treat the server as read-only for code, and only ever deploy by git fetch && git reset --hard origin/main + build + restart.
+  • Local-only things (like .env, Apache include files) live outside the repo so they aren’t touched by their pushes.
+
+That way, future changes are:
+
+1. Replit updates code and commits to GitHub.
+2. You tell me “deploy latest main”.
+3. I run one short deploy script; no more back-and-forth command relays.
+
+For now: everything on the server side is aligned with the instructions they gave. The last blocker is the API still returning /sail-hatteras/trips/... — they’ll see that quickly from the GET /api/sh/trips responses and can adjust.

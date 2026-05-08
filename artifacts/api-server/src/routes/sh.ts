@@ -29,15 +29,6 @@ import { logger } from "../lib/logger";
 
 const router = Router();
 
-function resolveImageUrl(imageUrl: string | null | undefined): string | null {
-  if (!imageUrl) return null;
-  if (imageUrl.startsWith("http")) return imageUrl;
-  // Normalize: strip any legacy /sail-hatteras prefix, migrate /trips/ → /trip-photos/
-  return imageUrl
-    .replace(/^\/sail-hatteras/, "")
-    .replace(/^\/trips\//, "/trip-photos/");
-}
-
 function tripToApi(trip: typeof shTripsTable.$inferSelect) {
   return {
     id: trip.id,
@@ -55,7 +46,7 @@ function tripToApi(trip: typeof shTripsTable.$inferSelect) {
     maxPassengers: trip.maxPassengers,
     boat: trip.boat,
     highlights: (trip.highlights as string[]) ?? [],
-    imageUrl: resolveImageUrl(trip.imageUrl),
+    imageUrl: trip.imageUrl ?? null,
     active: trip.active,
     comingSoon: trip.comingSoon ?? false,
     sortOrder: trip.sortOrder,
@@ -151,7 +142,7 @@ router.get("/sh/trips/:slug/vessels", async (req, res) => {
       capacity: shVesselsTable.capacity,
       priceCents: shVesselsTable.priceCents,
       priceDisplay: shVesselsTable.priceDisplay,
-      imageUrl: resolveImageUrl(shVesselsTable.imageUrl),
+      imageUrl: shVesselsTable.imageUrl,
       sortOrder: shVesselsTable.sortOrder,
       priceOverrideCents: shTripVesselsTable.priceOverrideCents,
     })
