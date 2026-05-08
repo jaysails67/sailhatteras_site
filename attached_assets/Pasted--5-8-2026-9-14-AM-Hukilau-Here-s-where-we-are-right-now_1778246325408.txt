@@ -1,0 +1,155 @@
+[5/8/2026 9:14 AM] Hukilau: Here’s where we are right now, step‑by‑step, without repeating work:
+
+1. PostgreSQL status
+
+  • PostgreSQL is installed and running (10.23) on ded4680.
+  • Data directory: /var/lib/pgsql/data
+  • Service: postgresql.service is active (running).
+2. Sailhatteras database
+
+  • I created a dedicated app user and DB:
+    • DB: sailhatteras
+    • Role/user: sailhatteras_app
+    • Password: gYi4HQwQqpE40bEyWkzvhDhw
+  • Your sailhatteras_replit.sql dump has been imported into that DB.
+  • Tables like users, team_members, sh_trips, sh_vessels, etc. are present and populated.
+  • I fixed pg_hba.conf and privileges so the app can connect from 127.0.0.1 as sailhatteras_app.
+3. App DB password (answering your direct question)
+
+  • For the app connection string (and any manual DB access as that app user), use this:
+
+user:     sailhatteras_app
+db:       sailhatteras
+host:     127.0.0.1
+port:     5432
+password: gYi4HQwQqpE40bEyWkzvhDhw
+  • That’s what is set in DATABASE_URL.
+
+  • The Password: prompt you saw for sudo -u postgres psql ... is for the postgres superuser, whose password is managed via WHM’s “Configure PostgreSQL” screen; we didn’t need to change that, so you can mostly ignore it.
+
+4. Code & builds
+
+  • Repo is in: /home/ca12a15/sites/sailhatteras_site
+  • I ran pnpm install and built:
+    • @workspace/api-server → built successfully (artifacts/api-server/dist/index.mjs).
+    • @workspace/sail-hatteras (the frontend) → built successfully after honoring Replit’s advice:cd /home/ca12a15/sites/sailhatteras_site
+PORT=8080 BASE_PATH=/ pnpm --filter @workspace/sail-hatteras build
+    • Frontend bundle lives under artifacts/sail-hatteras/dist/public/…
+5. Runtime environment (.env)
+I created /home/ca12a15/sites/sailhatteras_site/.env with:
+
+PORT=3001
+BASE_PATH=/
+DATABASE_URL=postgresql://sailhatteras_app:gYi4HQwQqpE40bEyWkzvhDhw@127.0.0.1:5432/sailhatteras
+NODE_ENV=production
+SESSION_SECRET=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 48)
+STRIPE_SECRET_KEY=REPLACE_ME
+STRIPE_WEBHOOK_SECRET=REPLACE_ME
+SMTP_PASS=REPLACE_ME
+TELEGRAM_BOT_TOKEN=REPLACE_ME
+TELEGRAM_CHAT_ID=REPLACE_ME
+ADMIN_PASSWORD=ChangeThisAdminPass!
+ADMIN_EMAIL=admin@sailhatteras.org
+  • PORT is 3001, not 8080, because Apache/httpd is already bound to 8080 on this server.
+  • BASE_PATH=/ matches what the Replit agent wanted for production (root path).
+  • Stripe/SMTP/Telegram are still placeholders; app can run, but payment/notifications won’t work until we fill those in.
+6. PM2 / backend status
+
+  • As user ca12a15, PM2 is running:
+
+pm2 ls
+# shows: sailhatteras-api (online)
+  • The Node backend process:
+
+    • Name: sailhatteras-api
+    • Mode: fork
+    • Port: listening on 3001
+  • Logs show:
+
+    • The server is listening on port 3001.
+    • The DB seed has run successfully.
+    • An admin user was seeded:
+      • Email: admin@sailhatteras.org
+      • Password: ChangeThisAdminPass!
+(You should change this in the app once you can log in.)
+7. Health / routes
+
+  • Hitting the backend directly:
+    • http://127.0.0.1:3001/ → returns Cannot GET /
+    • http://127.0.0.1:3001/health → Cannot GET /health
+  • That means:
+    • The server is running, but there’s no explicit route defined at / or /health in this API server.
+    • That’s normal for some setups where:
+      • One process is API‑only (/api/... routes), and
+[5/8/2026 9:14 AM] Hukilau: • The static frontend is served as pure static files (or by a separate Node entrypoint).
+In other words: backend + DB are up and talking, but we haven’t wired a public HTTP path (via Apache) to serve the built frontend yet.
+
+8. Apache / port situation
+
+  • Apache (httpd) is currently listening on 8080 (and likely also on 80/443 via vhosts; I haven’t touched those configs yet).
+  • The Replit instruction “PORT=8080” assumes the Node app owns 8080 directly.
+On this WHM server, Apache already owns 8080, so we correctly moved the Node app to 3001 and will have Apache proxy to it.
+
+───
+
+What’s still missing before the site is “live”
+[5/8/2026 9:14 AM] Hukilau: 1. Apache vhost for sailhatteras.org (http://sailhatteras.org/) → Node app on 3001
+
+We still need to:
+
+  • Add/adjust the Apache vhost for sailhatteras.org (and www.sailhatteras.org) to proxy to:ProxyPass        / http://127.0.0.1:3001/
+ProxyPassReverse / http://127.0.0.1:3001/
+  • Do this the cPanel‑safe way (via the appropriate userdata include or WHM interface) so WHM doesn’t overwrite it.
+2. Stripe / SMTP / Telegram secrets (can be done later)
+
+  • Until we plug in:
+    • STRIPE_SECRET_KEY
+    • STRIPE_WEBHOOK_SECRET
+    • SMTP_PASS and SMTP host/user (wherever those live)
+    • TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID
+  • The app itself will run, the pages will render, and browsing should work.
+  • Online payments and automated notifications will either be disabled or error out until those are set.
+
+───
+
+Direct answers to your last questions
+
+• “What password do I use?”
+
+  • For the app DB connection: gYi4HQwQqpE40bEyWkzvhDhw (already wired into DATABASE_URL).
+  • For sudo -u postgres psql prompting Password:: that’s the postgres superuser password managed via WHM’s Configure PostgreSQL. You don’t need it for normal app operations now that we’ve configured sailhatteras_app.
+• “Do I do anything else right now, or do you do this?”
+
+  • You don’t need to run further terminal commands right now.
+  • I already have working exec access and I’m using it; that’s why you’ve seen all the progress above without you re‑typing commands.
+
+───
+
+My proposed next steps (server‑side)
+
+Unless you object, here’s what I will do next:
+
+1. Inspect the current Apache vhost(s) for sailhatteras.org so I don’t clobber anything important.
+2. Add a vhost / include so:
+  • Requests to sailhatteras.org and www.sailhatteras.org are proxied to http://127.0.0.1:3001/.
+  • We keep everything WHM‑compatible (no direct hacks that cPanel will overwrite).
+3. Test from the server:
+  • curl -H 'Host: sailhatteras.org' http://127.0.0.1:8080/ and verify the new app HTML comes back.
+4. Once that works:
+  • You can load https://sailhatteras.org in your browser and log in as:
+    • admin@sailhatteras.org
+    • ChangeThisAdminPass! (then change it immediately).
+
+───
+
+One thing I need from you now
+
+To move ahead with the Apache wiring safely:
+
+• Is it OK if we put the new Node site live at sailhatteras.org with Stripe/SMTP/Telegram still in “placeholder” mode (i.e., browsing/booking flows visible, but actual payments/emails not yet functional)?
+
+If you confirm “yes, ship it even if payments aren’t wired yet,” I’ll proceed to:
+
+• Wire the Apache vhost for sailhatteras.org → Node on 3001.
+• Verify from the server that the domain serves the new app.
+• Then report back with “it’s live” and the exact admin login details again so you can get in and sanity‑check content.
