@@ -1,0 +1,104 @@
+^C
+[root@ded4680 ~]# tail -50 /home/ca12a15/.pm2/logs/sailhatteras-api-out.log
+      "syscall": "listen",
+      "address": "0.0.0.0",
+      "port": 8080
+    }
+[05:25:26.068] ERROR (1004810): Error listening on port
+    err: {
+      "type": "Error",
+      "message": "listen EADDRINUSE: address already in use 0.0.0.0:8080",
+      "stack":
+          Error: listen EADDRINUSE: address already in use 0.0.0.0:8080
+              at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+              at listenInCluster (node:net:1997:12)
+              at Server.listen (node:net:2102:7)
+              at Function.listen (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/express@5.2.1/node_modules/express/lib/application.js:605:24)
+              at <anonymous> (/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/src/index.ts:20:5)
+              at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+              at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+              at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+      "code": "EADDRINUSE",
+      "errno": -98,
+      "syscall": "listen",
+      "address": "0.0.0.0",
+      "port": 8080
+    }
+{"level":30,"time":1778243721255,"pid":1006686,"hostname":"ded4680.inmotionhosting.com","port":3001,"msg":"Server listening"}
+{"level":40,"time":1778243721255,"pid":1006686,"hostname":"ded4680.inmotionhosting.com","msg":"ADMIN_PASSWORD env var is not set — skipping admin user seed. Set ADMIN_PASSWORD (and optionally ADMIN_EMAIL) to bootstrap the admin account."}
+{"level":50,"time":1778243721262,"pid":1006686,"hostname":"ded4680.inmotionhosting.com","err":{"type":"_DrizzleQueryError","message":"Failed query: select count(*)::int from\"team_members\"\nparams: : no pg_hba.conf entry for host \"127.0.0.1\", user \"sailhatteras_app\", database \"sailhatteras\", SSL off","stack":"Error: Failed query: select count(*)::int from \"team_members\"\nparams: \n    at NodePgPreparedQuery.queryWithCache (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.18.0_pg@8.20.0/node_modules/src/pg-core/session.ts:73:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async <anonymous> (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.18.0_pg@8.20.0/node_modules/src/node-postgres/session.ts:154:19)\n    at async seed (/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/src/seed.ts:47:29)\n    at async Server.<anonymous> (/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/src/index.ts:27:3)\ncaused by: error: no pg_hba.conf entry for host \"127.0.0.1\", user \"sailhatteras_app\", database \"sailhatteras\", SSL off\n    at <anonymous> (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/pg-pool@3.13.0_pg@8.20.0/node_modules/pg-pool/index.js:45:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async <anonymous> (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.18.0_pg@8.20.0/node_modules/src/node-postgres/session.ts:161:13)\n    at async NodePgPreparedQuery.queryWithCache (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.18.0_pg@8.20.0/node_modules/src/pg-core/session.ts:71:12)\n    at async <anonymous> (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.18.0_pg@8.20.0/node_modules/src/node-postgres/session.ts:154:19)\n    at async seed (/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/src/seed.ts:47:29)\n    at async Server.<anonymous> (/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/src/index.ts:27:3)","query":"select count(*)::int from \"team_members\"","params":[]},"msg":"Seed error"}
+{"level":40,"time":1778243721333,"pid":1006686,"hostname":"ded4680.inmotionhosting.com","msg":"Cannot determine webhook URL (TELEGRAM_WEBHOOK_URL and REPLIT_DEV_DOMAIN both unset) — skipping"}
+{"level":30,"time":1778243729303,"pid":1006895,"hostname":"ded4680.inmotionhosting.com","port":3001,"msg":"Server listening"}
+{"level":40,"time":1778243729304,"pid":1006895,"hostname":"ded4680.inmotionhosting.com","msg":"ADMIN_PASSWORD env var is not set — skipping admin user seed. Set ADMIN_PASSWORD (and optionally ADMIN_EMAIL) to bootstrap the admin account."}
+{"level":50,"time":1778243729311,"pid":1006895,"hostname":"ded4680.inmotionhosting.com","err":{"type":"_DrizzleQueryError","message":"Failed query: select count(*)::int from\"team_members\"\nparams: : password authentication failed for user \"sailhatteras_app\"","stack":"Error: Failed query: select count(*)::int from \"team_members\"\nparams: \n    at NodePgPreparedQuery.queryWithCache (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.18.0_pg@8.20.0/node_modules/src/pg-core/session.ts:73:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async <anonymous> (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.18.0_pg@8.20.0/node_modules/src/node-postgres/session.ts:154:19)\n    at async seed (/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/src/seed.ts:47:29)\n    at async Server.<anonymous> (/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/src/index.ts:27:3)\ncaused by: error: password authentication failed for user \"sailhatteras_app\"\n    at <anonymous> (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/pg-pool@3.13.0_pg@8.20.0/node_modules/pg-pool/index.js:45:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async <anonymous> (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.18.0_pg@8.20.0/node_modules/src/node-postgres/session.ts:161:13)\n    at async NodePgPreparedQuery.queryWithCache (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.18.0_pg@8.20.0/node_modules/src/pg-core/session.ts:71:12)\n    at async <anonymous> (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.18.0_pg@8.20.0/node_modules/src/node-postgres/session.ts:154:19)\n    at async seed (/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/src/seed.ts:47:29)\n    at async Server.<anonymous> (/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/src/index.ts:27:3)","query":"select count(*)::int from \"team_members\"","params":[]},"msg":"Seed error"}
+{"level":40,"time":1778243729378,"pid":1006895,"hostname":"ded4680.inmotionhosting.com","msg":"Cannot determine webhook URL (TELEGRAM_WEBHOOK_URL and REPLIT_DEV_DOMAIN both unset) — skipping"}
+{"level":30,"time":1778244688106,"pid":1006895,"hostname":"ded4680.inmotionhosting.com","req":{"id":1,"method":"GET","url":"/health"},"res":{"statusCode":404},"responseTime":6,"msg":"request completed"}
+{"level":30,"time":1778245799542,"pid":1011869,"hostname":"ded4680.inmotionhosting.com","port":3001,"msg":"Server listening"}
+{"level":30,"time":1778245799684,"pid":1011869,"hostname":"ded4680.inmotionhosting.com","adminEmail":"admin@sailhatteras.org","msg":"Admin user seeded"}
+{"level":30,"time":1778245799701,"pid":1011869,"hostname":"ded4680.inmotionhosting.com","msg":"Seeded Vandemere Roundtable press release"}
+{"level":30,"time":1778245799701,"pid":1011869,"hostname":"ded4680.inmotionhosting.com","msg":"Database seed complete"}
+{"level":40,"time":1778245799701,"pid":1011869,"hostname":"ded4680.inmotionhosting.com","msg":"Cannot determine webhook URL (TELEGRAM_WEBHOOK_URL and REPLIT_DEV_DOMAIN both unset) — skipping"}
+{"level":30,"time":1778246013589,"pid":1011869,"hostname":"ded4680.inmotionhosting.com","req":{"id":1,"method":"GET","url":"/"},"res":{"statusCode":404},"responseTime":4,"msg":"request completed"}
+{"level":30,"time":1778246016643,"pid":1011869,"hostname":"ded4680.inmotionhosting.com","req":{"id":2,"method":"GET","url":"/app"},"res":{"statusCode":404},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1778246016649,"pid":1011869,"hostname":"ded4680.inmotionhosting.com","req":{"id":3,"method":"GET","url":"/health"},"res":{"statusCode":404},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1778246331027,"pid":1011869,"hostname":"ded4680.inmotionhosting.com","req":{"id":4,"method":"GET","url":"/api/health"},"res":{"statusCode":404},"responseTime":3,"msg":"request completed"}
+{"level":30,"time":1778246331040,"pid":1011869,"hostname":"ded4680.inmotionhosting.com","req":{"id":5,"method":"GET","url":"/api/posts"},"res":{"statusCode":200},"responseTime":7,"msg":"request completed"}
+{"level":30,"time":1778246562728,"pid":1013650,"hostname":"ded4680.inmotionhosting.com","port":3001,"msg":"Server listening"}
+{"level":30,"time":1778246562819,"pid":1013650,"hostname":"ded4680.inmotionhosting.com","adminEmail":"admin@sailhatteras.org","msg":"Admin user seeded"}
+{"level":30,"time":1778246562835,"pid":1013650,"hostname":"ded4680.inmotionhosting.com","msg":"Seeded Vandemere Roundtable press release"}
+{"level":30,"time":1778246562835,"pid":1013650,"hostname":"ded4680.inmotionhosting.com","msg":"Database seed complete"}
+{"level":40,"time":1778246562835,"pid":1013650,"hostname":"ded4680.inmotionhosting.com","msg":"Cannot determine webhook URL (TELEGRAM_WEBHOOK_URL and REPLIT_DEV_DOMAIN both unset) — skipping"}
+{"level":30,"time":1778248349472,"pid":1013650,"hostname":"ded4680.inmotionhosting.com","req":{"id":1,"method":"GET","url":"/api/sh/summary"},"res":{"statusCode":200},"responseTime":11,"msg":"request completed"}
+{"level":30,"time":1778250206242,"pid":1013650,"hostname":"ded4680.inmotionhosting.com","req":{"id":2,"method":"GET","url":"/api/sh/trips"},"res":{"statusCode":200},"responseTime":9,"msg":"request completed"}
+[root@ded4680 ~]# tail -50 /home/ca12a15/.pm2/logs/sailhatteras-api-error.log
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:1004768) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:1004782) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:1004796) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:1004810) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:1006451) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Error: SESSION_SECRET environment variable is required in production
+    at <anonymous> (/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/src/app.ts:103:9)
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+(node:1006490) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Error: SESSION_SECRET environment variable is required in production
+    at <anonymous> (/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/src/app.ts:103:9)
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+(node:1006589) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Error: SESSION_SECRET environment variable is required in production
+    at <anonymous> (/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/src/app.ts:103:9)
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+(node:1006686) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+(node:1006895) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+(node:1011869) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+(node:1013650) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[root@ded4680 ~]#
