@@ -99,6 +99,7 @@ export default function TripDetail() {
   // When no vessels: steps 1=date/pax, 2=details, 3=review
   const [step, setStep] = useState(1);
   const [selectedVessel, setSelectedVessel] = useState<ShVessel | null>(null);
+  const [selectedSession, setSelectedSession] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [vacationStart, setVacationStart] = useState("");
   const [vacationEnd, setVacationEnd] = useState("");
@@ -108,22 +109,32 @@ export default function TripDetail() {
   const checkout = useCreateShCheckout();
 
   const isLearnTrip = trip?.category === "learn";
-  const vesselStepLabel = isLearnTrip ? "Choose Program" : "Choose Vessel";
-  const totalSteps = isLearnTrip && hasVessels ? 3 : hasVessels ? 4 : 3;
+  const isSAISA = selectedVessel?.name.toLowerCase().includes("saisa");
+
+  // Session options differ by class
+  const sessionOptions = isSAISA
+    ? [
+        { label: "Fall 2026",   sub: "Sept – Nov 2026",      value: "fall2026",   date: "2026-09-01" },
+        { label: "Spring 2027", sub: "Jan – Mar 2027",        value: "spring2027", date: "2027-01-15" },
+      ]
+    : [
+        { label: "Summer Session 1", sub: "June 6 – July 11",  value: "summer1", date: "2026-06-06" },
+        { label: "Summer Session 2", sub: "July 18 – Sept 5",  value: "summer2", date: "2026-07-18" },
+      ];
+
+  const sessionLabel = sessionOptions.find(o => o.value === selectedSession)?.label ?? "";
+  const learnDate    = sessionOptions.find(o => o.value === selectedSession)?.date ?? "";
+
+  const vesselStepLabel = isLearnTrip ? "Choose Class" : "Choose Vessel";
+  const totalSteps = isLearnTrip && hasVessels ? 4 : hasVessels ? 4 : 3;
   const stepLabels = isLearnTrip && hasVessels
-    ? [vesselStepLabel, "Your Details", "Review"]
+    ? [vesselStepLabel, "Choose Session", "Your Details", "Review"]
     : hasVessels
     ? [vesselStepLabel, "Select Date", "Your Details", "Review"]
     : ["Select Date", "Your Details", "Review"];
-  const detailsStep = isLearnTrip && hasVessels ? 2 : hasVessels ? 3 : 2;
-  const reviewStep  = isLearnTrip && hasVessels ? 3 : hasVessels ? 4 : 3;
-
-  // For learn/session programs, derive booking date from selected vessel name
-  const learnDate = selectedVessel
-    ? selectedVessel.name.includes("Session 1") ? "2026-06-06"
-    : selectedVessel.name.includes("Session 2") ? "2026-07-18"
-    : "2026-06-06"
-    : "";
+  const sessionStep  = 2; // only used for learn trips
+  const detailsStep  = isLearnTrip && hasVessels ? 3 : hasVessels ? 3 : 2;
+  const reviewStep   = isLearnTrip && hasVessels ? 4 : hasVessels ? 4 : 3;
 
   const isFlat = trip?.pricingModel === "flat";
 
@@ -165,7 +176,9 @@ export default function TripDetail() {
           customerPhone: form.phone || "",
           specialRequests: form.notes || undefined,
           vesselId: selectedVessel?.id,
-          vesselName: selectedVessel?.name,
+          vesselName: isLearnTrip && selectedVessel
+            ? `${selectedVessel.name} — ${sessionLabel}`
+            : selectedVessel?.name,
         } as any,
       },
       {
@@ -466,7 +479,7 @@ export default function TripDetail() {
                         key={vessel.id}
                         vessel={vessel}
                         selected={selectedVessel?.id === vessel.id}
-                        onSelect={() => setSelectedVessel(vessel)}
+                        onSelect={() => { setSelectedVessel(vessel); setSelectedSession(""); }}
                       />
                     ))}
                   </div>
@@ -479,6 +492,48 @@ export default function TripDetail() {
                   >
                     Continue
                   </Button>
+                </div>
+              )}
+
+              {/* ── Step 2: Session Picker (learn trips only) ── */}
+              {isLearnTrip && hasVessels && step === sessionStep && (
+                <div className="space-y-4">
+                  {selectedVessel && (
+                    <div className="bg-primary/5 rounded-lg px-3 py-2 flex items-center gap-2 text-sm">
+                      <span className="font-medium text-foreground">{selectedVessel.name}</span>
+                      <span className="text-muted-foreground text-xs ml-auto">{selectedVessel.description}</span>
+                    </div>
+                  )}
+                  <div className="space-y-2">
+                    <p className="text-sm text-muted-foreground">
+                      {isSAISA ? "Select the semester for interscholastic sailing." : "Select which summer session works for your sailor."}
+                    </p>
+                    {sessionOptions.map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setSelectedSession(opt.value)}
+                        className={`w-full text-left rounded-lg border px-4 py-3 transition-colors ${
+                          selectedSession === opt.value
+                            ? "border-primary bg-primary/5 text-foreground"
+                            : "border-input bg-background hover:bg-muted/50"
+                        }`}
+                      >
+                        <div className="font-medium text-sm">{opt.label}</div>
+                        <div className="text-xs text-muted-foreground mt-0.5">{opt.sub}</div>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex gap-3">
+                    <Button variant="outline" className="flex-1" onClick={() => setStep(1)}>Back</Button>
+                    <Button
+                      className="flex-1"
+                      size="lg"
+                      disabled={!selectedSession}
+                      onClick={() => setStep(detailsStep)}
+                    >
+                      Continue
+                    </Button>
+                  </div>
                 </div>
               )}
 
@@ -649,7 +704,7 @@ export default function TripDetail() {
                     </div>
                   </div>
                   <div className="flex gap-3">
-                    <Button variant="outline" className="flex-1" onClick={() => setStep(isLearnTrip && hasVessels ? 1 : hasVessels ? 2 : 1)}>Back</Button>
+                    <Button variant="outline" className="flex-1" onClick={() => setStep(isLearnTrip && hasVessels ? sessionStep : hasVessels ? 2 : 1)}>Back</Button>
                     <Button className="flex-1" onClick={() => setStep(reviewStep)} disabled={!form.name || !form.email} data-testid="button-review">Review</Button>
                   </div>
                 </div>
@@ -662,7 +717,10 @@ export default function TripDetail() {
                     <div className="font-semibold mb-3">Booking Summary</div>
                     <div className="flex justify-between"><span className="text-muted-foreground">Program</span><span className="font-medium">{trip.name}</span></div>
                     {selectedVessel && (
-                      <div className="flex justify-between"><span className="text-muted-foreground">{isLearnTrip ? "Session / Track" : "Vessel"}</span><span className="font-medium">{selectedVessel.name}</span></div>
+                      <div className="flex justify-between"><span className="text-muted-foreground">Class</span><span className="font-medium">{selectedVessel.name}</span></div>
+                    )}
+                    {isLearnTrip && sessionLabel && (
+                      <div className="flex justify-between"><span className="text-muted-foreground">Session</span><span className="font-medium">{sessionLabel}</span></div>
                     )}
                     {!isLearnTrip && <div className="flex justify-between"><span className="text-muted-foreground">Date</span><span className="font-medium">{selectedDate}</span></div>}
                     {!isLearnTrip && <div className="flex justify-between"><span className="text-muted-foreground">Participants</span><span className="font-medium">{passengers}</span></div>}
