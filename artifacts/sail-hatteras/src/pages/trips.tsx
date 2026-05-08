@@ -13,53 +13,72 @@ const CATEGORIES = [
 ];
 
 function TripCard({ trip }: { trip: any }) {
-  return (
-    <Link href={`/trips/${trip.slug}`} className="group block h-full" data-testid={`link-trip-${trip.slug}`}>
-      <div className="bg-card rounded-xl overflow-hidden border border-border shadow-sm hover:shadow-md transition-all h-full flex flex-col hover-elevate">
-        <div className="aspect-[16/9] relative overflow-hidden bg-muted">
-          {trip.imageUrl ? (
-            <img src={trip.imageUrl} alt={trip.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
-              <Anchor className="h-12 w-12 text-primary/30" />
+  const cardInner = (
+    <div className={`bg-card rounded-xl overflow-hidden border border-border shadow-sm transition-all h-full flex flex-col ${trip.comingSoon ? "opacity-75" : "hover:shadow-md hover-elevate"}`}>
+      <div className="aspect-[16/9] relative overflow-hidden bg-muted">
+        {trip.imageUrl ? (
+          <img src={trip.imageUrl} alt={trip.name} className={`w-full h-full object-cover transition-transform duration-700 ${!trip.comingSoon ? "group-hover:scale-105" : ""}`} />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
+            <Anchor className="h-12 w-12 text-primary/30" />
+          </div>
+        )}
+        <div className="absolute top-4 left-4 flex gap-2">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-background/90 text-foreground backdrop-blur-sm shadow-sm capitalize">
+            {trip.type}
+          </span>
+          {trip.comingSoon && (
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500 text-white shadow-sm">
+              Coming Soon
+            </span>
+          )}
+        </div>
+      </div>
+      <div className="p-6 flex flex-col flex-1">
+        <div className="flex justify-between items-start mb-2 gap-3">
+          <h3 className={`font-serif text-xl font-bold text-foreground line-clamp-2 leading-snug ${!trip.comingSoon ? "group-hover:text-primary transition-colors" : ""}`}>{trip.name}</h3>
+          <div className="text-lg font-semibold text-primary shrink-0">{trip.priceDisplay}</div>
+        </div>
+        <p className="text-muted-foreground text-sm mb-4 line-clamp-3 flex-1">{trip.shortDescription}</p>
+        <div className="flex flex-col gap-2 mt-auto pt-4 border-t border-border text-sm text-muted-foreground">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <Clock className="h-4 w-4" />
+              <span>{trip.duration}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Users className="h-4 w-4" />
+              <span>Up to {trip.maxPassengers}</span>
+            </div>
+          </div>
+          {trip.slug === "kids-development-program" && (
+            <div className="flex items-center gap-1.5 text-xs text-primary font-medium bg-primary/8 rounded-lg px-3 py-2 mt-1">
+              <Heart className="h-3 w-3 fill-primary text-primary shrink-0" />
+              <span>Fees from $95 · HCS covers up to $2,402 per student</span>
             </div>
           )}
-          <div className="absolute top-4 left-4 flex gap-2">
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-background/90 text-foreground backdrop-blur-sm shadow-sm capitalize">
-              {trip.type}
-            </span>
-          </div>
-        </div>
-        <div className="p-6 flex flex-col flex-1">
-          <div className="flex justify-between items-start mb-2 gap-3">
-            <h3 className="font-serif text-xl font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">{trip.name}</h3>
-            <div className="text-lg font-semibold text-primary shrink-0">{trip.priceDisplay}</div>
-          </div>
-          <p className="text-muted-foreground text-sm mb-4 line-clamp-3 flex-1">{trip.shortDescription}</p>
-          <div className="flex flex-col gap-2 mt-auto pt-4 border-t border-border text-sm text-muted-foreground">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <Clock className="h-4 w-4" />
-                <span>{trip.duration}</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Users className="h-4 w-4" />
-                <span>Up to {trip.maxPassengers}</span>
-              </div>
+          {trip.comingSoon ? (
+            <div className="flex items-center gap-1 text-muted-foreground font-medium mt-1">
+              <span>Available soon — check back shortly</span>
             </div>
-            {trip.slug === "kids-development-program" && (
-              <div className="flex items-center gap-1.5 text-xs text-primary font-medium bg-primary/8 rounded-lg px-3 py-2 mt-1">
-                <Heart className="h-3 w-3 fill-primary text-primary shrink-0" />
-                <span>Fees from $95 · HCS covers up to $2,402 per student</span>
-              </div>
-            )}
+          ) : (
             <div className="flex items-center gap-1 text-primary font-medium mt-1">
               <span>Join this program</span>
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
             </div>
-          </div>
+          )}
         </div>
       </div>
+    </div>
+  );
+
+  if (trip.comingSoon) {
+    return <div className="block h-full cursor-default">{cardInner}</div>;
+  }
+
+  return (
+    <Link href={`/trips/${trip.slug}`} className="group block h-full" data-testid={`link-trip-${trip.slug}`}>
+      {cardInner}
     </Link>
   );
 }

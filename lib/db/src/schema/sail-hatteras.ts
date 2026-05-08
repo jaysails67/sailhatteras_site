@@ -29,6 +29,7 @@ export const shTripsTable = pgTable("sh_trips", {
   highlights: jsonb("highlights").notNull().$type<string[]>().default([]),
   imageUrl: text("image_url"),
   active: boolean("active").notNull().default(true),
+  comingSoon: boolean("coming_soon").notNull().default(false),
   sortOrder: integer("sort_order").notNull().default(0),
   stripePriceId: text("stripe_price_id"),
   createdAt: timestamp("created_at", { withTimezone: true })

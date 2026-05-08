@@ -48,6 +48,7 @@ function tripToApi(trip: typeof shTripsTable.$inferSelect) {
     highlights: (trip.highlights as string[]) ?? [],
     imageUrl: trip.imageUrl ?? null,
     active: trip.active,
+    comingSoon: trip.comingSoon ?? false,
     sortOrder: trip.sortOrder,
   };
 }
