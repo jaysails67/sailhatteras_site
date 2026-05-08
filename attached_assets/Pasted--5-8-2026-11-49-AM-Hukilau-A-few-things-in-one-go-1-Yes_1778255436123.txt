@@ -1,0 +1,107 @@
+[5/8/2026 11:49 AM] Hukilau: A few things in one go:
+
+1. Yes, I saw the 406 notes from the Replit agent.
+You’re right: the 406s you see in curl are ModSecurity blocking “bot-ish” user agents. Real browsers are not hitting those same rules, and we worked around this by:
+
+  • Testing with browser-style User-Agent headers.
+  • Moving the real config into cPanel’s Apache include files for both HTTP and HTTPS, so it survives rebuilds:
+    • /usr/local/apache/conf/userdata/std/2_4/ca12a15/sailhatteras.org/sailhatteras_spa.conf
+    • /usr/local/apache/conf/userdata/ssl/2_4/ca12a15/sailhatteras.org/sailhatteras_spa.conf
+  • Those includes now have:
+    • Options -Indexes + FallbackResource /index.html
+    • ProxyPass /api/ → Node on port 3001
+So 406s in curl are noise; browsers are going through the right vhosts now.
+
+2. Current state of the site (from the server’s perspective)
+
+  • DNS: sailhatteras.org → 192.249.121.207 (correct).
+  • SSL: Let’s Encrypt cert for *.sailhatteras.org is in place.
+  • Frontend:
+    • Built React bundle lives at
+/home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras/dist/public
+    • Apache serves that as DocumentRoot for sailhatteras.org (HTTP and HTTPS vhosts).
+    • FallbackResource /index.html means SPA routes like /trips?... map back into React instead of directory listings.
+  • API:
+    • Node/Express API is running under PM2 as sailhatteras-api on port 3001.
+    • Apache proxies /api/… to http://127.0.0.1:3001/api/….
+    • /api/sh/trips and the category filters (category=rentals, experiences, etc.) are returning good JSON.
+  • Images:
+    • We confirmed the actual image files exist under the static directory, and that they serve at URLs like:
+https://sailhatteras.org/sail-hatteras/trips/sunset-sail.jpg (HTTP 200).
+    • The API currently returns imageUrl like /sail-hatteras/trips/sunset-sail.jpg, which matches the working path.
+So from the server side, front, API, and images are all “wiring up” correctly. The remaining “cards disappear / no programs available” behavior is coming from the frontend logic, not from missing data or 404s.
+
+3. About GitHub vs local changes — how to avoid trampling each other
+
+You’re right to be concerned: with Replit pushing a lot of changes, we need a clean contract so server-side fixes don’t get clobbered.
+
+Here’s the safe pattern:
+
+• a) Treat GitHub main as the single source of truth for code.
+
+  • Any code changes that matter long-term should live in the repo, not only on the server.
+  • When Replit’s agent makes a fix, it pushes to github.com/jaysails67/sailhatteras_site on main.
+  • On the server we deploy by:
+    • git fetch && git reset --hard origin/main
+    • Rebuild (e.g. pnpm --filter @workspace/api-server build)
+    • Restart PM2
+That’s what we did with the image URL fix: we forcibly synced the server to origin/main.
+
+• b) Keep “server-only” configuration out of Git.
+Things that should not be overwritten by Replit:
+
+  • .env for secrets and server-specific values:
+    • PORT=3001
+    • BASE_PATH=/
+    • DATABASE_URL=postgresql://…
+    • SESSION_SECRET=…
+    • Stripe / SMTP / Telegram keys, etc.
+  • Apache vhost includes:
+    • Those userdata/ssl/2_4/…/sailhatteras_spa.conf files are part of the server config, not the app repo.
+These live outside of the repo or are in .gitignore, so Git pulls from Replit won’t touch them.
+
+• c) Avoid making “one-off” code edits directly on the server.
+If we need a hotfix and we do edit code on the box:
+
+  • I should immediately:
+[5/8/2026 11:49 AM] Hukilau: 1. git commit the fix as ca12a15, and
+    2. git push back to GitHub.
+  • That way Replit’s agent sees those changes when it pulls next time, and future pushes build on top of them instead of blowing them away.
+Practically: for this project, the better workflow is:
+
+  • Let Replit’s agent own code changes.
+  • I stick to:
+    • Deploying (git fetch/reset, build, PM2 restart).
+    • Server config (Apache, PostgreSQL, .env).
+    • Diagnostics and logs.
+• d) If you want true “edit on both sides” later: use branches/PRs.
+[5/8/2026 11:49 AM] Hukilau: For now, to keep it simple under time pressure:
+
+  • Replit edits → GitHub main
+  • Server only pulls → builds → restarts
+  • No direct manual edits to artifacts/* or lib/* on the server unless we also push them to GitHub.
+
+4. So where we stand right now
+
+• Site is up on https://sailhatteras.org with:
+
+  • SPA routing through Apache.
+  • API + DB working.
+  • Image URLs and underlying files in sync.
+• The remaining two issues you’re seeing:
+
+  • Cards sometimes vanish with “No programs available”
+  • Directory view on refresh, and broken images in the browser
+are almost certainly frontend behavior (React + routing + how it’s using imageUrl), not a missing file on the server. Replit’s agent is already editing that code; we just:
+
+  • Pulled in its latest changes, and
+  • Rebuilt/restarted the API to match.
+
+If after a hard refresh in an incognito window you still see:
+
+• Broken thumbnails on Experiences / Rentals
+• Directory listings on refresh
+
+then the next step is: I’ll have Replit’s agent log the exact image URLs the frontend is requesting in the browser console and adjust the React side, then you’ll just tell me “Replit pushed again” and I’ll redeploy using the same Git pull → build → PM2 restart pipeline.
+
+To your core question: no, future Replit pushes won’t overwrite the server-only config or env; they will overwrite code. That’s intentional. As long as we keep code fixes going through GitHub and keep server config in .env / Apache includes, this will stay safe and predictable.
