@@ -1,0 +1,99 @@
+[5/8/2026 1:36 PM] Hukilau: Short answer on “why are Images still missing on Experiences?”
+Because the API is still sending the wrong image URLs.
+
+• The browser is asking for: /sail-hatteras/trips/...
+• The actual files on disk are at: /trip-photos/...
+• Direct GET to https://sailhatteras.org/trip-photos/sunset-sail.jpg returns 200
+• But https://sailhatteras.org/api/sh/trips?category=experiences still returns imageUrl":"/sail-hatteras/trips/... for each trip
+
+So front‑end is healthy, images exist, Apache routing is fixed; the last bug is server code (or its mapping) still producing the old /sail-hatteras/trips/... paths.
+
+───
+
+Here’s a status summary you can paste to the Replit agent:
+
+Server status update from production (ded4680.inmotionhosting.com (http://ded4680.inmotionhosting.com/))
+
+1. Code + build
+
+• I’ve run:
+  • git fetch && git reset --hard origin/main
+  • pnpm --filter @workspace/api-server build
+  • PORT=8080 BASE_PATH=/ pnpm --filter @workspace/sail-hatteras build
+  • pm2 restart sailhatteras-api
+• PM2 process sailhatteras-api is online and listening on port 3001.
+
+2. Apache / SPA routing
+
+• HTTPS vhost for sailhatteras.org now uses WHM-safe includes:
+  • /usr/local/apache/conf/userdata/std/2_4/ca12a15/sailhatteras.org/sailhatteras_spa.conf
+  • /usr/local/apache/conf/userdata/ssl/2_4/ca12a15/sailhatteras.org/sailhatteras_spa.conf
+• Both include:<Directory /home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras/dist/public>
+  Options -Indexes
+  AllowOverride None
+  Require all granted
+  RewriteEngine On
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^ /index.html [L]
+</Directory>
+
+ProxyPreserveHost On
+ProxyPass /api/ http://127.0.0.1:3001/api/
+ProxyPassReverse /api/ http://127.0.0.1:3001/api/
+• Result: no more directory listing on /trips refresh; SPA routes hard-refresh correctly.
+
+3. Static assets
+
+• Frontend build output is at:
+  • /home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras/dist/public
+• Trip photos now live under:
+  • dist/public/trip-photos/*.jpg
+• Direct test:
+  • curl -I https://sailhatteras.org/trip-photos/sunset-sail.jpg → HTTP/2 200
+
+4. Database
+
+• Connected as the app user:PGPASSWORD='********' psql -U sailhatteras_app -h 127.0.0.1 -d sailhatteras
+• Ran the normalization:UPDATE sh_trips
+SET image_url = '/trip-photos/' || regexp_replace(image_url, '^.*/', '')
+WHERE image_url IS NOT NULL;
+SELECT slug, image_url FROM sh_trips ORDER BY id LIMIT 5;
+• Sample result from DB:
+  • sunset-sail        | /trip-photos/sunset-sail.jpg
+  • half-day-sail      | /trip-photos/half-day-charter.jpg
+
+5. API behavior (this is the remaining bug)
+
+• Hitting the live API:curl -s -H "User-Agent: Mozilla/5.0" \
+  "https://sailhatteras.org/api/sh/trips?category=experiences" | head
+• The JSON still contains:
+  • "imageUrl": "/sail-hatteras/trips/sunset-sail.jpg"
+  • "imageUrl": "/sail-hatteras/trips/half-day-charter.jpg"
+  • etc.
+• So:
+  • DB sh_trips.image_url now contains /trip-photos/... (confirmed via psql)
+  • API responses are still emitting /sail-hatteras/trips/...
+• That suggests:
+  • Either the API code is constructing imageUrl with a hardcoded /sail-hatteras/trips/ prefix or using a different column/field than sh_trips.image_url.
+  • Or there’s an in-process mapping function still rewriting back to /sail-hatteras/trips/....
+
+6. What the server agent needs from Replit code now
+
+• On the server side everything below is correct:
+[5/8/2026 1:36 PM] Hukilau:   • Apache SPA + /api proxy
+  • Node API on port 3001
+  • Static files under /trip-photos/*.jpg served with HTTP 200
+  • DB image_url normalized to /trip-photos/<filename>.jpg
+• The remaining issue is API JSON still returning imageUrl with /sail-hatteras/trips/..., which does not exist on disk and gets 406/404 due to ModSecurity and path mismatch.
+• Please:
+  • Verify the current sh.ts (or equivalent routes file) in origin/main uses the normalized DB column and returns /trip-photos/... (or uses BASE_PATH + /trip-photos/...), not /sail-hatteras/trips/....
+[5/8/2026 1:36 PM] Hukilau: • Once you push that change to GitHub, I’ll re-run:cd /home/ca12a15/sites/sailhatteras_site
+git fetch && git reset --hard origin/main
+pnpm --filter @workspace/api-server build
+PORT=8080 BASE_PATH=/ pnpm --filter @workspace/sail-hatteras build
+pm2 restart sailhatteras-api
+• After that, I’ll re-verify:
+  • curl -s https://sailhatteras.org/api/sh/trips?category=experiences shows imageUrl: "/trip-photos/...", and
+  • those URLs GET https://sailhatteras.org/trip-photos/... return HTTP 200.
+
+You can just copy-paste that block to Replit. I’ll stay synced to whatever they push to GitHub and handle the deploy/build steps so you’re not stuck in the middle.
