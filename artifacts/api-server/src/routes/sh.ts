@@ -441,7 +441,61 @@ router.post("/sh/contact", async (req, res) => {
     tripInterest: parsed.data.tripInterest ?? null,
   });
 
+  // Email notification
+  const smtpConfigured = process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS;
+  if (smtpConfigured) {
+    try {
+      const nodemailer = await import("nodemailer");
+      const smtpPort = Number(process.env.SMTP_PORT ?? 587);
+      const transporter = nodemailer.default.createTransport({
+        host: process.env.SMTP_HOST,
+        port: smtpPort,
+        secure: smtpPort === 465,
+        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+      });
+      const adminEmail = process.env.ADMIN_EMAIL || "info@sailhatteras.org";
+      await transporter.sendMail({
+        from: process.env.SMTP_USER,
+        to: adminEmail,
+        subject: `Contact Form: ${parsed.data.name}`,
+        text: [
+          `New contact form submission from sailhatteras.org`,
+          ``,
+          `Name:    ${parsed.data.name}`,
+          `Email:   ${parsed.data.email}`,
+          `Phone:   ${parsed.data.phone || "—"}`,
+          `Program interest: ${parsed.data.tripInterest || "—"}`,
+          ``,
+          `Message:`,
+          parsed.data.message,
+        ].join("\n"),
+      });
+    } catch (err) {
+      console.warn("Contact form email failed:", err);
+    }
+  }
+
   res.json({ ok: true });
+});
+
+// GET /sh/admin/contacts
+router.get("/sh/admin/contacts", async (_req, res) => {
+  const contacts = await db
+    .select()
+    .from(shContactsTable)
+    .orderBy(desc(shContactsTable.createdAt));
+
+  res.json(
+    contacts.map((c) => ({
+      id: c.id,
+      name: c.name,
+      email: c.email,
+      phone: c.phone,
+      message: c.message,
+      tripInterest: c.tripInterest,
+      createdAt: c.createdAt.toISOString(),
+    }))
+  );
 });
 
 // ─── Admin Routes ───────────────────────────────────────────

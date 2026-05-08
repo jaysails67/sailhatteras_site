@@ -96,11 +96,11 @@ function AdminDashboard() {
           <div className="font-semibold">View Public Site</div>
           <div className="text-sm text-muted-foreground">See the programs page</div>
         </a>
-        <a href="/sail-hatteras/contact" className="bg-card border border-border rounded-xl p-5 hover:border-primary/50 transition-colors group" target="_blank" rel="noopener noreferrer">
+        <Link href="/admin/contacts" className="bg-card border border-border rounded-xl p-5 hover:border-primary/50 transition-colors group">
           <Users className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors mb-3" />
           <div className="font-semibold">Contact Inquiries</div>
-          <div className="text-sm text-muted-foreground">View the contact page</div>
-        </a>
+          <div className="text-sm text-muted-foreground">View all contact form submissions</div>
+        </Link>
       </div>
     </div>
   );
