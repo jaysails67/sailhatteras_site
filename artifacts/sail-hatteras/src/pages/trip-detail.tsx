@@ -107,12 +107,23 @@ export default function TripDetail() {
 
   const checkout = useCreateShCheckout();
 
-  const totalSteps = hasVessels ? 4 : 3;
   const isLearnTrip = trip?.category === "learn";
   const vesselStepLabel = isLearnTrip ? "Choose Program" : "Choose Vessel";
-  const stepLabels = hasVessels
+  const totalSteps = isLearnTrip && hasVessels ? 3 : hasVessels ? 4 : 3;
+  const stepLabels = isLearnTrip && hasVessels
+    ? [vesselStepLabel, "Your Details", "Review"]
+    : hasVessels
     ? [vesselStepLabel, "Select Date", "Your Details", "Review"]
     : ["Select Date", "Your Details", "Review"];
+  const detailsStep = isLearnTrip && hasVessels ? 2 : hasVessels ? 3 : 2;
+  const reviewStep  = isLearnTrip && hasVessels ? 3 : hasVessels ? 4 : 3;
+
+  // For learn/session programs, derive booking date from selected vessel name
+  const learnDate = selectedVessel
+    ? selectedVessel.name.includes("Session 1") ? "2026-06-06"
+    : selectedVessel.name.includes("Session 2") ? "2026-07-18"
+    : "2026-06-06"
+    : "";
 
   const isFlat = trip?.pricingModel === "flat";
 
@@ -136,18 +147,19 @@ export default function TripDetail() {
       toast({ title: "Please fill in your name and email", variant: "destructive" });
       return;
     }
-    if (!selectedDate) {
+    if (!isLearnTrip && !selectedDate) {
       toast({ title: "Please select a date", variant: "destructive" });
       return;
     }
+    const bookingDateStr = isLearnTrip ? learnDate : selectedDate;
     checkout.mutate(
       {
         data: {
           tripSlug: trip!.slug,
-          bookingDate: new Date(selectedDate + "T12:00:00"),
-          vacationStart: vacationStart || undefined,
-          vacationEnd: vacationEnd || undefined,
-          passengers,
+          bookingDate: new Date(bookingDateStr + "T12:00:00"),
+          vacationStart: isLearnTrip ? undefined : vacationStart || undefined,
+          vacationEnd: isLearnTrip ? undefined : vacationEnd || undefined,
+          passengers: isLearnTrip ? 1 : passengers,
           customerName: form.name,
           customerEmail: form.email,
           customerPhone: form.phone || "",
@@ -470,8 +482,8 @@ export default function TripDetail() {
                 </div>
               )}
 
-              {/* ── Step: Date & Participants ── */}
-              {((!hasVessels && step === 1) || (hasVessels && step === 2)) && (
+              {/* ── Step: Date & Participants (not shown for learn/session trips) ── */}
+              {!isLearnTrip && ((!hasVessels && step === 1) || (hasVessels && step === 2)) && (
                 <div className="space-y-4">
                   {selectedVessel && (
                     <div className="bg-primary/5 rounded-lg px-3 py-2 flex items-center gap-2 text-sm">
@@ -609,14 +621,14 @@ export default function TripDetail() {
               )}
 
               {/* ── Step: Your Details ── */}
-              {((!hasVessels && step === 2) || (hasVessels && step === 3)) && (
+              {step === detailsStep && (
                 <div className="space-y-4">
                   <div className="bg-muted/50 rounded-lg px-4 py-3 text-sm space-y-1">
                     {selectedVessel && (
-                      <div className="flex justify-between"><span className="text-muted-foreground">Vessel</span><span className="font-medium">{selectedVessel.name}</span></div>
+                      <div className="flex justify-between"><span className="text-muted-foreground">{isLearnTrip ? "Program" : "Vessel"}</span><span className="font-medium">{selectedVessel.name}</span></div>
                     )}
-                    <div className="flex justify-between"><span className="text-muted-foreground">Date</span><span className="font-medium">{selectedDate}</span></div>
-                    <div className="flex justify-between"><span className="text-muted-foreground">Participants</span><span className="font-medium">{passengers}</span></div>
+                    {!isLearnTrip && <div className="flex justify-between"><span className="text-muted-foreground">Date</span><span className="font-medium">{selectedDate}</span></div>}
+                    {!isLearnTrip && <div className="flex justify-between"><span className="text-muted-foreground">Participants</span><span className="font-medium">{passengers}</span></div>}
                   </div>
                   <div className="space-y-3">
                     <div className="space-y-1.5">
@@ -637,23 +649,23 @@ export default function TripDetail() {
                     </div>
                   </div>
                   <div className="flex gap-3">
-                    <Button variant="outline" className="flex-1" onClick={() => setStep(hasVessels ? 2 : 1)}>Back</Button>
-                    <Button className="flex-1" onClick={() => setStep(hasVessels ? 4 : 3)} disabled={!form.name || !form.email} data-testid="button-review">Review</Button>
+                    <Button variant="outline" className="flex-1" onClick={() => setStep(isLearnTrip && hasVessels ? 1 : hasVessels ? 2 : 1)}>Back</Button>
+                    <Button className="flex-1" onClick={() => setStep(reviewStep)} disabled={!form.name || !form.email} data-testid="button-review">Review</Button>
                   </div>
                 </div>
               )}
 
               {/* ── Step: Review ── */}
-              {((!hasVessels && step === 3) || (hasVessels && step === 4)) && (
+              {step === reviewStep && (
                 <div className="space-y-5">
                   <div className="bg-muted/50 rounded-lg px-4 py-4 text-sm space-y-2">
                     <div className="font-semibold mb-3">Booking Summary</div>
                     <div className="flex justify-between"><span className="text-muted-foreground">Program</span><span className="font-medium">{trip.name}</span></div>
                     {selectedVessel && (
-                      <div className="flex justify-between"><span className="text-muted-foreground">Vessel</span><span className="font-medium">{selectedVessel.name}</span></div>
+                      <div className="flex justify-between"><span className="text-muted-foreground">{isLearnTrip ? "Session / Track" : "Vessel"}</span><span className="font-medium">{selectedVessel.name}</span></div>
                     )}
-                    <div className="flex justify-between"><span className="text-muted-foreground">Date</span><span className="font-medium">{selectedDate}</span></div>
-                    <div className="flex justify-between"><span className="text-muted-foreground">Participants</span><span className="font-medium">{passengers}</span></div>
+                    {!isLearnTrip && <div className="flex justify-between"><span className="text-muted-foreground">Date</span><span className="font-medium">{selectedDate}</span></div>}
+                    {!isLearnTrip && <div className="flex justify-between"><span className="text-muted-foreground">Participants</span><span className="font-medium">{passengers}</span></div>}
                     <Separator className="my-2" />
                     <div className="flex justify-between"><span className="text-muted-foreground">Name</span><span className="font-medium">{form.name}</span></div>
                     <div className="flex justify-between"><span className="text-muted-foreground">Email</span><span className="font-medium text-xs break-all">{form.email}</span></div>
@@ -661,10 +673,12 @@ export default function TripDetail() {
                     <Separator className="my-2" />
                     <div className="flex justify-between font-semibold text-base">
                       <span>Total</span>
-                      <span>${(totalCents / 100).toLocaleString("en-US", { minimumFractionDigits: 0 })}</span>
+                      <span>${(isLearnTrip ? effectivePriceCents : totalCents) / 100}</span>
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      {isFlat
+                      {isLearnTrip
+                        ? `${effectivePriceDisplay} · full 8-week session · 12 classes`
+                        : isFlat
                         ? `${effectivePriceDisplay} · private charter · up to ${selectedVessel?.capacity ?? trip.maxPassengers} guests`
                         : `${effectivePriceDisplay} × ${passengers} person${passengers > 1 ? "s" : ""}`}
                     </div>
@@ -673,7 +687,7 @@ export default function TripDetail() {
                     You will be taken to our secure Stripe checkout to complete your payment. Your program fee supports our 501(c)3 nonprofit mission.
                   </p>
                   <div className="flex gap-3">
-                    <Button variant="outline" className="flex-1" onClick={() => setStep(hasVessels ? 3 : 2)}>Back</Button>
+                    <Button variant="outline" className="flex-1" onClick={() => setStep(detailsStep)}>Back</Button>
                     <Button
                       className="flex-1"
                       onClick={handleCheckout}
