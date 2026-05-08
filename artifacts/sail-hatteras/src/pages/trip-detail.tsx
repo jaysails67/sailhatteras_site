@@ -508,6 +508,11 @@ export default function TripDetail() {
                     <p className="text-sm text-muted-foreground">
                       {isSAISA ? "Select the semester for interscholastic sailing." : "Select which summer session works for your sailor."}
                     </p>
+                    {isSAISA && (
+                      <div className="rounded-lg border border-primary/30 bg-primary/5 px-4 py-2.5 text-xs text-muted-foreground">
+                        <span className="font-semibold text-foreground">Payment plans available.</span> The $695 fee can be split into installments — contact us after enrolling to arrange a schedule.
+                      </div>
+                    )}
                     {sessionOptions.map(opt => (
                       <button
                         key={opt.value}
