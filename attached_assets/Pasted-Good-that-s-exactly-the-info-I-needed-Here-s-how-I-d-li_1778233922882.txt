@@ -1,0 +1,106 @@
+Good, that’s exactly the info I needed.
+
+Here’s how I’d like to set this up, and what I need from you.
+
+───
+
+Big picture
+
+• sailhatteras.org (http://sailhatteras.org/) will be a Node (React + Express + Postgres) app.
+• It will run on this server behind Apache as a reverse proxy.
+• hatterassailing.org (http://hatterassailing.org/) (WordPress) stays live for a while and simply links/announces the new site, then later we add 301 redirects, then finally retire it.
+
+Pointing the nameservers to ns1/ns2.inmotionhosting.com was step 1. Now the server needs:
+
+1. A proper cPanel/WHM domain entry (DNS + Apache vhost).
+2. The Node app deployed and running under PM2.
+3. Apache vhost updated to proxy sailhatteras.org (http://sailhatteras.org/) → Node port 8080.
+
+───
+
+Concrete setup plan
+
+Once I know which account to use, I’ll:
+
+1. Create the app directory & pull the code
+
+Under the owning cPanel user (example path):
+
+mkdir -p ~/sites/sailhatteras_site
+cd ~/sites/sailhatteras_site
+git clone https://github.com/jaysails67/sailhatteras_site.git .
+2. Install dependencies & build
+
+Using your instructions:
+
+npm install -g pnpm   # if not already installed
+pnpm install
+
+pnpm --filter @workspace/sail-hatteras build
+pnpm --filter @workspace/api-server build
+That should produce:
+
+  • Frontend: artifacts/sail-hatteras/dist/
+  • API: artifacts/api-server/dist/index.mjs
+3. Environment & database
+
+  • Ensure PostgreSQL is available and create a DB/user if needed.
+
+  • Set DATABASE_URL to point at that DB.
+
+  • Add the other required env vars (probably via an .env file or PM2 ecosystem file):
+
+    • STRIPE_SECRET_KEY
+    • STRIPE_WEBHOOK_SECRET
+    • SMTP_PASS
+    • TELEGRAM_BOT_TOKEN
+    • TELEGRAM_CHAT_ID
+4. Run the API via PM2
+
+Something like:
+
+cd ~/sites/sailhatteras_site
+pm2 start artifacts/api-server/dist/index.mjs --name sailhatteras-api
+pm2 save
+That keeps the app running and auto-restarts it on crashes/reboots.
+
+5. Wire Apache → Node (sailhatteras.org (http://sailhatteras.org/))
+
+  • In WHM/cPanel, make sure sailhatteras.org (http://sailhatteras.org/) is added as a domain and points to this account.
+
+  • Update its Apache vhost to:
+
+    • Load proxy and proxy_http modules (if not already).
+    • ProxyPass and ProxyPassReverse everything to http://127.0.0.1:8080/, where the Express app listens and serves both:
+      • the static React build
+      • the /api/* routes
+That way, https://sailhatteras.org just works like a normal site from the browser’s perspective.
+
+6. Migration flow from hatterassailing.org (http://hatterassailing.org/)
+
+  • Phase 1: Add a prominent banner/announcement on hatterassailing.org (http://hatterassailing.org/):
+    • “We’re moving to sailhatteras.org (http://sailhatteras.org/) — click here to visit the new site.”
+  • Phase 2: Once people are used to it, set up 301 redirects per-path from hatterassailing.org (http://hatterassailing.org/) → sailhatteras.org (http://sailhatteras.org/) (either via a WP plugin or .htaccess).
+  • Phase 3: When traffic is mostly gone, shut down WordPress and optionally point hatterassailing.org (http://hatterassailing.org/) to a simple “We’ve moved to sailhatteras.org (http://sailhatteras.org/)” static page or keep the 301s only.
+
+───
+
+What I need from you to proceed
+
+Answer these and I can start wiring this on the server:
+
+1. Which cPanel account owns hatterassailing.org (http://hatterassailing.org/)?
+
+  • Likely one of: ca12a15, n772627, or tier1adv.
+  • Do you want sailhatteras.org (http://sailhatteras.org/) under the same account as hatterassailing.org (http://hatterassailing.org/)? (That’s simplest.)
+2. PostgreSQL & secrets:
+
+  • Do you already have PostgreSQL running on this server, or is that new?
+  • Are the values for DATABASE_URL, Stripe keys, SMTP, and Telegram currently stored somewhere (e.g., in Replit env vars) that we can copy from?
+
+Once I know the cPanel username and confirm Postgres availability, I can:
+
+• create ~/sites/sailhatteras_site under that user,
+• clone + build the app there with pnpm,
+• set up PM2,
+• and then help you (or do it, if you want me to) adjust the Apache vhost for sailhatteras.org.
