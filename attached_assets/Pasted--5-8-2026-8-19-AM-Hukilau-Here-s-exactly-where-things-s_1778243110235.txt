@@ -1,0 +1,139 @@
+[5/8/2026 8:19 AM] Hukilau: Here’s exactly where things stand, and what’s left.
+
+1) PostgreSQL status
+
+Done:
+
+• PostgreSQL is installed and running locally:
+
+  • Service: postgresql.service (active, running)
+  • Version: psql (PostgreSQL) 10.23
+  • Data dir: /var/lib/pgsql/data
+  • Listening on: 127.0.0.200 and 127.0.0.1 port 5432
+• I created a dedicated DB and user for the app and imported your dump:
+
+  • Database: sailhatteras
+
+  • User: sailhatteras_app
+
+  • Password (please save this somewhere safe):
+
+    • gYi4HQwQqpE40bEyWkzvhDhw
+  • Import: sailhatteras_replit.sql is loaded; tables and data are present:
+
+    • contact_submissions (1 row)
+    • content_pages (16)
+    • investor_applications (2)
+    • posts (2)
+    • sh_trips (12)
+    • sh_vessels (14)
+    • team_members (3)
+    • users (4)
+    • etc.
+• There were a couple of version‑mismatch warnings (e.g. default_table_access_method), but the schema and data did import and the key tables are there.
+
+The database URL you can use for the app is:
+
+postgresql://sailhatteras_app:gYi4HQwQqpE40bEyWkzvhDhw@127.0.0.1:5432/sailhatteras
+
+───
+
+2) PM2 / Node app status
+
+Done:
+
+• As ca12a15, I installed the workspace dependencies with pnpm install.
+
+• Built the API server:
+
+  • pnpm --filter @workspace/api-server build
+  • Output is in artifacts/api-server/dist/index.mjs (built successfully).
+• Started the API server under PM2:
+
+  • Process: sailhatteras-api
+  • User: ca12a15
+  • Status: online
+  • Managed by PM2 and saved (pm2 save), so it will come back on reboot.
+
+Not done / partial:
+
+• The frontend build (@workspace/sail-hatteras) failed because the Vite config requires PORT at build time:
+
+  • Error: Error: PORT environment variable is required but was not provided.
+
+So: PM2 is set up and the API server is running.
+The React frontend build is pending on choosing/setting PORT.
+
+───
+
+3) Apache / sailhatteras.org (http://sailhatteras.org/) status
+
+Not done yet:
+
+• I have not changed Apache or WHM vhosts yet.
+• There is no reverse proxy in place from sailhatteras.org → the Node app yet.
+
+I paused here on purpose so we don’t:
+
+• Wire Apache to a port/app that isn’t fully configured
+• End up debugging both Node and Apache at the same time
+
+───
+
+4) Proposed next steps (step‑by‑step)
+
+If you’re okay with this, I’ll assume:
+
+• Node app will listen on PORT=8080
+• Apache will proxy sailhatteras.org → http://127.0.0.1:8080/
+
+Here’s what I’ll do next, in order:
+
+1. Create an env file for the app (as ca12a15):
+
+Something like /home/ca12a15/sites/sailhatteras_site/.env:
+
+PORT=8080
+DATABASE_URL=postgresql://sailhatteras_app:gYi4HQwQqpE40bEyWkzvhDhw@127.0.0.1:5432/sailhatteras
+
+# To be filled in by you:
+STRIPE_SECRET_KEY=...
+STRIPE_WEBHOOK_SECRET=...
+SMTP_PASS=...
+TELEGRAM_BOT_TOKEN=...
+TELEGRAM_CHAT_ID=...
+2. Rebuild the frontend with PORT set:
+
+cd /home/ca12a15/sites/sailhatteras_site
+PORT=8080 pnpm --filter @workspace/sail-hatteras build
+3. Confirm the API is still running cleanly under PM2.
+
+4. Add the Apache proxy for sailhatteras.org:
+
+Conceptually:
+
+<VirtualHost *:80>
+  ServerName sailhatteras.org
+  ServerAlias www.sailhatteras.org
+
+  ProxyPreserveHost On
+  ProxyPass / http://127.0.0.1:8080/
+  ProxyPassReverse / http://127.0.0.1:8080/
+</VirtualHost>
+[5/8/2026 8:19 AM] Hukilau: Implementation will depend a bit on how your WHM/Apache is set up (main vhost file vs Include Editor), but that’s the config we’re aiming for.
+
+───
+
+Direct answer to your question
+
+• PM2 setup: Yes – sailhatteras-api is running under PM2 as ca12a15.
+• Apache setup: Not yet – I deliberately held off until the PORT/env and frontend build are sorted.
+
+───
+
+If you’re okay with:
+
+• Using PORT=8080 for the Node app, and
+• That database URL / user I created,
+
+say “yes, go ahead with 8080 and that DB URL,” and I’ll push through the env file, frontend build, and then the Apache/vhost wiring next.
