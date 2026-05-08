@@ -1,0 +1,150 @@
+[5/8/2026 2:12 PM] Hukilau: Here’s a concise status summary you can paste back to the Replit agent.
+
+───
+
+SailHatteras.org (http://sailhatteras.org/) – Server Status (after af4c0fd deploy)
+
+Environment
+
+• Server: ded4680.inmotionhosting.com (http://ded4680.inmotionhosting.com/)
+• Project dir: /home/ca12a15/sites/sailhatteras_site
+• User running app: ca12a15
+• Node: v22.22.2
+• PM2 process: sailhatteras-api (online)
+• API port: 3001 (behind Apache proxy)
+• BASE_PATH for API: / (from .env)
+• Frontend build output:
+  • /home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras/dist/public
+  • Contains trip-photos/ image folder and all .jpg files.
+
+Apache / routing
+
+• SPA routing is using mod_rewrite via WHM-safe includes:
+
+/usr/local/apache/conf/userdata/std/2_4/ca12a15/sailhatteras.org/sailhatteras_spa.conf
+/usr/local/apache/conf/userdata/ssl/2_4/ca12a15/sailhatteras.org/sailhatteras_spa.conf
+
+Contents:
+
+<Directory /home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras/dist/public>
+  Options -Indexes
+  AllowOverride None
+  Require all granted
+  RewriteEngine On
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^ /index.html [L]
+</Directory>
+
+ProxyPreserveHost On
+ProxyPass /api/ http://127.0.0.1:3001/api/
+ProxyPassReverse /api/ http://127.0.0.1:3001/api/
+
+• Result:
+  • Hard-refresh on SPA routes no longer shows directories.
+  • /trip-photos/... URLs are served correctly.
+
+Static images
+
+• Direct image URL works:
+
+curl -ksI -H 'User-Agent: Mozilla/5.0' https://sailhatteras.org/trip-photos/sunset-sail.jpg | head -3
+# HTTP/2 200 OK (nginx), image/jpeg
+
+So the static asset side is correct: images are present in trip-photos/ and HTTP 200.
+
+Database
+
+We’ve run:
+
+UPDATE sh_trips
+SET image_url = '/trip-photos/' || regexp_replace(image_url, '^.*/', '')
+WHERE image_url IS NOT NULL;
+
+Confirm sample rows (from psql):
+
+slug               | image_url
+-------------------+-------------------------------
+sunset-sail        | /trip-photos/sunset-sail.jpg
+half-day-sail      | /trip-photos/half-day-charter.jpg
+full-day-sail      | /trip-photos/full-day-sail.jpg
+stiletto-x-charter | /trip-photos/stiletto-x-charter.jpg
+dolphin-tour       | /trip-photos/dolphin-tour.jpg
+
+API build & version
+
+Most recent steps run as ca12a15:
+
+git fetch origin
+git reset --hard origin/main   # HEAD at af4c0fd
+pnpm --filter @workspace/api-server build
+pm2 restart sailhatteras-api
+
+PM2 shows:
+
+name: sailhatteras-api
+status: online
+user: ca12a15
+
+Current API behavior (problem)
+
+Despite DB and static files being correct, the API is still emitting old paths:
+
+curl -ks -H 'User-Agent: Mozilla/5.0' \
+  'https://sailhatteras.org/api/sh/trips?category=experiences' \
+  | python3 -m json.tool | grep '"imageUrl"' | head -6
+
+"imageUrl": "/sail-hatteras/trips/sunset-sail.jpg",
+"imageUrl": "/sail-hatteras/trips/half-day-charter.jpg",
+"imageUrl": "/sail-hatteras/trips/large-group-flotilla.jpg",
+"imageUrl": "/sail-hatteras/trips/full-day-sail.jpg",
+"imageUrl": "/sail-hatteras/trips/dolphin-tour.jpg",
+"imageUrl": "/sail-hatteras/trips/stiletto-x-charter.jpg",
+
+So:
+
+• DB now has /trip-photos/<file>.jpg.
+• Static is served at /trip-photos/<file>.jpg.
+• But API response still shows /sail-hatteras/trips/... after building and restarting from af4c0fd.
+
+This is why:
+[5/8/2026 2:12 PM] Hukilau: • “All Programs” and “Experiences” still show broken images: the frontend is using imageUrl from the API, which points to /sail-hatteras/trips/... (returns 406/404), not /trip-photos/....
+
+Youth dev seed
+
+We ran:
+
+PGPASSWORD='[...]' psql -U sailhatteras_app -h 127.0.0.1 -d sailhatteras \
+  -f scripts/seed-youth-dev-vessels.sql
+
+# Output:
+# NOTICE: Youth dev vessels seeded: trip_id=8, vessels=[6, 7, 17, 18]
+# DO
+
+So the seed script executed successfully. I haven’t rerun the vessels endpoint check since the JSON verify failed earlier (see below).
+
+One more glitch: JSON verify command
+
+The verification command you suggested:
+
+curl -s "https://sailhatteras.org/api/sh/trips?category=experiences" | python3 -m json.tool
+[5/8/2026 2:12 PM] Hukilau: sometimes fails with JSONDecodeError in my scripted check, but direct curl output (no piping) is well‑formed JSON. That error looks like a transient or piping issue on my side, not a 500 from the API.
+
+───
+
+Short diagnosis for you
+
+• SPA routing and static image hosting are fixed.
+
+• The remaining issue is solely at the API serialization layer: imageUrl is still /sail-hatteras/trips/... instead of /trip-photos/..., even after:
+
+  • HEAD at af4c0fd
+  • pnpm --filter @workspace/api-server build
+  • pm2 restart sailhatteras-api
+
+If your normalizeImageUrl() change is in af4c0fd, it doesn’t appear to be reflected in the live API responses yet. It might still be reading a different imageUrl field than expected, or there’s a second transformation path that still prepends /sail-hatteras/trips/.
+
+───
+
+Very short reason for Jay
+
+Experiences images are still missing because the API is still sending image URLs like /sail-hatteras/trips/..., but the actual files now live at /trip-photos/.... The static files and Apache config are correct; the last missing piece is the API’s imageUrl normalization.
