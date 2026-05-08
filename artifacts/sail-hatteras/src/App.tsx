@@ -12,6 +12,7 @@ import BookingConfirmation from "@/pages/booking-confirmation";
 import Contact from "@/pages/contact";
 import About from "@/pages/about";
 import Privacy from "@/pages/privacy";
+import Payments from "@/pages/payments";
 import Admin from "@/pages/admin";
 import AdminBookings from "@/pages/admin-bookings";
 import NotFound from "@/pages/not-found";
@@ -31,6 +32,7 @@ function Router() {
           <Route path="/contact" component={Contact} />
           <Route path="/about" component={About} />
           <Route path="/privacy" component={Privacy} />
+          <Route path="/payments" component={Payments} />
           <Route path="/admin" component={Admin} />
           <Route path="/admin/bookings" component={AdminBookings} />
           <Route component={NotFound} />

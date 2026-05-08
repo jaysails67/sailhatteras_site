@@ -670,4 +670,136 @@ router.patch("/sh/admin/trips/:id", async (req, res) => {
   res.json(tripToApi(trip));
 });
 
+// POST /sh/enroll — interim enrollment request (no Stripe, pending_payment)
+router.post("/sh/enroll", async (req, res) => {
+  const parsed = CreateShCheckoutBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Invalid request body", details: parsed.error.issues });
+    return;
+  }
+
+  const {
+    tripSlug, bookingDate, passengers,
+    customerName, customerEmail, customerPhone,
+    specialRequests, vesselId, vesselName,
+  } = parsed.data;
+
+  const [trip] = await db
+    .select().from(shTripsTable)
+    .where(and(eq(shTripsTable.slug, tripSlug), eq(shTripsTable.active, true)))
+    .limit(1);
+
+  if (!trip) {
+    res.status(400).json({ error: "Trip not found or unavailable" });
+    return;
+  }
+
+  let priceCents = trip.priceMin;
+  if (vesselId) {
+    const [vessel] = await db.select().from(shVesselsTable)
+      .where(and(eq(shVesselsTable.id, vesselId), eq(shVesselsTable.active, true))).limit(1);
+    if (vessel) {
+      const [tv] = await db.select().from(shTripVesselsTable)
+        .where(and(eq(shTripVesselsTable.tripId, trip.id), eq(shTripVesselsTable.vesselId, vesselId))).limit(1);
+      priceCents = tv?.priceOverrideCents ?? vessel.priceCents;
+    }
+  }
+  const totalCents = trip.pricingModel === "flat" ? priceCents : priceCents * passengers;
+
+  const [booking] = await db.insert(shBookingsTable).values({
+    tripId: trip.id,
+    vesselId: vesselId ?? null,
+    vesselName: vesselName ?? null,
+    customerName,
+    customerEmail,
+    customerPhone,
+    bookingDate,
+    passengers,
+    totalCents,
+    status: "pending_payment",
+    specialRequests: specialRequests ?? null,
+  }).returning();
+
+  // Telegram notification
+  const { sendTelegramMessage } = await import("../lib/telegram");
+  sendTelegramMessage(
+    `📋 <b>New Enrollment Request</b>\n` +
+    `Program: ${trip.name}\n` +
+    `Class/Vessel: ${vesselName ?? "—"}\n` +
+    `Name: ${customerName}\n` +
+    `Email: ${customerEmail}\n` +
+    `Phone: ${customerPhone || "—"}\n` +
+    `Total: $${(totalCents / 100).toFixed(0)}\n` +
+    `Notes: ${specialRequests || "—"}`
+  );
+
+  // Email notifications
+  const smtpConfigured = process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS;
+  if (smtpConfigured) {
+    try {
+      const nodemailer = await import("nodemailer");
+      const smtpPort = Number(process.env.SMTP_PORT ?? 587);
+      const transporter = nodemailer.default.createTransport({
+        host: process.env.SMTP_HOST,
+        port: smtpPort,
+        secure: smtpPort === 465,
+        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+      });
+      const adminEmail = process.env.ADMIN_EMAIL || "info@sailhatteras.org";
+
+      // Admin notification
+      await transporter.sendMail({
+        from: process.env.SMTP_USER,
+        to: adminEmail,
+        subject: `Enrollment Request: ${customerName} — ${trip.name}`,
+        text: [
+          `New enrollment request received.`,
+          ``,
+          `Program: ${trip.name}`,
+          `Class/Track: ${vesselName ?? "—"}`,
+          ``,
+          `Name:  ${customerName}`,
+          `Email: ${customerEmail}`,
+          `Phone: ${customerPhone || "—"}`,
+          ``,
+          `Total Due: $${(totalCents / 100).toFixed(0)}`,
+          `Notes: ${specialRequests || "—"}`,
+          ``,
+          `Booking ID: ${booking.id}`,
+        ].join("\n"),
+      });
+
+      // Customer confirmation
+      await transporter.sendMail({
+        from: process.env.SMTP_USER,
+        to: customerEmail,
+        subject: `Enrollment Request Received — ${trip.name}`,
+        text: [
+          `Hi ${customerName},`,
+          ``,
+          `We've received your enrollment request for the ${trip.name}${vesselName ? ` (${vesselName})` : ""}.`,
+          ``,
+          `Your spot is not yet confirmed. We'll review availability and send you payment instructions within 24–48 hours.`,
+          ``,
+          `Payment options include:`,
+          `  • Cash or Check (payable to Hatteras Community Sailing)`,
+          `  • Zelle`,
+          `  • Venmo`,
+          ``,
+          `Details will be included in our follow-up email. Once payment is received your enrollment is confirmed.`,
+          ``,
+          `Questions? Reply to this email or visit sailhatteras.org/contact`,
+          ``,
+          `Thank you for supporting Hatteras Community Sailing!`,
+          `— The HCS Team`,
+        ].join("\n"),
+      });
+    } catch (err) {
+      logger.warn({ err }, "Failed to send enrollment email");
+    }
+  }
+
+  res.status(201).json({ bookingId: booking.id, message: "Enrollment request received" });
+});
+
 export default router;

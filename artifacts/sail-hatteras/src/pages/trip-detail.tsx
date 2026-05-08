@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useParams, useLocation } from "wouter";
 import {
   Clock, Users, Anchor, ArrowLeft, Check, Heart,
-  ChevronRight, AlertCircle, Loader2, Ship, Info
+  ChevronRight, AlertCircle, Loader2, Ship, Info, Mail
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useGetShTrip, useCreateShCheckout, useShTripVessels } from "@workspace/api-client-react";
+import { useGetShTrip, useShTripVessels, useCreateShEnrollment } from "@workspace/api-client-react";
 import type { ShVessel } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -105,8 +105,9 @@ export default function TripDetail() {
   const [vacationEnd, setVacationEnd] = useState("");
   const [passengers, setPassengers] = useState(2);
   const [form, setForm] = useState({ name: "", email: "", phone: "", notes: "" });
+  const [enrolled, setEnrolled] = useState(false);
 
-  const checkout = useCreateShCheckout();
+  const enroll = useCreateShEnrollment();
 
   const isLearnTrip = trip?.category === "learn";
   const isSAISA = selectedVessel?.name.toLowerCase().includes("saisa");
@@ -153,7 +154,7 @@ export default function TripDetail() {
     ? (typeof trip.highlights === "string" ? JSON.parse(trip.highlights) : trip.highlights)
     : [];
 
-  const handleCheckout = () => {
+  const handleEnroll = () => {
     if (!form.name || !form.email) {
       toast({ title: "Please fill in your name and email", variant: "destructive" });
       return;
@@ -163,13 +164,11 @@ export default function TripDetail() {
       return;
     }
     const bookingDateStr = isLearnTrip ? learnDate : selectedDate;
-    checkout.mutate(
+    enroll.mutate(
       {
         data: {
           tripSlug: trip!.slug,
           bookingDate: new Date(bookingDateStr + "T12:00:00"),
-          vacationStart: isLearnTrip ? undefined : vacationStart || undefined,
-          vacationEnd: isLearnTrip ? undefined : vacationEnd || undefined,
           passengers: isLearnTrip ? 1 : passengers,
           customerName: form.name,
           customerEmail: form.email,
@@ -179,18 +178,12 @@ export default function TripDetail() {
           vesselName: isLearnTrip && selectedVessel
             ? `${selectedVessel.name} — ${sessionLabel}`
             : selectedVessel?.name,
-        } as any,
+        },
       },
       {
-        onSuccess: (data: any) => {
-          if (data?.checkoutUrl) {
-            window.location.href = data.checkoutUrl;
-          } else {
-            toast({ title: "Checkout unavailable", description: "Please contact us directly to book.", variant: "destructive" });
-          }
-        },
+        onSuccess: () => setEnrolled(true),
         onError: () => {
-          toast({ title: "Booking error", description: "Something went wrong. Please try again or contact us.", variant: "destructive" });
+          toast({ title: "Submission error", description: "Something went wrong. Please try again or contact us.", variant: "destructive" });
         },
       }
     );
@@ -439,8 +432,34 @@ export default function TripDetail() {
             </div>
 
             <div className="p-6 space-y-5">
+              {/* ── Enrolled success state ── */}
+              {enrolled && (
+                <div className="space-y-4 text-center py-2">
+                  <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+                    <Check className="h-7 w-7 text-primary" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-foreground text-base">Request Received!</div>
+                    <div className="text-sm text-muted-foreground mt-1">
+                      We'll email <span className="font-medium text-foreground">{form.email}</span> with payment instructions within 24–48 hours if space is available.
+                    </div>
+                  </div>
+                  <div className="rounded-lg border bg-muted/50 px-4 py-3 text-xs text-left space-y-2">
+                    <div className="font-semibold text-foreground">We'll send payment options:</div>
+                    <div className="text-muted-foreground space-y-1">
+                      <div>· Cash or Check (payable to Hatteras Community Sailing)</div>
+                      <div>· Zelle</div>
+                      <div>· Venmo</div>
+                    </div>
+                  </div>
+                  <Link href="/payments" className="block text-xs text-primary hover:underline">
+                    View payment details →
+                  </Link>
+                </div>
+              )}
+
               {/* Step indicator */}
-              <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+              {!enrolled && <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                 {Array.from({ length: totalSteps }).map((_, i) => {
                   const s = i + 1;
                   const done = step > s;
@@ -461,10 +480,10 @@ export default function TripDetail() {
                   );
                 })}
                 <span className="ml-1">{stepLabels[step - 1]}</span>
-              </div>
+              </div>}
 
               {/* ── Step 1: Vessel Picker (only if vessels available) ── */}
-              {hasVessels && step === 1 && (
+              {!enrolled && hasVessels && step === 1 && (
                 <div className="space-y-3">
                   <p className="text-sm text-muted-foreground">
                     {isLearnTrip
@@ -496,7 +515,7 @@ export default function TripDetail() {
               )}
 
               {/* ── Step 2: Session Picker (learn trips only) ── */}
-              {isLearnTrip && hasVessels && step === sessionStep && (
+              {!enrolled && isLearnTrip && hasVessels && step === sessionStep && (
                 <div className="space-y-4">
                   {selectedVessel && (
                     <div className="bg-primary/5 rounded-lg px-3 py-2 flex items-center gap-2 text-sm">
@@ -543,7 +562,7 @@ export default function TripDetail() {
               )}
 
               {/* ── Step: Date & Participants (not shown for learn/session trips) ── */}
-              {!isLearnTrip && ((!hasVessels && step === 1) || (hasVessels && step === 2)) && (
+              {!enrolled && !isLearnTrip && ((!hasVessels && step === 1) || (hasVessels && step === 2)) && (
                 <div className="space-y-4">
                   {selectedVessel && (
                     <div className="bg-primary/5 rounded-lg px-3 py-2 flex items-center gap-2 text-sm">
@@ -681,7 +700,7 @@ export default function TripDetail() {
               )}
 
               {/* ── Step: Your Details ── */}
-              {step === detailsStep && (
+              {!enrolled && step === detailsStep && (
                 <div className="space-y-4">
                   <div className="bg-muted/50 rounded-lg px-4 py-3 text-sm space-y-1">
                     {selectedVessel && (
@@ -716,7 +735,7 @@ export default function TripDetail() {
               )}
 
               {/* ── Step: Review ── */}
-              {step === reviewStep && (
+              {!enrolled && step === reviewStep && (
                 <div className="space-y-5">
                   <div className="bg-muted/50 rounded-lg px-4 py-4 text-sm space-y-2">
                     <div className="font-semibold mb-3">Booking Summary</div>
@@ -746,19 +765,20 @@ export default function TripDetail() {
                         : `${effectivePriceDisplay} × ${passengers} person${passengers > 1 ? "s" : ""}`}
                     </div>
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    You will be taken to our secure Stripe checkout to complete your payment. Your program fee supports our 501(c)3 nonprofit mission.
-                  </p>
+                  <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-900 space-y-1">
+                    <div className="font-semibold">No payment due now.</div>
+                    <div>We'll email you payment instructions (Cash, Zelle, or Venmo) within 24–48 hours if space is available. <Link href="/payments" className="underline font-medium">Learn more →</Link></div>
+                  </div>
                   <div className="flex gap-3">
                     <Button variant="outline" className="flex-1" onClick={() => setStep(detailsStep)}>Back</Button>
                     <Button
                       className="flex-1"
-                      onClick={handleCheckout}
-                      disabled={checkout.isPending}
+                      onClick={handleEnroll}
+                      disabled={enroll.isPending}
                       data-testid="button-checkout"
                     >
-                      {checkout.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                      {checkout.isPending ? "Redirecting..." : "Complete Booking"}
+                      {enroll.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                      {enroll.isPending ? "Submitting..." : "Request Enrollment"}
                     </Button>
                   </div>
                 </div>
