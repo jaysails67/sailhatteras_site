@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict Q5Rhb0IMXjRF8rnXx2JVfGt1uqbggEkDO1S72LGdAWTe3bu1GBn34VMsPNTQH0V
+\restrict Jpr0hT74ZgSULkJOnzgCQnneAvmpI5LcAX3iMj40dtyFg1U91nMwmvNDr92AzYh
 
 -- Dumped from database version 16.10
 -- Dumped by pg_dump version 16.10
@@ -23,7 +23,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: contact_submissions; Type: TABLE; Schema: public; Owner: -
+-- Name: contact_submissions; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.contact_submissions (
@@ -35,8 +35,10 @@ CREATE TABLE public.contact_submissions (
 );
 
 
+ALTER TABLE public.contact_submissions OWNER TO postgres;
+
 --
--- Name: contact_submissions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: contact_submissions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.contact_submissions_id_seq
@@ -48,15 +50,17 @@ CREATE SEQUENCE public.contact_submissions_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.contact_submissions_id_seq OWNER TO postgres;
+
 --
--- Name: contact_submissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: contact_submissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.contact_submissions_id_seq OWNED BY public.contact_submissions.id;
 
 
 --
--- Name: content_pages; Type: TABLE; Schema: public; Owner: -
+-- Name: content_pages; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.content_pages (
@@ -69,8 +73,10 @@ CREATE TABLE public.content_pages (
 );
 
 
+ALTER TABLE public.content_pages OWNER TO postgres;
+
 --
--- Name: content_pages_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: content_pages_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.content_pages_id_seq
@@ -82,15 +88,17 @@ CREATE SEQUENCE public.content_pages_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.content_pages_id_seq OWNER TO postgres;
+
 --
--- Name: content_pages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: content_pages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.content_pages_id_seq OWNED BY public.content_pages.id;
 
 
 --
--- Name: investor_applications; Type: TABLE; Schema: public; Owner: -
+-- Name: investor_applications; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.investor_applications (
@@ -104,8 +112,10 @@ CREATE TABLE public.investor_applications (
 );
 
 
+ALTER TABLE public.investor_applications OWNER TO postgres;
+
 --
--- Name: investor_applications_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: investor_applications_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.investor_applications_id_seq
@@ -117,15 +127,17 @@ CREATE SEQUENCE public.investor_applications_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.investor_applications_id_seq OWNER TO postgres;
+
 --
--- Name: investor_applications_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: investor_applications_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.investor_applications_id_seq OWNED BY public.investor_applications.id;
 
 
 --
--- Name: posts; Type: TABLE; Schema: public; Owner: -
+-- Name: posts; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.posts (
@@ -141,8 +153,10 @@ CREATE TABLE public.posts (
 );
 
 
+ALTER TABLE public.posts OWNER TO postgres;
+
 --
--- Name: posts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: posts_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.posts_id_seq
@@ -154,15 +168,17 @@ CREATE SEQUENCE public.posts_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.posts_id_seq OWNER TO postgres;
+
 --
--- Name: posts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: posts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.posts_id_seq OWNED BY public.posts.id;
 
 
 --
--- Name: sh_availability; Type: TABLE; Schema: public; Owner: -
+-- Name: sh_availability; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.sh_availability (
@@ -175,8 +191,10 @@ CREATE TABLE public.sh_availability (
 );
 
 
+ALTER TABLE public.sh_availability OWNER TO postgres;
+
 --
--- Name: sh_availability_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: sh_availability_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.sh_availability_id_seq
@@ -188,15 +206,17 @@ CREATE SEQUENCE public.sh_availability_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.sh_availability_id_seq OWNER TO postgres;
+
 --
--- Name: sh_availability_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: sh_availability_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.sh_availability_id_seq OWNED BY public.sh_availability.id;
 
 
 --
--- Name: sh_bookings; Type: TABLE; Schema: public; Owner: -
+-- Name: sh_bookings; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.sh_bookings (
@@ -221,8 +241,10 @@ CREATE TABLE public.sh_bookings (
 );
 
 
+ALTER TABLE public.sh_bookings OWNER TO postgres;
+
 --
--- Name: sh_bookings_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: sh_bookings_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.sh_bookings_id_seq
@@ -234,15 +256,17 @@ CREATE SEQUENCE public.sh_bookings_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.sh_bookings_id_seq OWNER TO postgres;
+
 --
--- Name: sh_bookings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: sh_bookings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.sh_bookings_id_seq OWNED BY public.sh_bookings.id;
 
 
 --
--- Name: sh_contacts; Type: TABLE; Schema: public; Owner: -
+-- Name: sh_contacts; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.sh_contacts (
@@ -256,8 +280,10 @@ CREATE TABLE public.sh_contacts (
 );
 
 
+ALTER TABLE public.sh_contacts OWNER TO postgres;
+
 --
--- Name: sh_contacts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: sh_contacts_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.sh_contacts_id_seq
@@ -269,15 +295,17 @@ CREATE SEQUENCE public.sh_contacts_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.sh_contacts_id_seq OWNER TO postgres;
+
 --
--- Name: sh_contacts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: sh_contacts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.sh_contacts_id_seq OWNED BY public.sh_contacts.id;
 
 
 --
--- Name: sh_trip_vessels; Type: TABLE; Schema: public; Owner: -
+-- Name: sh_trip_vessels; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.sh_trip_vessels (
@@ -289,8 +317,10 @@ CREATE TABLE public.sh_trip_vessels (
 );
 
 
+ALTER TABLE public.sh_trip_vessels OWNER TO postgres;
+
 --
--- Name: sh_trip_vessels_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: sh_trip_vessels_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.sh_trip_vessels_id_seq
@@ -302,15 +332,17 @@ CREATE SEQUENCE public.sh_trip_vessels_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.sh_trip_vessels_id_seq OWNER TO postgres;
+
 --
--- Name: sh_trip_vessels_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: sh_trip_vessels_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.sh_trip_vessels_id_seq OWNED BY public.sh_trip_vessels.id;
 
 
 --
--- Name: sh_trips; Type: TABLE; Schema: public; Owner: -
+-- Name: sh_trips; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.sh_trips (
@@ -339,8 +371,10 @@ CREATE TABLE public.sh_trips (
 );
 
 
+ALTER TABLE public.sh_trips OWNER TO postgres;
+
 --
--- Name: sh_trips_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: sh_trips_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.sh_trips_id_seq
@@ -352,15 +386,17 @@ CREATE SEQUENCE public.sh_trips_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.sh_trips_id_seq OWNER TO postgres;
+
 --
--- Name: sh_trips_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: sh_trips_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.sh_trips_id_seq OWNED BY public.sh_trips.id;
 
 
 --
--- Name: sh_vessels; Type: TABLE; Schema: public; Owner: -
+-- Name: sh_vessels; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.sh_vessels (
@@ -377,8 +413,10 @@ CREATE TABLE public.sh_vessels (
 );
 
 
+ALTER TABLE public.sh_vessels OWNER TO postgres;
+
 --
--- Name: sh_vessels_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: sh_vessels_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.sh_vessels_id_seq
@@ -390,15 +428,17 @@ CREATE SEQUENCE public.sh_vessels_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.sh_vessels_id_seq OWNER TO postgres;
+
 --
--- Name: sh_vessels_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: sh_vessels_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.sh_vessels_id_seq OWNED BY public.sh_vessels.id;
 
 
 --
--- Name: team_members; Type: TABLE; Schema: public; Owner: -
+-- Name: team_members; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.team_members (
@@ -412,8 +452,10 @@ CREATE TABLE public.team_members (
 );
 
 
+ALTER TABLE public.team_members OWNER TO postgres;
+
 --
--- Name: team_members_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: team_members_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.team_members_id_seq
@@ -425,15 +467,17 @@ CREATE SEQUENCE public.team_members_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.team_members_id_seq OWNER TO postgres;
+
 --
--- Name: team_members_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: team_members_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.team_members_id_seq OWNED BY public.team_members.id;
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: -
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.users (
@@ -450,8 +494,10 @@ CREATE TABLE public.users (
 );
 
 
+ALTER TABLE public.users OWNER TO postgres;
+
 --
--- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.users_id_seq
@@ -463,15 +509,17 @@ CREATE SEQUENCE public.users_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
+
 --
--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- Name: waitlist; Type: TABLE; Schema: public; Owner: -
+-- Name: waitlist; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.waitlist (
@@ -483,8 +531,10 @@ CREATE TABLE public.waitlist (
 );
 
 
+ALTER TABLE public.waitlist OWNER TO postgres;
+
 --
--- Name: waitlist_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: waitlist_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.waitlist_id_seq
@@ -496,106 +546,108 @@ CREATE SEQUENCE public.waitlist_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.waitlist_id_seq OWNER TO postgres;
+
 --
--- Name: waitlist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: waitlist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.waitlist_id_seq OWNED BY public.waitlist.id;
 
 
 --
--- Name: contact_submissions id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: contact_submissions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.contact_submissions ALTER COLUMN id SET DEFAULT nextval('public.contact_submissions_id_seq'::regclass);
 
 
 --
--- Name: content_pages id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: content_pages id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.content_pages ALTER COLUMN id SET DEFAULT nextval('public.content_pages_id_seq'::regclass);
 
 
 --
--- Name: investor_applications id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: investor_applications id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.investor_applications ALTER COLUMN id SET DEFAULT nextval('public.investor_applications_id_seq'::regclass);
 
 
 --
--- Name: posts id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: posts id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.posts ALTER COLUMN id SET DEFAULT nextval('public.posts_id_seq'::regclass);
 
 
 --
--- Name: sh_availability id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: sh_availability id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sh_availability ALTER COLUMN id SET DEFAULT nextval('public.sh_availability_id_seq'::regclass);
 
 
 --
--- Name: sh_bookings id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: sh_bookings id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sh_bookings ALTER COLUMN id SET DEFAULT nextval('public.sh_bookings_id_seq'::regclass);
 
 
 --
--- Name: sh_contacts id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: sh_contacts id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sh_contacts ALTER COLUMN id SET DEFAULT nextval('public.sh_contacts_id_seq'::regclass);
 
 
 --
--- Name: sh_trip_vessels id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: sh_trip_vessels id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sh_trip_vessels ALTER COLUMN id SET DEFAULT nextval('public.sh_trip_vessels_id_seq'::regclass);
 
 
 --
--- Name: sh_trips id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: sh_trips id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sh_trips ALTER COLUMN id SET DEFAULT nextval('public.sh_trips_id_seq'::regclass);
 
 
 --
--- Name: sh_vessels id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: sh_vessels id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sh_vessels ALTER COLUMN id SET DEFAULT nextval('public.sh_vessels_id_seq'::regclass);
 
 
 --
--- Name: team_members id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: team_members id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.team_members ALTER COLUMN id SET DEFAULT nextval('public.team_members_id_seq'::regclass);
 
 
 --
--- Name: users id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
 
 
 --
--- Name: waitlist id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: waitlist id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.waitlist ALTER COLUMN id SET DEFAULT nextval('public.waitlist_id_seq'::regclass);
 
 
 --
--- Data for Name: contact_submissions; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: contact_submissions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.contact_submissions (id, name, email, message, created_at) FROM stdin;
@@ -604,7 +656,7 @@ COPY public.contact_submissions (id, name, email, message, created_at) FROM stdi
 
 
 --
--- Data for Name: content_pages; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: content_pages; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.content_pages (id, slug, title, content, meta_data, updated_at) FROM stdin;
@@ -628,7 +680,7 @@ COPY public.content_pages (id, slug, title, content, meta_data, updated_at) FROM
 
 
 --
--- Data for Name: investor_applications; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: investor_applications; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.investor_applications (id, user_id, status, nda_accepted_at, notes, created_at, updated_at) FROM stdin;
@@ -638,17 +690,17 @@ COPY public.investor_applications (id, user_id, status, nda_accepted_at, notes, 
 
 
 --
--- Data for Name: posts; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: posts; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.posts (id, title, excerpt, content, type, media_url, featured, published_at, created_at) FROM stdin;
 10	Lessons from the Albemarle Sound: How Phillips Boatworks Avoids the Harbor Towns Mistakes	A management analysis of the $15M Harbor Towns ferry project failure—covering infrastructure gaps, governance breakdowns, and mission drift—and the strategic safeguards Phillips Boatworks has built to prevent repeating those errors.	<h3>Overview of the Albemarle Sound Project</h3>\n  <p>The Harbor Towns Project was originally conceptualized as an ambitious economic development initiative to create a regional water ferry transportation system linking Inner Banks towns along the Albemarle Sound, including Elizabeth City, Edenton, Hertford, Plymouth, Columbia, and Kitty Hawk. The project received approximately $15 million in state appropriations to stimulate tourism and build waterfront infrastructure.</p>\n  <p>The non-profit managing the project, Harbor Towns Inc., purchased a paddlewheel dinner boat (the Albemarle Queen) and two high-speed passenger ferries. While the Albemarle Queen saw some success hosting local events and private cruises, the fast ferries intended to create the actual regional transit network failed to launch regular service. The high-speed ferries encountered severe mechanical and manufacturing problems, proved too expensive to operate, and were eventually put up for sale. Consequently, the project devolved into a scramble to reallocate remaining grant funds to unrelated local waterfront projects before state spending deadlines expired.</p>\n\n  <h3>Core Causes of Failure</h3>\n  <p>The failure of the Harbor Towns ferry system can be traced to several critical operational and managerial missteps:</p>\n  <p><strong>Complete Lack of Infrastructure Due Diligence:</strong> Project leaders purchased high-speed ferries without evaluating whether local infrastructure could support them. The vessels weighed 16.5 tons and burned 40 gallons of fuel per hour, but the region possessed no fueling infrastructure, no boat lift capable of holding them, and no master mechanic qualified to service them.</p>\n  <p><strong>Poor Procurement and Blind Assumptions:</strong> The ferries were built in western North Carolina by a manufacturer that lacked the expertise required for such specialized vessels. The project's treasurer admitted that leadership operated on the flawed assumption that brand-new boats would simply be reliable after a month of testing, bypassing rigorous operational readiness protocols.</p>\n  <p><strong>Governance and Accountability Issues:</strong> A $15 million public grant was managed by a non-profit with only four paid staff members. The organization faced intense public scrutiny and accusations of wasting taxpayer money after IRS filings revealed that board officers were paid over $200,000 across two years while reporting only one hour of work per week.</p>\n  <p><strong>Mission Drift and Distractions:</strong> When the original ferry network failed to materialize, leadership pivoted to spending the grant money on unrelated projects—bathroom reconstructions, historic house repairs, and lighting—simply to avoid returning the funds to the state. Additionally, town governments became bogged down in a contentious, years-long lawsuit over the relocation of a Confederate monument, which monopolized municipal focus and complicated waterfront development plans.</p>\n\n  <h3>Strategic Safeguards for Phillips Boatworks</h3>\n  <p>To assure prospective investors and public funding sources that Phillips Boatworks will not repeat these mistakes, our management team has built strategy around the following safeguards:</p>\n  <p><strong>Mandate Comprehensive Feasibility &amp; Infrastructure Studies:</strong> We will never acquire major capital assets without first conducting a rigorous, third-party assessment of supporting infrastructure—guaranteeing that maintenance, fueling, and specialized labor are available before any purchase is made.</p>\n  <p><strong>Implement Strict Procurement and Testing Standards:</strong> We thoroughly vet vendors for specific, proven expertise in the assets they manufacture and require extensive stress-testing, refusing to rely on assumptions of reliability.</p>\n  <p><strong>Establish Transparent Governance and Financial Controls:</strong> Our oversight structure includes an independent board with clear performance metrics, capped and fully transparent executive compensation, and regular public reporting—preventing the financial mismanagement that destroyed public trust in the Harbor Towns project.</p>\n  <p><strong>Commit to Scope Discipline:</strong> Funding is strictly ring-fenced for the original project scope. If the primary mission encounters roadblocks, we maintain a structured contingency plan rather than pivoting to unrelated spending to meet budget deadlines.</p>\n  <p><strong>Isolate Core Operations from Local Political Distractions:</strong> Our project management structure is insulated from unrelated local disputes through a dedicated, independent management team—ensuring that local political controversies cannot paralyze our operational timeline.</p>\n\n  <h3>Bibliographic Sources</h3>\n  <ol>\n  <li>Litwin, Kevin. "Elizabeth City, NC Puts Together a Diverse Economy." <em>Livability.com</em>, March 30, 2018.</li>\n  <li>Bradshaw, Katie, et al. "Water Transportation in the Albemarle Sound: Harbor Town Project." Presented to Professor Nicholas Didow, Kenan-Flagler Business School, University of North Carolina, March 26, 2018.</li>\n  <li>mtnmamaadventures. "Harbor Towns defends ferry pilot program as Edenton council OKs projects." <em>Albemarle Observer</em>, February 11, 2026.</li>\n  <li>Bowman-Layton, Nicole. "Harbor Towns races deadline to allocate grant funds; wants to redirect money to Barker House." <em>Albemarle Observer</em>, February 9, 2026.</li>\n  <li>"Hertford council adopts speed-limit ordinance, OKs $20,000 move for theatre study and hears Harbor Towns update." <em>Citizen Portal</em>, February 28, 2026.</li>\n  <li>Campbell, Colin. "Inner Banks tourism project kicks off with cruises, but new ferry service hits snags." <em>WUNC News</em>, October 1, 2025.</li>\n  <li>Layton, Miles. "Our View: The Lost Ferry Dream: Taxpayer Money Wasted." <em>Albemarle Observer</em>, February 16, 2026.</li>\n  <li>Perquimans County Board of Commissioners Meeting Minutes, February 7, 2022. Perquimans County.</li>\n  <li>Sussman, Jacob H. (Southern Coalition for Social Justice). <em>Verified Complaint and Motion for Preliminary Injunction: Rev. Dr. John Shannon, et al. vs. Town of Edenton, et al.</em> State of North Carolina, Chowan County Superior Court Division, January 3, 2025.</li>\n  </ol>	press_release	\N	f	2026-05-02 14:27:01.967749+00	2026-05-02 14:27:01.967749+00
-30	Vandemere Community Roundtable Explores Pamlico Sound Passenger Service with PamliEcoConnect	Vandemere Mayor Sandra Snipes and Pamlico Economic Development Director Beth Bucksot hosted the Annual Vandemere Community Roundtable on March 28, 2026 — inviting PamliEcoConnect to present a vision for electric passenger service connecting the Triangle to Ocracoke via the Pamlico Sound.	<p>On March 28, 2026, Vandemere Mayor <strong>Sandra Snipes</strong> and Pamlico County Economic Development Director <strong>Beth Bucksot</strong> hosted the Annual Vandemere Community Roundtable. PamliEcoConnect was invited by Director Bucksot following Vandemere's extensive feasibility study for a passenger route between Vandemere and Ocracoke.</p>\n\n<p>PamliEcoConnect CEO <strong>Jay Phillips</strong> and CFO <strong>John Elion</strong> attended the roundtable and presented the company's electric foiling vessel technology as a clean, quiet, and high-speed solution for the proposed crossing. Vandemere sits at an exceptional geographic position — a nearly ideal embarkation point for Triangle-area residents (a population of nearly 2 million) seeking weekend and week-long beach trips to the Outer Banks and Ocracoke Island via the Pamlico Sound.</p>\n\n<p>The presentation was well received by community members and local officials. PamliEcoConnect expects to continue working with Vandemere stakeholders as planning for a Blue Economy passenger corridor develops.</p>\n\n<h3>Presentations from the Roundtable</h3>\n<ul>\n  <li>\n    <strong>Audio Podcast Presentation</strong><br/>\n    <a href="https://drive.google.com/file/d/1dFmFx8udtVcVUU1f2mQWhWPIXxGOFvxH/viewlink" target="_blank" rel="noopener noreferrer">\n      Listen to the Vandemere–Ocracoke Blue Economy Corridor podcast presentation\n    </a>\n  </li>\n  <li>\n    <strong>Video Presentation</strong><br/>\n    <a href="https://app.heygen.com/videos/vandemere-ocracoke-buxton-a-blue-economy-corridor-21d3f5510b624dc0bbfc47789cd9cca0" target="_blank" rel="noopener noreferrer">\n      Watch the Vandemere–Ocracoke–Buxton: A Blue Economy Corridor video presentation\n    </a>\n  </li>\n</ul>	press_release	\N	t	2026-03-28 12:00:00+00	2026-05-08 09:40:16.844966+00
+32	Vandemere Community Roundtable Explores Pamlico Sound Passenger Service with PamliEcoConnect	Vandemere Mayor Sandra Snipes and Pamlico Economic Development Director Beth Bucksot hosted the Annual Vandemere Community Roundtable on March 28, 2026 — inviting PamliEcoConnect to present a vision for electric passenger service connecting the Triangle to Ocracoke via the Pamlico Sound.	<p>On March 28, 2026, Vandemere Mayor <strong>Sandra Snipes</strong> and Pamlico County Economic Development Director <strong>Beth Bucksot</strong> hosted the Annual Vandemere Community Roundtable. PamliEcoConnect was invited by Director Bucksot following Vandemere's extensive feasibility study for a passenger route between Vandemere and Ocracoke.</p>\n\n<p>PamliEcoConnect CEO <strong>Jay Phillips</strong> and CFO <strong>John Elion</strong> attended the roundtable and presented the company's electric foiling vessel technology as a clean, quiet, and high-speed solution for the proposed crossing. Vandemere sits at an exceptional geographic position — a nearly ideal embarkation point for Triangle-area residents (a population of nearly 2 million) seeking weekend and week-long beach trips to the Outer Banks and Ocracoke Island via the Pamlico Sound.</p>\n\n<p>The presentation was well received by community members and local officials. PamliEcoConnect expects to continue working with Vandemere stakeholders as planning for a Blue Economy passenger corridor develops.</p>\n\n<h3>Presentations from the Roundtable</h3>\n<ul>\n  <li>\n    <strong>Audio Podcast Presentation</strong><br/>\n    <a href="https://drive.google.com/file/d/1dFmFx8udtVcVUU1f2mQWhWPIXxGOFvxH/viewlink" target="_blank" rel="noopener noreferrer">\n      Listen to the Vandemere–Ocracoke Blue Economy Corridor podcast presentation\n    </a>\n  </li>\n  <li>\n    <strong>Video Presentation</strong><br/>\n    <a href="https://app.heygen.com/videos/vandemere-ocracoke-buxton-a-blue-economy-corridor-21d3f5510b624dc0bbfc47789cd9cca0" target="_blank" rel="noopener noreferrer">\n      Watch the Vandemere–Ocracoke–Buxton: A Blue Economy Corridor video presentation\n    </a>\n  </li>\n</ul>	press_release	\N	t	2026-03-28 12:00:00+00	2026-05-08 14:22:44.443193+00
 \.
 
 
 --
--- Data for Name: sh_availability; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: sh_availability; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.sh_availability (id, trip_id, date, available_slots, is_blocked, created_at) FROM stdin;
@@ -656,7 +708,7 @@ COPY public.sh_availability (id, trip_id, date, available_slots, is_blocked, cre
 
 
 --
--- Data for Name: sh_bookings; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: sh_bookings; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.sh_bookings (id, trip_id, customer_name, customer_email, customer_phone, booking_date, passengers, total_cents, status, special_requests, stripe_session_id, stripe_payment_intent_id, created_at, updated_at, vessel_id, vessel_name, vacation_start, vacation_end) FROM stdin;
@@ -664,7 +716,7 @@ COPY public.sh_bookings (id, trip_id, customer_name, customer_email, customer_ph
 
 
 --
--- Data for Name: sh_contacts; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: sh_contacts; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.sh_contacts (id, name, email, phone, message, trip_interest, created_at) FROM stdin;
@@ -672,7 +724,7 @@ COPY public.sh_contacts (id, name, email, phone, message, trip_interest, created
 
 
 --
--- Data for Name: sh_trip_vessels; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: sh_trip_vessels; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.sh_trip_vessels (id, trip_id, vessel_id, price_override_cents, active) FROM stdin;
@@ -718,27 +770,27 @@ COPY public.sh_trip_vessels (id, trip_id, vessel_id, price_override_cents, activ
 
 
 --
--- Data for Name: sh_trips; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: sh_trips; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.sh_trips (id, slug, name, category, type, short_description, description, duration, price_min, price_display, pricing_note, max_passengers, boat, highlights, image_url, active, sort_order, stripe_price_id, created_at, updated_at, pricing_model, coming_soon) FROM stdin;
-1	sunset-sail	Sunset Sail	experiences	charter	Sunsets over the Pamlico are magic on Hatteras Island. This is our most popular cruise — book as soon as you have your rental house dates. A portion of every charter directly funds free youth sailing programs on Hatteras Island.	Sunsets over Pamlico Sound are among the most photographed moments on the Outer Banks — and you're going to watch one from the deck of a catamaran.\n\nHatteras Community Sailing's Sunset Sail is our most popular community charter. We depart from Buxton Harbor as the light begins to soften, sailing west across the Sound while Hatteras Island glows behind you. Activities include sailing, photography, relaxing, and complimentary drinks as the sky does its thing.\n\nDuration: 2 hours. Runs nightly, weather permitting. If conditions are not favorable on your reserved evening, we will work to find another time during your stay — or refund your deposit if we cannot make it happen.\n\n**What's Included**\n- **Licensed USCG captain** — experienced, local, and knows the Sound\n- **Junior sailor mate** — crew support aboard (works for tips, always appreciated)\n- **Cooler with ice** — bring your own drinks and snacks\n- **Porta-pot or marine head** — vessel equipped for comfort\n- **Bluetooth speaker** — your playlist, your sail\n- **Chloe** — Capt. Jay's golden retriever; first come, first served\n\nAs with all Hatteras Community Sailing programs, your charter fee directly supports free and reduced-cost youth sailing for Hatteras Island kids.	2.5 hours	39500	$395–$595	Community program fee: $395. Fees support our 501(c)3 mission. Up to 6 participants. Private group program.	6	Stiletto 27 Catamaran	["Licensed USCG captain aboard", "Junior sailor mate (works for tips)", "Cooler stocked with ice", "Porta-pot or marine head aboard", "Bluetooth music", "Chloe the golden retriever (with Capt. Jay, first come first served)", "Pamlico Sound sunset cruise", "Complimentary drinks", "Private charter — just your group", "Photography-worthy light every evening", "2-hour sail, weather permitting"]	/sail-hatteras/trips/sunset-sail.jpg	t	10	\N	2026-05-07 15:37:29.275303+00	2026-05-07 15:37:29.275303+00	flat	f
-8	kids-development-program	Local Youth Development Program	learn	lesson	Introduction camps are just the first step. Our year-round development program is for youth who love the water and want to keep growing — session by session, season by season.	The Local Youth Development Program is Hatteras Community Sailing's core youth pathway — structured around Optimist and Collegiate 420 sailing, with 12 classes per session, scheduled weather-dependently to get the best possible time on the water.\n\n  **Sailing Littles — Ages 6 to 9**\n  Introduction to sailing on Optimist dinghies. Young sailors learn the fundamentals: how a sailboat works, points of sail, basic boat handling, and water confidence. The focus is fun first — getting kids comfortable and in love with being on the water before technique takes over.\n\n  **Opti Green Fleet Competition — Ages 9 to 13**\n  Sailors who've outgrown the intro level move into structured Optimist racing. Green Fleet introduces race starts, mark rounding, tactics, and the competitive side of the sport. These are the kids who come back every year.\n\n  **Collegiate 420 Sailing — Ages 12 to 18**\n  The step up to a two-person high-performance dinghy. C420 sailing introduces teamwork, crew communication, upwind and downwind technique, and the kind of boat speed that only comes from repetition. Many of our 420 sailors go on to sail in college.\n\n  **SAISA High School Interscholastic Sailing — Grades 8 to 12**\n  Spring and fall competitive seasons with the Southern Atlantic Interscholastic Sailing Association. Student-athletes represent Hatteras Community Sailing in regional competition against high school programs across the Carolinas and beyond.\n\n  ---\n  Sessions run 12 classes, scheduled weather-dependently. Scholarships and fully subsidized spots available for local youth — no child is turned away for inability to pay. Program fees from paying participants directly fund free placements.	Per session (half day)	20000	$95–$695 / ~8 weeks	Community program fee: $200/session. Full and partial scholarships available for Hatteras community youth. Contact us. Minimum 4 participants per session.	8	Optimist fleet / Collegiate 420s	["Training boats supplied by Hatteras Community Sailing", "Certified coaching and instruction", "Coach and safety boats on the water", "On-water course marks", "Certificate of completion", "Interactive sailing log (online)", "Life vest provided", "Course materials", "2 regattas per session recommended"]	/sail-hatteras/trips/kids-development-program.jpg	t	40	\N	2026-05-07 15:37:40.968044+00	2026-05-07 15:37:40.968044+00	per_person	f
-9	visitor-intensive	Cape Explorers Camp	learn	lesson	Don't let your child mope around on vacation mornings. Get them out on the water learning to be masters of the ocean — at our Cape Explorers Camp. Your program fee also funds free sailing for local Hatteras Island youth.	Your family is on the Outer Banks — one of the most spectacular stretches of coastline in the country, surrounded by water on every side. Cape Explorers Camp puts your kid in it.\n\n  Every morning session puts young visitors on the water with our instructors, learning real skills in a real ocean environment: boat handling, navigation basics, reading wind and weather, and the kind of confidence that only comes from actually doing it. By Friday, they are not tourists anymore. They are Cape explorers.\n\n  Week-long program, Monday through Friday, morning sessions. Ages 8–16. All experience levels welcome — no prior sailing knowledge required. Limited spots available each week.\n\n  Here's something worth knowing: your program fee does double duty. Hatteras Community Sailing is a 501(c)3 nonprofit, and every dollar from visiting families directly subsidizes free spots for local Hatteras Island youth who otherwise couldn't access this kind of instruction.	Half day (4-5 hours)	50000	$500 / child	$500 per child for the full week morning program (Mon–Fri). Ages 8–16. All skill levels welcome. Spots are limited — book early.	10	Collegiate 420s	["Ages 8–16, all experience levels", "Monday–Friday morning program", "Boat handling and navigation basics", "Sailing certification included", "Your fee funds a local kid's spot"]	/sail-hatteras/trips/cape-explorers-camp.jpg	t	55	\N	2026-05-07 15:37:42.445717+00	2026-05-07 15:37:42.445717+00	per_person	f
-10	beach-cat-rental	Beach Cat Rental	rentals	rental	Low-cost beach cat rental for qualified community sailors — making independent sailing accessible and sustainable on Pamlico Sound.	Hatteras Community Sailing rents beach catamarans to qualified sailors on Pamlico Sound at rates well below what a commercial operator would charge — because access is part of our mission.\n\n  Available boats: Hobie 16, Hobie 18, and Collegiate 420. A skills checkout is required on your first rental of each class — call ahead or stop by to get on the calendar. We have wind limits by class and conditions, and we'll be straight with you about whether the day is right for it.\n\n  Not sure if you're ready? Start with our Beach Cat Sailing Lesson. Complete it and you're approved to rent with no additional checkout.\n\n  Rental fees support fleet maintenance, insurance, and the operational costs that make all Hatteras Community Sailing programs possible.	4 hours base (additional hours available)	20000	$200 / 4 hrs	Community program fee: $200/4 hours. $50/additional hour. One-time $50 checkout fee for new renters. Fees support fleet sustainability.	2	Hobie 16 or Hobie 18	["Hobie 16, Hobie 18, and C420 available", "Skills checkout on first rental of each class", "Call ahead to confirm conditions and availability", "Lesson completion = instant rental approval", "Extended half-day and full-day rentals"]	/sail-hatteras/trips/beach-cat-rental.jpg	t	60	\N	2026-05-07 15:37:44.208865+00	2026-05-07 15:37:44.208865+00	flat	f
-5	dolphin-tour	Dolphin & Wildlife Tour	experiences	tour	Learn about dolphins, tides, inlets, and barrier islands right in Hatteras Inlet. A portion of every tour directly funds free youth sailing programs on Hatteras Island.	Pamlico Sound and Hatteras Inlet are home to a resident population of Atlantic bottlenose dolphins — and we know where to find them.\n\nThis tour is part adventure, part environmental education. Your guide shares what we know about local dolphin behavior, Sound ecology, tidal dynamics, and the unique geography of the Hatteras Inlet system — one of the most active and ever-changing inlets on the East Coast. There is no better classroom than the water itself.\n\nIdeal for families, curious visitors, and anyone who wants to understand this place a little more deeply before they leave it.\n\n**What's Included**\n- **Licensed USCG captain** — experienced, local, and knows the Sound\n- **Junior sailor mate** — crew support aboard (works for tips, always appreciated)\n- **Cooler with ice** — bring your own drinks and snacks\n- **Porta-pot or marine head** — vessel equipped for comfort\n- **Bluetooth speaker** — your playlist, your sail\n- **Chloe** — Capt. Jay's golden retriever; first come, first served\n\nProgram fees support Hatteras Community Sailing's broader 501(c)3 mission: free youth sailing and environmental education on the Outer Banks.	2 hours	32500	$325–$595	Community program fee: $325. Fees support our 501(c)3 environmental education and community sailing mission. Up to 8 participants.	8	Zodiac RIB	["Licensed USCG captain aboard", "Junior sailor mate (works for tips)", "Cooler stocked with ice", "Porta-pot or marine head aboard", "Bluetooth music", "Chloe the golden retriever (with Capt. Jay, first come first served)", "Resident bottlenose dolphin population", "Hatteras Inlet ecology and tidal dynamics", "Environmental education component", "Suitable for all ages", "Small group for close approach"]	/sail-hatteras/trips/dolphin-tour.jpg	t	75	\N	2026-05-07 15:37:35.026852+00	2026-05-07 15:37:35.026852+00	flat	f
-3	full-day-sail	Full Day Sail	experiences	charter	A full day of relaxation on the water. 'nuff said. A portion of every charter directly funds free youth sailing programs on Hatteras Island.	A full day on the water is its own kind of vacation. No schedule, no deadlines — just the Sound, the wind, and wherever the day takes you.\n\nPopular destinations for our Full Day Sail include Ocracoke Island, the ruins of Diamond City, and the remote barrier islands of the Sound's outer edge. We've also been known to drift through Hatteras Inlet and out toward the blue water just because conditions were right. Bring a cooler, bring lunch, and know that wherever we end up, you'll be glad you spent the day this way.\n\n**What's Included**\n- **Licensed USCG captain** — experienced, local, and knows the Sound\n- **Junior sailor mate** — crew support aboard (works for tips, always appreciated)\n- **Cooler with ice** — bring your own drinks and snacks\n- **Porta-pot or marine head** — vessel equipped for comfort\n- **Bluetooth speaker** — your playlist, your sail\n- **Lunch stop and fuel** — included for the full day\n- **Chloe** — Capt. Jay's golden retriever; first come, first served\n\nHatteras Community Sailing is a 501(c)3 nonprofit. Your full-day participation is the single largest contribution a visitor can make to our mission — every dollar supports free youth sailing and community instruction on the Outer Banks.	8 hours	99500	$995–$2,495	Community program fee: $1,400. Fees fund our 501(c)3 youth and community programs. Lunch and fuel included. Up to 6 participants.	6	Stiletto 27 Catamaran	["Licensed USCG captain aboard", "Junior sailor mate (works for tips)", "Cooler stocked with ice", "Porta-pot or marine head aboard", "Bluetooth music", "Chloe the golden retriever (with Capt. Jay, first come first served)", "Ocracoke or Diamond City day trip option", "Lunch stop and fuel included", "Private charter", "Hatteras Inlet and open Sound access", "Most impactful way to support our mission"]	/sail-hatteras/trips/full-day-sail.jpg	t	70	\N	2026-05-07 15:37:32.307305+00	2026-05-07 15:37:32.307305+00	flat	f
-7	beach-cat-lesson	Beach Cat Sailing Lesson	learn	lesson	Beach cat sailing is the fastest, most exciting sailing you can find — wet, wild, and a whole lot more fun with real training. Get certified to rent our beach cats, no questions asked.	Beach cat sailing is in a category of its own. These are fast, powerful multihull boats that fly a hull in big gusts and drench you in spray on every tack. They're not difficult to sail well — but there's a right way to do it, and learning that way makes all the difference between a great time and a swim.\n\n  Our Beach Cat Sailing Lesson is a half-day hands-on session on Pamlico Sound. You'll rig, launch, and sail a beach catamaran with one of our US Sailing certified instructors — covering points of sail, tacking and jibing, capsize recovery, and the finer points of beach cat handling in real wind and chop.\n\n  Complete the lesson and you're certified to rent our beach cats independently — no extra paperwork, no questions asked. It's the fastest path from curious to on the water on your own.\n\n  $300 per half-day session. Group rates available.	4 hours	30000	$300 / half day	Community program fee: $300 / half day. Includes beach cat certification — complete the lesson and rent our cats independently, no extra steps. Fees support our 501(c)3 mission.	2	Hobie 16 or Hobie 18	["US Sailing certified instruction", "Capsize recovery included", "Protected Sound sailing conditions", "Certifies you for independent beach cat rental", "Group rates available"]	/sail-hatteras/trips/beach-cat-lesson.jpg	t	45	\N	2026-05-07 15:37:39.34882+00	2026-05-07 15:37:39.34882+00	flat	f
-12	adult-sailing-program	Adult Learn to Sail	learn	lesson	A structured 4-week sailing course for adults on Pamlico Sound. Two morning sessions per week — learn seamanship, boat handling, and the points of sail from certified instructors.	Hatteras Community Sailing's Adult Learn to Sail program is designed for complete beginners and returning sailors alike. Over four weeks, you will develop real sailing competency on the waters of Pamlico Sound — one of the finest sailing venues on the East Coast.\n\n**Program Format**\nTwo morning sessions per week for four weeks — eight sessions total. Each class runs approximately 3 hours, scheduled in the morning to take advantage of the Sound's best sailing winds.\n\n**Three Summer Sessions Available**\nSessions run in June, July, and August. Space is limited to 6 adults per session to ensure personalized instruction and maximum time at the helm.\n\n**What You Will Learn**\nWe cover everything from first principles: how a sailboat works, points of sail, tacking and gybing, sail trim, basic navigation, and safe boat handling. By the end of the program, you will be able to skipper a small sailboat independently.\n\n**Our Instructors**\nHCS instructors are US Sailing certified coaches with deep roots in the Hatteras sailing community. Small class sizes mean you get real feedback every session, not just observation from the dock.\n\n---\n\nThis program supports Hatteras Community Sailing's 501(c)3 mission. Member discounts available — ask us about HCS membership.	2 hrs · 2 mornings/week · 4 weeks	25000	$250 / session	Non-member pricing. HCS members receive a discount — membership details coming soon.	6	Collegiate 420s	["US Sailing certified instruction", "All sailing equipment provided", "Life vest included", "Maximum 6 students per session", "Morning sessions on Pamlico Sound", "Certificate of completion", "Skipper independently by end of program", "3 summer sessions: June, July, August"]	/sail-hatteras/trips/adult-sailing-program.jpg	t	15	\N	2026-05-08 00:00:52.123363+00	2026-05-08 00:00:52.123363+00	per_person	f
-11	skiff-rental	Skiff Rental	rentals	rental	High-performance sailing access for experienced community sailors — the American 19 on Pamlico Sound.	For experienced one-design and high-performance dinghy sailors, the American 19 skiff is the most demanding boat in the Hatteras Community Sailing fleet — and the most rewarding to sail well.\n\n  This is not a boat for the casual or rusty sailor. Experience verification is required before checkout, and we'll have an honest conversation with you about conditions before you go out. Pamlico Sound can be deceptively technical, and the American 19 demands respect.\n\n  If you've got the skills and want a genuine performance sailing session on the Sound, this is it. Rental fees support Hatteras Community Sailing's 501(c)3 mission and fleet operations.	2-hour minimum	10000	$100 / hr	Community program fee: $100/hr. 2-hour minimum. Fuel surcharge and refundable damage deposit required.	2	American 19 Skiff	["High-performance one-design skiff", "Experienced sailors only", "Experience verification required", "2-hour minimum, extended rentals available", "Fuel surcharge and deposit apply"]	/sail-hatteras/trips/skiff-rental.jpg	t	65	\N	2026-05-07 15:37:45.570263+00	2026-05-07 15:37:45.570263+00	flat	t
-4	stiletto-x-charter	Stiletto X Charter	experiences	charter	Sailing these boats since he was a boy, Capt. Jay went on to develop and build the new Stiletto X Series — and here it is. Charter it for a sunset, half day, or full day. Love it? It's for sale, or he can build you one. A portion of every charter directly funds free youth sailing programs on Hatteras Island.	Capt. Jay grew up sailing Stilettos on Hatteras Island. He went on to design, develop, and build the new Stiletto X Series — a complete reimagining of the iconic beach cat for the modern era. The boat you're chartering is one he built himself.\n\nThe Stiletto X is the highest-performance vessel in the Hatteras Community Sailing fleet. It's faster, more capable, and a more visceral sailing experience than anything else on the Sound. Available for sunset sails, half-day charters, and full-day adventures — at the Stiletto X price point.\n\nAnd yes — if you fall in love with it, it's for sale. Or Capt. Jay can build you one.\n\n**What's Included**\n- **Capt. Jay at the helm** — the man who built the boat\n- **Junior sailor mate** — crew support aboard (works for tips, always appreciated)\n- **Cooler with ice** — bring your own drinks and snacks\n- **Porta-pot or marine head** — vessel equipped for comfort\n- **Bluetooth speaker** — your playlist, your sail\n- **Chloe** — she sails with Capt. Jay; first come, first served\n\nCharter fees support Hatteras Community Sailing's 501(c)3 mission: free and reduced-cost youth sailing for Hatteras Island kids.	Half day, full day, or sunset	59500	$595–$1,495	Community program fee: 1.5× standard rates. Supports nonprofit operations. Up to 10 participants.	10	Stiletto X Catamaran	["Designed and built by Capt. Jay", "Licensed USCG captain (Capt. Jay)", "Junior sailor mate (works for tips)", "Cooler stocked with ice", "Porta-pot or marine head aboard", "Bluetooth music", "Chloe the golden retriever (first come first served)", "Highest-performance cat in the fleet", "Available sunset, half-day, or full day", "For sale — or build-to-order", "Supports youth sailing mission"]	/sail-hatteras/trips/stiletto-x-charter.jpg	t	80	\N	2026-05-07 15:37:33.572114+00	2026-05-07 15:37:33.572114+00	flat	f
-6	large-group-flotilla	Large Group Flotilla	experiences	tour	More than 6 in your group? You need more boats and captains — and we are here for you. Flotilla pricing is tailored to your group size and itinerary. A portion of every charter directly funds free youth sailing programs on Hatteras Island.	When your group is bigger than six, one boat isn't enough — and Hatteras Community Sailing is ready to put together a full flotilla for you.\n\n  We deploy multiple Stiletto catamarans with separate captains for groups of any size. Flotillas are popular for family reunions, corporate team building, wedding parties, school groups, and STEM outings. We've run programs for homeschool co-ops, Scout troops, and corporate retreats — and we tailor each one to the group's goals and ages.\n\n  Want a Intro to Sailing component? Racing between the boats? A sandbar stop and swim break? A naturalist-led environmental education component? We can build that in.\n\n  Call us to discuss your group and we'll put together a package priced to your needs. As a 501(c)3 nonprofit, working with groups is part of our broader community mission.	4 hours	59500	Custom pricing	Community program fee: $595. Fees support our 501(c)3 environmental education mission. Up to 8 participants.	8	Zodiac RIB	["Multiple boats and captains", "Cooler with ice on each vessel", "Porta-pot or marine head aboard", "Bluetooth music", "Chloe the golden retriever (with Capt. Jay, first come first served)", "Groups of any size", "Corporate, school, and family events", "Custom itinerary and curriculum", "STEM and environmental education options"]	/sail-hatteras/trips/large-group-flotilla.jpg	t	30	\N	2026-05-07 15:37:38.212376+00	2026-05-07 15:37:38.212376+00	flat	f
-2	half-day-sail	Half Day Charter	experiences	charter	4 hours is perfect for exploring the secret islands and sandbars of Pamlico Sound stretching from Avon to Hatteras Village. Your private charter, your itinerary. A portion of every charter directly funds free youth sailing programs on Hatteras Island.	Four hours is the perfect amount of time to disappear into the Pamlico Sound and find one of the secret islands and sandbars that stretch from Avon to Hatteras Village.\n\nThese are places most Outer Banks visitors never see — shallow bayside coves, remote sandy shoals where you can wade in the shallows, and the quiet that comes from being genuinely away from everything. Your captain knows them all.\n\nSwim stops are standard. All experience levels welcome. This is a private charter — just your group, your itinerary, your afternoon.\n\n**What's Included**\nEvery Half Day Charter comes fully set up so you can focus on the water:\n\n- **Licensed USCG captain** — experienced, local, and knows the Sound\n- **Junior sailor mate** — crew support aboard (works for tips, always appreciated)\n- **Cooler with ice** — bring your own drinks and snacks\n- **Porta-pot or marine head** — vessel equipped for comfort\n- **Bluetooth speaker** — your playlist, your sail\n- **Chloe** — Capt. Jay's golden retriever; first come, first served, ask when booking\n\nHatteras Community Sailing is a 501(c)3 nonprofit. Every charter supports free and reduced-cost youth sailing instruction for local Hatteras Island youth who otherwise couldn't access it.	4 hours	49500	$495–$895	Flat rate for the vessel. Prices vary by boat — see vessel options below.	6	Stiletto 27 Catamaran	["Licensed USCG captain aboard", "Junior sailor mate (works for tips)", "Cooler stocked with ice", "Porta-pot or marine head aboard", "Bluetooth music", "Chloe the golden retriever (with Capt. Jay, first come first served)", "Secret Sound islands and sandbars", "Swim stop included", "Private charter — your itinerary", "All experience levels welcome"]	/sail-hatteras/trips/half-day-charter.jpg	t	20	\N	2026-05-07 15:37:30.618856+00	2026-05-07 15:37:30.618856+00	flat	f
+1	sunset-sail	Sunset Sail	experiences	charter	Sunsets over the Pamlico are magic on Hatteras Island. This is our most popular cruise — book as soon as you have your rental house dates. A portion of every charter directly funds free youth sailing programs on Hatteras Island.	Sunsets over Pamlico Sound are among the most photographed moments on the Outer Banks — and you're going to watch one from the deck of a catamaran.\n\nHatteras Community Sailing's Sunset Sail is our most popular community charter. We depart from Buxton Harbor as the light begins to soften, sailing west across the Sound while Hatteras Island glows behind you. Activities include sailing, photography, relaxing, and complimentary drinks as the sky does its thing.\n\nDuration: 2 hours. Runs nightly, weather permitting. If conditions are not favorable on your reserved evening, we will work to find another time during your stay — or refund your deposit if we cannot make it happen.\n\n**What's Included**\n- **Licensed USCG captain** — experienced, local, and knows the Sound\n- **Junior sailor mate** — crew support aboard (works for tips, always appreciated)\n- **Cooler with ice** — bring your own drinks and snacks\n- **Porta-pot or marine head** — vessel equipped for comfort\n- **Bluetooth speaker** — your playlist, your sail\n- **Chloe** — Capt. Jay's golden retriever; first come, first served\n\nAs with all Hatteras Community Sailing programs, your charter fee directly supports free and reduced-cost youth sailing for Hatteras Island kids.	2.5 hours	39500	$395–$595	Community program fee: $395. Fees support our 501(c)3 mission. Up to 6 participants. Private group program.	6	Stiletto 27 Catamaran	["Licensed USCG captain aboard", "Junior sailor mate (works for tips)", "Cooler stocked with ice", "Porta-pot or marine head aboard", "Bluetooth music", "Chloe the golden retriever (with Capt. Jay, first come first served)", "Pamlico Sound sunset cruise", "Complimentary drinks", "Private charter — just your group", "Photography-worthy light every evening", "2-hour sail, weather permitting"]	/trip-photos/sunset-sail.jpg	t	10	\N	2026-05-07 15:37:29.275303+00	2026-05-07 15:37:29.275303+00	flat	f
+8	kids-development-program	Local Youth Development Program	learn	lesson	Introduction camps are just the first step. Our year-round development program is for youth who love the water and want to keep growing — session by session, season by season.	The Local Youth Development Program is Hatteras Community Sailing's core youth pathway — structured around Optimist and Collegiate 420 sailing, with 12 classes per session, scheduled weather-dependently to get the best possible time on the water.\n\n  **Sailing Littles — Ages 6 to 9**\n  Introduction to sailing on Optimist dinghies. Young sailors learn the fundamentals: how a sailboat works, points of sail, basic boat handling, and water confidence. The focus is fun first — getting kids comfortable and in love with being on the water before technique takes over.\n\n  **Opti Green Fleet Competition — Ages 9 to 13**\n  Sailors who've outgrown the intro level move into structured Optimist racing. Green Fleet introduces race starts, mark rounding, tactics, and the competitive side of the sport. These are the kids who come back every year.\n\n  **Collegiate 420 Sailing — Ages 12 to 18**\n  The step up to a two-person high-performance dinghy. C420 sailing introduces teamwork, crew communication, upwind and downwind technique, and the kind of boat speed that only comes from repetition. Many of our 420 sailors go on to sail in college.\n\n  **SAISA High School Interscholastic Sailing — Grades 8 to 12**\n  Spring and fall competitive seasons with the Southern Atlantic Interscholastic Sailing Association. Student-athletes represent Hatteras Community Sailing in regional competition against high school programs across the Carolinas and beyond.\n\n  ---\n  Sessions run 12 classes, scheduled weather-dependently. Scholarships and fully subsidized spots available for local youth — no child is turned away for inability to pay. Program fees from paying participants directly fund free placements.	Per session (half day)	20000	$95–$695 / ~8 weeks	Community program fee: $200/session. Full and partial scholarships available for Hatteras community youth. Contact us. Minimum 4 participants per session.	8	Optimist fleet / Collegiate 420s	["Training boats supplied by Hatteras Community Sailing", "Certified coaching and instruction", "Coach and safety boats on the water", "On-water course marks", "Certificate of completion", "Interactive sailing log (online)", "Life vest provided", "Course materials", "2 regattas per session recommended"]	/trip-photos/kids-development-program.jpg	t	40	\N	2026-05-07 15:37:40.968044+00	2026-05-07 15:37:40.968044+00	per_person	f
+9	visitor-intensive	Cape Explorers Camp	learn	lesson	Don't let your child mope around on vacation mornings. Get them out on the water learning to be masters of the ocean — at our Cape Explorers Camp. Your program fee also funds free sailing for local Hatteras Island youth.	Your family is on the Outer Banks — one of the most spectacular stretches of coastline in the country, surrounded by water on every side. Cape Explorers Camp puts your kid in it.\n\n  Every morning session puts young visitors on the water with our instructors, learning real skills in a real ocean environment: boat handling, navigation basics, reading wind and weather, and the kind of confidence that only comes from actually doing it. By Friday, they are not tourists anymore. They are Cape explorers.\n\n  Week-long program, Monday through Friday, morning sessions. Ages 8–16. All experience levels welcome — no prior sailing knowledge required. Limited spots available each week.\n\n  Here's something worth knowing: your program fee does double duty. Hatteras Community Sailing is a 501(c)3 nonprofit, and every dollar from visiting families directly subsidizes free spots for local Hatteras Island youth who otherwise couldn't access this kind of instruction.	Half day (4-5 hours)	50000	$500 / child	$500 per child for the full week morning program (Mon–Fri). Ages 8–16. All skill levels welcome. Spots are limited — book early.	10	Collegiate 420s	["Ages 8–16, all experience levels", "Monday–Friday morning program", "Boat handling and navigation basics", "Sailing certification included", "Your fee funds a local kid's spot"]	/trip-photos/cape-explorers-camp.jpg	t	55	\N	2026-05-07 15:37:42.445717+00	2026-05-07 15:37:42.445717+00	per_person	f
+10	beach-cat-rental	Beach Cat Rental	rentals	rental	Low-cost beach cat rental for qualified community sailors — making independent sailing accessible and sustainable on Pamlico Sound.	Hatteras Community Sailing rents beach catamarans to qualified sailors on Pamlico Sound at rates well below what a commercial operator would charge — because access is part of our mission.\n\n  Available boats: Hobie 16, Hobie 18, and Collegiate 420. A skills checkout is required on your first rental of each class — call ahead or stop by to get on the calendar. We have wind limits by class and conditions, and we'll be straight with you about whether the day is right for it.\n\n  Not sure if you're ready? Start with our Beach Cat Sailing Lesson. Complete it and you're approved to rent with no additional checkout.\n\n  Rental fees support fleet maintenance, insurance, and the operational costs that make all Hatteras Community Sailing programs possible.	4 hours base (additional hours available)	20000	$200 / 4 hrs	Community program fee: $200/4 hours. $50/additional hour. One-time $50 checkout fee for new renters. Fees support fleet sustainability.	2	Hobie 16 or Hobie 18	["Hobie 16, Hobie 18, and C420 available", "Skills checkout on first rental of each class", "Call ahead to confirm conditions and availability", "Lesson completion = instant rental approval", "Extended half-day and full-day rentals"]	/trip-photos/beach-cat-rental.jpg	t	60	\N	2026-05-07 15:37:44.208865+00	2026-05-07 15:37:44.208865+00	flat	f
+5	dolphin-tour	Dolphin & Wildlife Tour	experiences	tour	Learn about dolphins, tides, inlets, and barrier islands right in Hatteras Inlet. A portion of every tour directly funds free youth sailing programs on Hatteras Island.	Pamlico Sound and Hatteras Inlet are home to a resident population of Atlantic bottlenose dolphins — and we know where to find them.\n\nThis tour is part adventure, part environmental education. Your guide shares what we know about local dolphin behavior, Sound ecology, tidal dynamics, and the unique geography of the Hatteras Inlet system — one of the most active and ever-changing inlets on the East Coast. There is no better classroom than the water itself.\n\nIdeal for families, curious visitors, and anyone who wants to understand this place a little more deeply before they leave it.\n\n**What's Included**\n- **Licensed USCG captain** — experienced, local, and knows the Sound\n- **Junior sailor mate** — crew support aboard (works for tips, always appreciated)\n- **Cooler with ice** — bring your own drinks and snacks\n- **Porta-pot or marine head** — vessel equipped for comfort\n- **Bluetooth speaker** — your playlist, your sail\n- **Chloe** — Capt. Jay's golden retriever; first come, first served\n\nProgram fees support Hatteras Community Sailing's broader 501(c)3 mission: free youth sailing and environmental education on the Outer Banks.	2 hours	32500	$325–$595	Community program fee: $325. Fees support our 501(c)3 environmental education and community sailing mission. Up to 8 participants.	8	Zodiac RIB	["Licensed USCG captain aboard", "Junior sailor mate (works for tips)", "Cooler stocked with ice", "Porta-pot or marine head aboard", "Bluetooth music", "Chloe the golden retriever (with Capt. Jay, first come first served)", "Resident bottlenose dolphin population", "Hatteras Inlet ecology and tidal dynamics", "Environmental education component", "Suitable for all ages", "Small group for close approach"]	/trip-photos/dolphin-tour.jpg	t	75	\N	2026-05-07 15:37:35.026852+00	2026-05-07 15:37:35.026852+00	flat	f
+7	beach-cat-lesson	Beach Cat Sailing Lesson	learn	lesson	Beach cat sailing is the fastest, most exciting sailing you can find — wet, wild, and a whole lot more fun with real training. Get certified to rent our beach cats, no questions asked.	Beach cat sailing is in a category of its own. These are fast, powerful multihull boats that fly a hull in big gusts and drench you in spray on every tack. They're not difficult to sail well — but there's a right way to do it, and learning that way makes all the difference between a great time and a swim.\n\n  Our Beach Cat Sailing Lesson is a half-day hands-on session on Pamlico Sound. You'll rig, launch, and sail a beach catamaran with one of our US Sailing certified instructors — covering points of sail, tacking and jibing, capsize recovery, and the finer points of beach cat handling in real wind and chop.\n\n  Complete the lesson and you're certified to rent our beach cats independently — no extra paperwork, no questions asked. It's the fastest path from curious to on the water on your own.\n\n  $300 per half-day session. Group rates available.	4 hours	30000	$300 / half day	Community program fee: $300 / half day. Includes beach cat certification — complete the lesson and rent our cats independently, no extra steps. Fees support our 501(c)3 mission.	2	Hobie 16 or Hobie 18	["US Sailing certified instruction", "Capsize recovery included", "Protected Sound sailing conditions", "Certifies you for independent beach cat rental", "Group rates available"]	/trip-photos/beach-cat-lesson.jpg	t	45	\N	2026-05-07 15:37:39.34882+00	2026-05-07 15:37:39.34882+00	flat	f
+3	full-day-sail	Full Day Sail	experiences	charter	A full day of relaxation on the water. 'nuff said. A portion of every charter directly funds free youth sailing programs on Hatteras Island.	A full day on the water is its own kind of vacation. No schedule, no deadlines — just the Sound, the wind, and wherever the day takes you.\n\nPopular destinations for our Full Day Sail include Ocracoke Island, the ruins of Diamond City, and the remote barrier islands of the Sound's outer edge. We've also been known to drift through Hatteras Inlet and out toward the blue water just because conditions were right. Bring a cooler, bring lunch, and know that wherever we end up, you'll be glad you spent the day this way.\n\n**What's Included**\n- **Licensed USCG captain** — experienced, local, and knows the Sound\n- **Junior sailor mate** — crew support aboard (works for tips, always appreciated)\n- **Cooler with ice** — bring your own drinks and snacks\n- **Porta-pot or marine head** — vessel equipped for comfort\n- **Bluetooth speaker** — your playlist, your sail\n- **Lunch stop and fuel** — included for the full day\n- **Chloe** — Capt. Jay's golden retriever; first come, first served\n\nHatteras Community Sailing is a 501(c)3 nonprofit. Your full-day participation is the single largest contribution a visitor can make to our mission — every dollar supports free youth sailing and community instruction on the Outer Banks.	8 hours	99500	$995–$2,495	Community program fee: $1,400. Fees fund our 501(c)3 youth and community programs. Lunch and fuel included. Up to 6 participants.	6	Stiletto 27 Catamaran	["Licensed USCG captain aboard", "Junior sailor mate (works for tips)", "Cooler stocked with ice", "Porta-pot or marine head aboard", "Bluetooth music", "Chloe the golden retriever (with Capt. Jay, first come first served)", "Ocracoke or Diamond City day trip option", "Lunch stop and fuel included", "Private charter", "Hatteras Inlet and open Sound access", "Most impactful way to support our mission"]	/trip-photos/full-day-sail.jpg	t	70	\N	2026-05-07 15:37:32.307305+00	2026-05-07 15:37:32.307305+00	flat	f
+12	adult-sailing-program	Adult Learn to Sail	learn	lesson	A structured 4-week sailing course for adults on Pamlico Sound. Two morning sessions per week — learn seamanship, boat handling, and the points of sail from certified instructors.	Hatteras Community Sailing's Adult Learn to Sail program is designed for complete beginners and returning sailors alike. Over four weeks, you will develop real sailing competency on the waters of Pamlico Sound — one of the finest sailing venues on the East Coast.\n\n**Program Format**\nTwo morning sessions per week for four weeks — eight sessions total. Each class runs approximately 3 hours, scheduled in the morning to take advantage of the Sound's best sailing winds.\n\n**Three Summer Sessions Available**\nSessions run in June, July, and August. Space is limited to 6 adults per session to ensure personalized instruction and maximum time at the helm.\n\n**What You Will Learn**\nWe cover everything from first principles: how a sailboat works, points of sail, tacking and gybing, sail trim, basic navigation, and safe boat handling. By the end of the program, you will be able to skipper a small sailboat independently.\n\n**Our Instructors**\nHCS instructors are US Sailing certified coaches with deep roots in the Hatteras sailing community. Small class sizes mean you get real feedback every session, not just observation from the dock.\n\n---\n\nThis program supports Hatteras Community Sailing's 501(c)3 mission. Member discounts available — ask us about HCS membership.	2 hrs · 2 mornings/week · 4 weeks	25000	$250 / session	Non-member pricing. HCS members receive a discount — membership details coming soon.	6	Collegiate 420s	["US Sailing certified instruction", "All sailing equipment provided", "Life vest included", "Maximum 6 students per session", "Morning sessions on Pamlico Sound", "Certificate of completion", "Skipper independently by end of program", "3 summer sessions: June, July, August"]	/trip-photos/adult-sailing-program.jpg	t	15	\N	2026-05-08 00:00:52.123363+00	2026-05-08 00:00:52.123363+00	per_person	f
+4	stiletto-x-charter	Stiletto X Charter	experiences	charter	Sailing these boats since he was a boy, Capt. Jay went on to develop and build the new Stiletto X Series — and here it is. Charter it for a sunset, half day, or full day. Love it? It's for sale, or he can build you one. A portion of every charter directly funds free youth sailing programs on Hatteras Island.	Capt. Jay grew up sailing Stilettos on Hatteras Island. He went on to design, develop, and build the new Stiletto X Series — a complete reimagining of the iconic beach cat for the modern era. The boat you're chartering is one he built himself.\n\nThe Stiletto X is the highest-performance vessel in the Hatteras Community Sailing fleet. It's faster, more capable, and a more visceral sailing experience than anything else on the Sound. Available for sunset sails, half-day charters, and full-day adventures — at the Stiletto X price point.\n\nAnd yes — if you fall in love with it, it's for sale. Or Capt. Jay can build you one.\n\n**What's Included**\n- **Capt. Jay at the helm** — the man who built the boat\n- **Junior sailor mate** — crew support aboard (works for tips, always appreciated)\n- **Cooler with ice** — bring your own drinks and snacks\n- **Porta-pot or marine head** — vessel equipped for comfort\n- **Bluetooth speaker** — your playlist, your sail\n- **Chloe** — she sails with Capt. Jay; first come, first served\n\nCharter fees support Hatteras Community Sailing's 501(c)3 mission: free and reduced-cost youth sailing for Hatteras Island kids.	Half day, full day, or sunset	59500	$595–$1,495	Community program fee: 1.5× standard rates. Supports nonprofit operations. Up to 10 participants.	10	Stiletto X Catamaran	["Designed and built by Capt. Jay", "Licensed USCG captain (Capt. Jay)", "Junior sailor mate (works for tips)", "Cooler stocked with ice", "Porta-pot or marine head aboard", "Bluetooth music", "Chloe the golden retriever (first come first served)", "Highest-performance cat in the fleet", "Available sunset, half-day, or full day", "For sale — or build-to-order", "Supports youth sailing mission"]	/trip-photos/stiletto-x-charter.jpg	t	80	\N	2026-05-07 15:37:33.572114+00	2026-05-07 15:37:33.572114+00	flat	f
+11	skiff-rental	Skiff Rental	rentals	rental	High-performance sailing access for experienced community sailors — the American 19 on Pamlico Sound.	For experienced one-design and high-performance dinghy sailors, the American 19 skiff is the most demanding boat in the Hatteras Community Sailing fleet — and the most rewarding to sail well.\n\n  This is not a boat for the casual or rusty sailor. Experience verification is required before checkout, and we'll have an honest conversation with you about conditions before you go out. Pamlico Sound can be deceptively technical, and the American 19 demands respect.\n\n  If you've got the skills and want a genuine performance sailing session on the Sound, this is it. Rental fees support Hatteras Community Sailing's 501(c)3 mission and fleet operations.	2-hour minimum	10000	$100 / hr	Community program fee: $100/hr. 2-hour minimum. Fuel surcharge and refundable damage deposit required.	2	American 19 Skiff	["High-performance one-design skiff", "Experienced sailors only", "Experience verification required", "2-hour minimum, extended rentals available", "Fuel surcharge and deposit apply"]	/trip-photos/skiff-rental.jpg	t	65	\N	2026-05-07 15:37:45.570263+00	2026-05-07 15:37:45.570263+00	flat	t
+6	large-group-flotilla	Large Group Flotilla	experiences	tour	More than 6 in your group? You need more boats and captains — and we are here for you. Flotilla pricing is tailored to your group size and itinerary. A portion of every charter directly funds free youth sailing programs on Hatteras Island.	When your group is bigger than six, one boat isn't enough — and Hatteras Community Sailing is ready to put together a full flotilla for you.\n\n  We deploy multiple Stiletto catamarans with separate captains for groups of any size. Flotillas are popular for family reunions, corporate team building, wedding parties, school groups, and STEM outings. We've run programs for homeschool co-ops, Scout troops, and corporate retreats — and we tailor each one to the group's goals and ages.\n\n  Want a Intro to Sailing component? Racing between the boats? A sandbar stop and swim break? A naturalist-led environmental education component? We can build that in.\n\n  Call us to discuss your group and we'll put together a package priced to your needs. As a 501(c)3 nonprofit, working with groups is part of our broader community mission.	4 hours	59500	Custom pricing	Community program fee: $595. Fees support our 501(c)3 environmental education mission. Up to 8 participants.	8	Zodiac RIB	["Multiple boats and captains", "Cooler with ice on each vessel", "Porta-pot or marine head aboard", "Bluetooth music", "Chloe the golden retriever (with Capt. Jay, first come first served)", "Groups of any size", "Corporate, school, and family events", "Custom itinerary and curriculum", "STEM and environmental education options"]	/trip-photos/large-group-flotilla.jpg	t	30	\N	2026-05-07 15:37:38.212376+00	2026-05-07 15:37:38.212376+00	flat	f
+2	half-day-sail	Half Day Charter	experiences	charter	4 hours is perfect for exploring the secret islands and sandbars of Pamlico Sound stretching from Avon to Hatteras Village. Your private charter, your itinerary. A portion of every charter directly funds free youth sailing programs on Hatteras Island.	Four hours is the perfect amount of time to disappear into the Pamlico Sound and find one of the secret islands and sandbars that stretch from Avon to Hatteras Village.\n\nThese are places most Outer Banks visitors never see — shallow bayside coves, remote sandy shoals where you can wade in the shallows, and the quiet that comes from being genuinely away from everything. Your captain knows them all.\n\nSwim stops are standard. All experience levels welcome. This is a private charter — just your group, your itinerary, your afternoon.\n\n**What's Included**\nEvery Half Day Charter comes fully set up so you can focus on the water:\n\n- **Licensed USCG captain** — experienced, local, and knows the Sound\n- **Junior sailor mate** — crew support aboard (works for tips, always appreciated)\n- **Cooler with ice** — bring your own drinks and snacks\n- **Porta-pot or marine head** — vessel equipped for comfort\n- **Bluetooth speaker** — your playlist, your sail\n- **Chloe** — Capt. Jay's golden retriever; first come, first served, ask when booking\n\nHatteras Community Sailing is a 501(c)3 nonprofit. Every charter supports free and reduced-cost youth sailing instruction for local Hatteras Island youth who otherwise couldn't access it.	4 hours	49500	$495–$895	Flat rate for the vessel. Prices vary by boat — see vessel options below.	6	Stiletto 27 Catamaran	["Licensed USCG captain aboard", "Junior sailor mate (works for tips)", "Cooler stocked with ice", "Porta-pot or marine head aboard", "Bluetooth music", "Chloe the golden retriever (with Capt. Jay, first come first served)", "Secret Sound islands and sandbars", "Swim stop included", "Private charter — your itinerary", "All experience levels welcome"]	/trip-photos/half-day-charter.jpg	t	20	\N	2026-05-07 15:37:30.618856+00	2026-05-07 15:37:30.618856+00	flat	f
 \.
 
 
 --
--- Data for Name: sh_vessels; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: sh_vessels; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.sh_vessels (id, name, description, capacity, price_cents, price_display, image_url, active, sort_order, created_at) FROM stdin;
@@ -760,7 +812,7 @@ COPY public.sh_vessels (id, name, description, capacity, price_cents, price_disp
 
 
 --
--- Data for Name: team_members; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: team_members; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.team_members (id, name, title, bio, headshot_url, display_order, created_at) FROM stdin;
@@ -771,19 +823,19 @@ COPY public.team_members (id, name, title, bio, headshot_url, display_order, cre
 
 
 --
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.users (id, name, email, phone, password_hash, role, approval_status, nda_accepted, created_at, updated_at) FROM stdin;
 1	Admin User	admin@pamliecoconnect.com	+1-555-0100	$2b$12$yhCEDTq1KCQRo5oscN7KZuROfybBTaf.JCpeivcO5CnX8/1sSuiqu	admin	approved	t	2026-04-30 01:41:04.463793+00	2026-04-30 01:41:04.463793+00
 2	Alice Investor	alice_1777513715859@investortest.com	+1 (555) 123-4567	$2b$12$9NJVPy8A461ldyl3Mx/xEewCJBfsjZROcHp3BP3SQdFZs3kzPTd/2	investor	pending	f	2026-04-30 01:49:08.298088+00	2026-04-30 01:49:08.298088+00
 23	Noah Phillips	noah.phillips@phillipsboatworks.com	252-489-7607	$2b$12$rsz4XLxG99y/FnqNeZDQHO873Vs0PF3iquy/PrevJi/Kk.l0f0.ZS	investor	approved	t	2026-04-30 13:27:14.558025+00	2026-04-30 13:28:58.466+00
-10	JAY PHILLIPS	jay.phillips@phillipsboatworks.com	2524898193	$2b$10$30NiMgmyANSVg1qEEe2LrexyVh5DUs4zeMw2WTk2flgSH24D56qIG	admin	approved	t	2026-04-30 11:08:34.84979+00	2026-05-08 09:40:16.435+00
+10	JAY PHILLIPS	jay.phillips@phillipsboatworks.com	2524898193	$2b$10$rKVJZTtnB2.LjLATH02afeiN0dNPwP4vkDzsou.gQx.0rB7kNPl2a	admin	approved	t	2026-04-30 11:08:34.84979+00	2026-05-08 14:22:43.73+00
 \.
 
 
 --
--- Data for Name: waitlist; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: waitlist; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.waitlist (id, name, email, phone, created_at) FROM stdin;
@@ -792,98 +844,98 @@ COPY public.waitlist (id, name, email, phone, created_at) FROM stdin;
 
 
 --
--- Name: contact_submissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: contact_submissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.contact_submissions_id_seq', 1, true);
 
 
 --
--- Name: content_pages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: content_pages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.content_pages_id_seq', 502, true);
+SELECT pg_catalog.setval('public.content_pages_id_seq', 518, true);
 
 
 --
--- Name: investor_applications_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: investor_applications_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.investor_applications_id_seq', 2, true);
 
 
 --
--- Name: posts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: posts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.posts_id_seq', 30, true);
+SELECT pg_catalog.setval('public.posts_id_seq', 32, true);
 
 
 --
--- Name: sh_availability_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: sh_availability_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.sh_availability_id_seq', 1, false);
 
 
 --
--- Name: sh_bookings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: sh_bookings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.sh_bookings_id_seq', 1, false);
 
 
 --
--- Name: sh_contacts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: sh_contacts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.sh_contacts_id_seq', 1, false);
 
 
 --
--- Name: sh_trip_vessels_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: sh_trip_vessels_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.sh_trip_vessels_id_seq', 46, true);
 
 
 --
--- Name: sh_trips_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: sh_trips_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.sh_trips_id_seq', 12, true);
 
 
 --
--- Name: sh_vessels_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: sh_vessels_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.sh_vessels_id_seq', 14, true);
 
 
 --
--- Name: team_members_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: team_members_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.team_members_id_seq', 3, true);
 
 
 --
--- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 66, true);
+SELECT pg_catalog.setval('public.users_id_seq', 68, true);
 
 
 --
--- Name: waitlist_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: waitlist_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.waitlist_id_seq', 1, true);
 
 
 --
--- Name: contact_submissions contact_submissions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: contact_submissions contact_submissions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.contact_submissions
@@ -891,7 +943,7 @@ ALTER TABLE ONLY public.contact_submissions
 
 
 --
--- Name: content_pages content_pages_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: content_pages content_pages_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.content_pages
@@ -899,7 +951,7 @@ ALTER TABLE ONLY public.content_pages
 
 
 --
--- Name: content_pages content_pages_slug_unique; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: content_pages content_pages_slug_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.content_pages
@@ -907,7 +959,7 @@ ALTER TABLE ONLY public.content_pages
 
 
 --
--- Name: investor_applications investor_applications_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: investor_applications investor_applications_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.investor_applications
@@ -915,7 +967,7 @@ ALTER TABLE ONLY public.investor_applications
 
 
 --
--- Name: posts posts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: posts posts_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.posts
@@ -923,7 +975,7 @@ ALTER TABLE ONLY public.posts
 
 
 --
--- Name: sh_availability sh_availability_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: sh_availability sh_availability_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sh_availability
@@ -931,7 +983,7 @@ ALTER TABLE ONLY public.sh_availability
 
 
 --
--- Name: sh_bookings sh_bookings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: sh_bookings sh_bookings_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sh_bookings
@@ -939,7 +991,7 @@ ALTER TABLE ONLY public.sh_bookings
 
 
 --
--- Name: sh_contacts sh_contacts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: sh_contacts sh_contacts_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sh_contacts
@@ -947,7 +999,7 @@ ALTER TABLE ONLY public.sh_contacts
 
 
 --
--- Name: sh_trip_vessels sh_trip_vessels_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: sh_trip_vessels sh_trip_vessels_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sh_trip_vessels
@@ -955,7 +1007,7 @@ ALTER TABLE ONLY public.sh_trip_vessels
 
 
 --
--- Name: sh_trips sh_trips_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: sh_trips sh_trips_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sh_trips
@@ -963,7 +1015,7 @@ ALTER TABLE ONLY public.sh_trips
 
 
 --
--- Name: sh_trips sh_trips_slug_unique; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: sh_trips sh_trips_slug_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sh_trips
@@ -971,7 +1023,7 @@ ALTER TABLE ONLY public.sh_trips
 
 
 --
--- Name: sh_vessels sh_vessels_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: sh_vessels sh_vessels_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sh_vessels
@@ -979,7 +1031,7 @@ ALTER TABLE ONLY public.sh_vessels
 
 
 --
--- Name: team_members team_members_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: team_members team_members_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.team_members
@@ -987,7 +1039,7 @@ ALTER TABLE ONLY public.team_members
 
 
 --
--- Name: users users_email_unique; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: users users_email_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.users
@@ -995,7 +1047,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.users
@@ -1003,7 +1055,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: waitlist waitlist_email_unique; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: waitlist waitlist_email_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.waitlist
@@ -1011,7 +1063,7 @@ ALTER TABLE ONLY public.waitlist
 
 
 --
--- Name: waitlist waitlist_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: waitlist waitlist_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.waitlist
@@ -1019,7 +1071,7 @@ ALTER TABLE ONLY public.waitlist
 
 
 --
--- Name: investor_applications investor_applications_user_id_users_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: investor_applications investor_applications_user_id_users_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.investor_applications
@@ -1027,7 +1079,7 @@ ALTER TABLE ONLY public.investor_applications
 
 
 --
--- Name: sh_availability sh_availability_trip_id_sh_trips_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: sh_availability sh_availability_trip_id_sh_trips_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sh_availability
@@ -1035,7 +1087,7 @@ ALTER TABLE ONLY public.sh_availability
 
 
 --
--- Name: sh_bookings sh_bookings_trip_id_sh_trips_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: sh_bookings sh_bookings_trip_id_sh_trips_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sh_bookings
@@ -1043,7 +1095,7 @@ ALTER TABLE ONLY public.sh_bookings
 
 
 --
--- Name: sh_trip_vessels sh_trip_vessels_trip_id_sh_trips_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: sh_trip_vessels sh_trip_vessels_trip_id_sh_trips_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sh_trip_vessels
@@ -1051,7 +1103,7 @@ ALTER TABLE ONLY public.sh_trip_vessels
 
 
 --
--- Name: sh_trip_vessels sh_trip_vessels_vessel_id_sh_vessels_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: sh_trip_vessels sh_trip_vessels_vessel_id_sh_vessels_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sh_trip_vessels
@@ -1062,5 +1114,5 @@ ALTER TABLE ONLY public.sh_trip_vessels
 -- PostgreSQL database dump complete
 --
 
-\unrestrict Q5Rhb0IMXjRF8rnXx2JVfGt1uqbggEkDO1S72LGdAWTe3bu1GBn34VMsPNTQH0V
+\unrestrict Jpr0hT74ZgSULkJOnzgCQnneAvmpI5LcAX3iMj40dtyFg1U91nMwmvNDr92AzYh
 
