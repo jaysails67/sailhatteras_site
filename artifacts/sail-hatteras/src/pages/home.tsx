@@ -209,7 +209,7 @@ export default function Home() {
                 <div className="bg-card rounded-xl overflow-hidden border border-border hover-elevate shadow-sm hover:shadow-md transition-all h-full flex flex-col">
                   <div className="aspect-[16/9] relative overflow-hidden bg-muted">
                     {trip.imageUrl ? (
-                      <img src={trip.imageUrl} alt={trip.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                      <img src={`${BASE}${trip.imageUrl.replace(/^\//, "")}`} alt={trip.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-muted-foreground">
                         <Anchor className="h-10 w-10 opacity-20" />
