@@ -1,0 +1,40 @@
+[ca12a15@ded4680 sailhatteras_site]$ -- 1. Remove Collegiate 420 Sailing (duplicate of 420 Teenagers)
+-bash: syntax error near unexpected token `('
+[ca12a15@ded4680 sailhatteras_site]$ DELETE FROM sh_trip_vessels WHERE vessel_id = (
+-bash: syntax error near unexpected token `('
+[ca12a15@ded4680 sailhatteras_site]$   SELECT id FROM sh_vessels WHERE name = 'Collegiate 420 Sailing' LIMIT 1
+-bash: SELECT: command not found
+[ca12a15@ded4680 sailhatteras_site]$ );
+-bash: syntax error near unexpected token `)'
+[ca12a15@ded4680 sailhatteras_site]$ DELETE FROM sh_vessels WHERE name = 'Collegiate 420 Sailing';
+-bash: DELETE: command not found
+[ca12a15@ded4680 sailhatteras_site]$
+[ca12a15@ded4680 sailhatteras_site]$ -- 2. Rename 420 Teens → 420 Teenagers
+-bash: --: command not found
+[ca12a15@ded4680 sailhatteras_site]$ UPDATE sh_vessels SET name = '420 Teenagers' WHERE name = '420 Teens';
+-bash: UPDATE: command not found
+[ca12a15@ded4680 sailhatteras_site]$
+[ca12a15@ded4680 sailhatteras_site]$ -- 3. Remove duplicate bare "SAISA High School" (keep "SAISA High School Sailing")
+-bash: syntax error near unexpected token `('
+[ca12a15@ded4680 sailhatteras_site]$ DELETE FROM sh_trip_vessels WHERE vessel_id = (
+-bash: syntax error near unexpected token `('
+[ca12a15@ded4680 sailhatteras_site]$   SELECT id FROM sh_vessels WHERE name = 'SAISA High School' LIMIT 1
+-bash: SELECT: command not found
+[ca12a15@ded4680 sailhatteras_site]$ );
+-bash: syntax error near unexpected token `)'
+[ca12a15@ded4680 sailhatteras_site]$ DELETE FROM sh_vessels WHERE name = 'SAISA High School';
+-bash: DELETE: command not found
+[ca12a15@ded4680 sailhatteras_site]$
+[ca12a15@ded4680 sailhatteras_site]$ -- Verify
+-bash: --: command not found
+[ca12a15@ded4680 sailhatteras_site]$ SELECT v.id, v.name FROM sh_vessels v
+-bash: SELECT: command not found
+[ca12a15@ded4680 sailhatteras_site]$ JOIN sh_trip_vessels tv ON tv.vessel_id = v.id
+-bash: JOIN: command not found
+[ca12a15@ded4680 sailhatteras_site]$ JOIN sh_trips t ON t.id = tv.trip_id
+-bash: JOIN: command not found
+[ca12a15@ded4680 sailhatteras_site]$ WHERE t.slug = 'kids-development-program'
+-bash: WHERE: command not found
+[ca12a15@ded4680 sailhatteras_site]$ ORDER BY v.id;
+-bash: ORDER: command not found
+[ca12a15@ded4680 sailhatteras_site]$
