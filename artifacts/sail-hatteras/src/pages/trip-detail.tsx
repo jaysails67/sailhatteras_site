@@ -61,20 +61,20 @@ function VesselCard({
           <Ship className="h-4 w-4" />
         </div>
         <div className="min-w-0">
-          <div className={`font-semibold text-sm leading-tight ${selected ? "text-primary" : "text-foreground"}`}>
+          <div className={`font-bold text-base leading-tight ${selected ? "text-primary" : "text-foreground"}`}>
             {vessel.name}
           </div>
           {vessel.description && (
             <div className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{vessel.description}</div>
           )}
-          <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-            <Users className="h-3 w-3" />
+          <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5 whitespace-nowrap">
+            <Users className="h-3 w-3 shrink-0" />
             <span>Up to {vessel.capacity}</span>
           </div>
         </div>
       </div>
       <div className="shrink-0 text-right">
-        <div className={`text-base font-bold ${selected ? "text-primary" : "text-foreground"}`}>
+        <div className={`text-sm font-semibold ${selected ? "text-primary" : "text-foreground"}`}>
           {vessel.priceDisplay}
         </div>
         <div className="text-xs text-muted-foreground">
