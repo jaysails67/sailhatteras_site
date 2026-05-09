@@ -517,7 +517,7 @@ export default function TripDetail() {
                     className="w-full"
                     size="lg"
                     disabled={!selectedVessel}
-                    onClick={() => setStep(useSessionStep ? sessionStep : detailsStep)}
+                    onClick={() => setStep(useSessionStep ? sessionStep : (!isLearnTrip && hasVessels) ? 2 : detailsStep)}
                     data-testid="button-next-vessel"
                   >
                     Continue
@@ -707,7 +707,7 @@ export default function TripDetail() {
                     </div>
                   </div>
                   <div className="flex gap-3">
-                    <Button variant="outline" className="flex-1" onClick={() => setStep(useSessionStep ? sessionStep : hasVessels ? 1 : 1)}>Back</Button>
+                    <Button variant="outline" className="flex-1" onClick={() => setStep(useSessionStep ? sessionStep : (!isLearnTrip && hasVessels) ? 2 : 1)}>Back</Button>
                     <Button className="flex-1" onClick={() => setStep(reviewStep)} disabled={!form.name || !form.email} data-testid="button-review">Review</Button>
                   </div>
                 </div>
