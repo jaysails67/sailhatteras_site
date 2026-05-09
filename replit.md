@@ -92,3 +92,51 @@ API base URL: `/api/` (proxied through Replit to `http://localhost:8080/api/`)
 - `SESSION_SECRET` — express-session secret (set in environment)
 - `TELEGRAM_WEBHOOK_URL` — optional Telegram webhook for new registrations
 - `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` — optional email for contact form
+
+---
+
+## SailHatteras.org — Production Notes
+
+**Server**: InMotion ded4680 · cPanel user `ca12a15`
+**Site root**: `/home/ca12a15/sites/sailhatteras_site`
+**GitHub repo**: `jaysails67/sailhatteras_site`
+**nginx proxy cache**: `/var/nginx/cache/ca12a15`
+**API process name (PM2)**: `sailhatteras-api`
+**API port**: 8080 · **BASE_PATH**: `/`
+
+### Canonical Deploy Command (verified by Hukilau)
+
+```bash
+su - ca12a15 -s /bin/bash -c '
+  cd ~/sites/sailhatteras_site &&
+  git fetch origin &&
+  git reset --hard origin/main &&
+
+  # Build API
+  pnpm --filter @workspace/api-server build &&
+
+  # Build frontend
+  PORT=8080 BASE_PATH=/ pnpm --filter @workspace/sail-hatteras build &&
+
+  # Restart API (with fallback if not running)
+  pm2 restart sailhatteras-api || \
+    pm2 start artifacts/api-server/dist/index.mjs --name sailhatteras-api
+' && \
+find /var/nginx/cache/ca12a15 -type f -delete && \
+nginx -s reload
+```
+
+**Why `git fetch + reset --hard` instead of `git pull`**: handles diverged local branches cleanly.
+**Why `-s /bin/bash`**: avoids shell environment issues on cPanel `su`.
+**Why `PORT=8080 BASE_PATH=/` on build**: matches vite.config.ts `isBuild` guard; ensures correct asset paths.
+**Why `pm2 restart || pm2 start`**: handles fresh server or missing PM2 registration.
+
+### Connect to Production DB
+
+```bash
+psql $(grep DATABASE_URL /home/ca12a15/sites/sailhatteras_site/.env | cut -d= -f2-)
+```
+
+### Production SMTP / Admin
+- Admin panel: `sailhatteras.org/admin` — key `hcs-admin-2026`
+- Admin email: `info@sailhatteras.org` (SMTP wired, tailing PM2 logs to confirm delivery)
