@@ -110,6 +110,8 @@ export default function TripDetail() {
   const enroll = useCreateShEnrollment();
 
   const isLearnTrip = trip?.category === "learn";
+  const skipSessionStep = trip?.slug === "adult-fun-sail";
+  const useSessionStep = isLearnTrip && hasVessels && !skipSessionStep;
   const isSAISA = selectedVessel?.name.toLowerCase().includes("saisa");
 
   // Session options differ by class
@@ -127,15 +129,17 @@ export default function TripDetail() {
   const learnDate    = sessionOptions.find(o => o.value === selectedSession)?.date ?? "";
 
   const vesselStepLabel = isLearnTrip ? "Choose Class" : "Choose Vessel";
-  const totalSteps = isLearnTrip && hasVessels ? 4 : hasVessels ? 4 : 3;
-  const stepLabels = isLearnTrip && hasVessels
+  const totalSteps = useSessionStep ? 4 : (skipSessionStep && hasVessels) ? 3 : hasVessels ? 4 : 3;
+  const stepLabels = useSessionStep
     ? [vesselStepLabel, "Choose Session", "Your Details", "Review"]
+    : (skipSessionStep && hasVessels)
+    ? [vesselStepLabel, "Your Details", "Review"]
     : hasVessels
     ? [vesselStepLabel, "Select Date", "Your Details", "Review"]
     : ["Select Date", "Your Details", "Review"];
-  const sessionStep  = 2; // only used for learn trips
-  const detailsStep  = isLearnTrip && hasVessels ? 3 : hasVessels ? 3 : 2;
-  const reviewStep   = isLearnTrip && hasVessels ? 4 : hasVessels ? 4 : 3;
+  const sessionStep  = 2; // only used for non-skipped learn trips
+  const detailsStep  = useSessionStep ? 3 : (skipSessionStep && hasVessels) ? 2 : hasVessels ? 3 : 2;
+  const reviewStep   = useSessionStep ? 4 : (skipSessionStep && hasVessels) ? 3 : hasVessels ? 4 : 3;
 
   const isFlat = trip?.pricingModel === "flat";
 
@@ -163,7 +167,14 @@ export default function TripDetail() {
       toast({ title: "Please select a date", variant: "destructive" });
       return;
     }
-    const bookingDateStr = isLearnTrip ? learnDate : selectedDate;
+    // For adult-fun-sail the vessel name encodes the month (June/July/August Session)
+    const vesselMonthDate = selectedVessel
+      ? selectedVessel.name.toLowerCase().includes("june")   ? "2026-06-01"
+      : selectedVessel.name.toLowerCase().includes("july")   ? "2026-07-01"
+      : selectedVessel.name.toLowerCase().includes("august") ? "2026-08-01"
+      : ""
+      : "";
+    const bookingDateStr = skipSessionStep ? vesselMonthDate : isLearnTrip ? learnDate : selectedDate;
     enroll.mutate(
       {
         data: {
@@ -506,7 +517,7 @@ export default function TripDetail() {
                     className="w-full"
                     size="lg"
                     disabled={!selectedVessel}
-                    onClick={() => setStep(2)}
+                    onClick={() => setStep(useSessionStep ? sessionStep : detailsStep)}
                     data-testid="button-next-vessel"
                   >
                     Continue
@@ -514,8 +525,8 @@ export default function TripDetail() {
                 </div>
               )}
 
-              {/* ── Step 2: Session Picker (learn trips only) ── */}
-              {!enrolled && isLearnTrip && hasVessels && step === sessionStep && (
+              {/* ── Step 2: Session Picker (learn trips only, not adult-fun-sail) ── */}
+              {!enrolled && useSessionStep && step === sessionStep && (
                 <div className="space-y-4">
                   {selectedVessel && (
                     <div className="bg-primary/5 rounded-lg px-3 py-2 flex items-center gap-2 text-sm">
@@ -696,7 +707,7 @@ export default function TripDetail() {
                     </div>
                   </div>
                   <div className="flex gap-3">
-                    <Button variant="outline" className="flex-1" onClick={() => setStep(isLearnTrip && hasVessels ? sessionStep : hasVessels ? 2 : 1)}>Back</Button>
+                    <Button variant="outline" className="flex-1" onClick={() => setStep(useSessionStep ? sessionStep : hasVessels ? 1 : 1)}>Back</Button>
                     <Button className="flex-1" onClick={() => setStep(reviewStep)} disabled={!form.name || !form.email} data-testid="button-review">Review</Button>
                   </div>
                 </div>
