@@ -1,0 +1,128 @@
+[5/9/2026 9:15 AM] Hukilau: I can’t reach the InMotion node directly from this environment, so I can’t run the su/pm2/nginx commands myself. Here’s the exact sequence to run on ded4680.inmotionhosting.com (as root or a sudo-capable user) that follows the SailHatteras deploy playbook:
+
+su - ca12a15 -s /bin/bash -c '
+  set -e
+  cd ~/sites/sailhatteras_site
+
+  # Sync with GitHub main
+  git fetch origin
+  git reset --hard origin/main
+
+  # Build API
+  pnpm --filter @workspace/api-server build
+
+  # Build frontend (production)
+  PORT=8080 BASE_PATH=/ pnpm --filter @workspace/sail-hatteras build
+
+  # Restart API under PM2
+  pm2 restart sailhatteras-api || \
+    pm2 start artifacts/api-server/dist/index.mjs --name sailhatteras-api
+'
+
+# Clear nginx cache for this account and reload nginx
+find /var/nginx/cache/ca12a15 -type f -delete && nginx -s reload && echo "Deploy + nginx cache clear complete"
+
+Once you’ve run that, hit https://sailhatteras.org in a fresh/private browser window and it should be on the new build. If you want, paste any errors from this command and I’ll debug.
+[5/9/2026 9:15 AM] Jay Phillips: why can yo not reach it?  You could yesterday?
+[5/9/2026 9:15 AM] Hukilau: I used the wrong execution mode (host=node), which is only for paired remote nodes (phones/laptops). Yesterday I was running commands directly on this server; today that node host isn’t available, so the tool blocked it. I’ll run the deploy on the local server shell instead.
+[5/9/2026 9:16 AM] Hukilau: The short version: I’m blocked by server-side safety rules, not by network reachability.
+
+Two separate things happened when I tried to deploy:
+
+1. Targeting a “node” host failed
+
+  • I first tried to run the deploy on a paired “node” (host=node) — that’s how I’d reach things like Hope/Danforth.
+  • Your environment reported no paired node is currently available, so that path is dead right now. (Yesterday, we were likely running on a different target: the main server/gateway, not a node.)
+2. Running directly on the server now requires an interactive approval I don’t have
+
+  • When I switched to host=auto (the main server), the system responded with (paraphrased):“Exec approval is required, but no interactive approval client is currently available. Approve this from the Web UI or terminal UI, or enable a native chat approval client.”
+  • In other words: the gateway is reachable and ready, but it won’t execute shell commands unless a human explicitly approves them from a UI that can present the approval dialog.
+  • This Telegram session is not wired up as an approval client for exec, so I can request the command, but there’s no way for you to click “approve” here.
+
+So: yesterday’s successful deploy would have been under a setup where either:
+
+• You were in the OpenClaw web/terminal UI and could approve exec requests, or
+• There was an allow-once/temporary approval in place for that session, which is now gone.
+
+Right now, from this Telegram-only context, I can’t cross that approval gate.
+
+───
+
+How to get the deploy done now
+
+Until exec approvals are wired to this chat or you’re in the OpenClaw UI, the fastest path is for you to run the deploy command yourself over SSH as root:
+
+su - ca12a15 -s /bin/bash -c 'set -e
+cd ~/sites/sailhatteras_site
+
+# Sync with GitHub main
+git fetch origin
+git reset --hard origin/main
+
+# Build API
+pnpm --filter @workspace/api-server build
+
+# Build frontend with production settings
+PORT=8080 BASE_PATH=/ pnpm --filter @workspace/sail-hatteras build
+
+# Restart API under PM2
+pm2 restart sailhatteras-api || pm2 start artifacts/api-server/dist/index.mjs --name sailhatteras-api
+'
+
+# Clear nginx cache and reload
+find /var/nginx/cache/ca12a15 -type f -delete
+nginx -s reload
+
+That matches the SailHatteras deploy skill and includes the cache clear you mentioned.
+
+If you want, I can next help you:
+
+• Wire exec approvals to this Telegram account so you can approve commands directly from here, or
+• Confirm the deploy by hitting https://sailhatteras.org and /api/sh/trips and walking through a quick post-deploy sanity check.
+[5/9/2026 9:16 AM] Hukilau: I can’t actually reach that host right now because OpenClaw’s exec calls from this session are not on the allowlist / approver list for your gateway.
+
+What happened:
+
+• I tried to run the deploy command with host=node (your ded4680 node) → the gateway replied:
+
+exec host=node requires a paired node (none available)
+That means there is currently no paired “node” host available to target directly from here.
+• I then retried with host=auto → the gateway required an exec approval, but:
+
+Exec denied … approval-timeout (allowlist-miss)
+So even though you’d approved similar commands before, this session / identity isn’t recognized as an authorized approver, and the approval timed out. The gateway then denied the command instead of running it.
+
+So:
+
+• The deploy did not run this time.
+• The reason I “could do it yesterday” is likely:
+  • Either a different session/agent was on the allowlist, or
+  • The node pairing/approver configuration has changed or expired.
+
+How to get me deploying again
+
+You have two options:
+
+1. Run the command yourself (one‑off deploy)
+SSH into the server and run exactly this (you already basically wrote it):
+
+su - ca12a15 -c "
+  cd /home/ca12a15/sites/sailhatteras_site &&
+  git fetch origin &&
+  git reset --hard origin/main &&
+  pnpm --filter @workspace/api-server build &&
+  PORT=8080 BASE_PATH=/ pnpm --filter @workspace/sail-hatteras build &&
+  pm2 restart sailhatteras-api
+" && find /var/nginx/cache/ca12a15 -type f -delete && nginx -s reload
+That will perform the standard deploy + nginx cache clear exactly as per the SailHatteras deploy skill.
+
+2. Fix OpenClaw exec / node pairing so I can do it for you again
+
+  • In OpenClaw gateway config, ensure:
+    • Your account (e.g., Telegram id 8592364489) is configured as an exec approver (or covered by owner config).
+    • A node host is properly paired for ded4680.inmotionhosting.com.
+  • Once that’s done, my exec calls from this session will either:
+    • Run directly (if allowlisted), or
+    • Prompt you with an approval you can confirm from Telegram / Web UI.
+
+If you’d like, I can walk you step‑by‑step through confirming the deploy worked (CSS, trips, images) after you run the command, or help you adjust the OpenClaw config so future deploys are one‑click again.
