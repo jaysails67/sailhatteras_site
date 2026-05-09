@@ -574,87 +574,55 @@ export default function TripDetail() {
                     </div>
                   )}
 
-                  {/* Session selector for adult sailing program */}
-                  {trip.slug === "adult-sailing-program" ? (
-                    <div className="space-y-2">
-                      <Label>Select Your Session <span className="text-destructive">*</span></Label>
-                      <p className="text-xs text-muted-foreground">2 mornings/week · 4 weeks · 8 sessions total</p>
-                      <div className="space-y-2 pt-1">
-                        {[
-                          { label: "June 2026 — starts first week of June", value: "2026-06-01" },
-                          { label: "July 2026 — starts first week of July", value: "2026-07-01" },
-                          { label: "August 2026 — starts first week of August", value: "2026-08-01" },
-                        ].map(session => (
-                          <button
-                            key={session.value}
-                            onClick={() => setSelectedDate(session.value)}
-                            className={`w-full text-left rounded-lg border px-4 py-3 text-sm transition-colors ${
-                              selectedDate === session.value
-                                ? "border-primary bg-primary/5 text-foreground font-medium"
-                                : "border-input bg-background hover:bg-muted/50"
-                            }`}
-                          >
-                            {session.label}
-                          </button>
-                        ))}
-                      </div>
-                      <p className="text-xs text-muted-foreground pt-1">
-                        We'll confirm your start date and morning schedule by email after enrollment.
+                  {/* Preferred date */}
+                  <div className="space-y-2">
+                    <Label>Preferred Sailing Date <span className="text-destructive">*</span></Label>
+                    <select
+                      data-testid="select-date"
+                      value={selectedDate}
+                      onChange={e => setSelectedDate(e.target.value)}
+                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                    >
+                      <option value="">Select a date...</option>
+                      {DATE_OPTIONS.slice(0, 60).map(o => (
+                        <option key={o.value} value={o.value}>{o.label}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Vacation window */}
+                  <div className="space-y-2 pt-1">
+                    <div>
+                      <Label className="text-sm">Your Vacation Window <span className="text-muted-foreground font-normal">(optional)</span></Label>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        If weather forces a reschedule, we'll reach out within this window.
                       </p>
                     </div>
-                  ) : (
-                    <>
-                      {/* Preferred date */}
-                      <div className="space-y-2">
-                        <Label>Preferred Sailing Date <span className="text-destructive">*</span></Label>
-                        <select
-                          data-testid="select-date"
-                          value={selectedDate}
-                          onChange={e => setSelectedDate(e.target.value)}
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-1">
+                        <Label className="text-xs text-muted-foreground">Arrives</Label>
+                        <input
+                          type="date"
+                          data-testid="input-vacation-start"
+                          value={vacationStart}
+                          onChange={e => setVacationStart(e.target.value)}
+                          min={new Date().toISOString().slice(0, 10)}
                           className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                        >
-                          <option value="">Select a date...</option>
-                          {DATE_OPTIONS.slice(0, 60).map(o => (
-                            <option key={o.value} value={o.value}>{o.label}</option>
-                          ))}
-                        </select>
+                        />
                       </div>
-
-                      {/* Vacation window */}
-                      <div className="space-y-2 pt-1">
-                        <div>
-                          <Label className="text-sm">Your Vacation Window <span className="text-muted-foreground font-normal">(optional)</span></Label>
-                          <p className="text-xs text-muted-foreground mt-0.5">
-                            If weather forces a reschedule, we'll reach out within this window.
-                          </p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
-                          <div className="space-y-1">
-                            <Label className="text-xs text-muted-foreground">Arrives</Label>
-                            <input
-                              type="date"
-                              data-testid="input-vacation-start"
-                              value={vacationStart}
-                              onChange={e => setVacationStart(e.target.value)}
-                              min={new Date().toISOString().slice(0, 10)}
-                              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <Label className="text-xs text-muted-foreground">Departs</Label>
-                            <input
-                              type="date"
-                              data-testid="input-vacation-end"
-                              value={vacationEnd}
-                              onChange={e => setVacationEnd(e.target.value)}
-                              min={vacationStart || new Date().toISOString().slice(0, 10)}
-                              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                            />
-                          </div>
-                        </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs text-muted-foreground">Departs</Label>
+                        <input
+                          type="date"
+                          data-testid="input-vacation-end"
+                          value={vacationEnd}
+                          onChange={e => setVacationEnd(e.target.value)}
+                          min={vacationStart || new Date().toISOString().slice(0, 10)}
+                          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                        />
                       </div>
-                    </>
-                  )}
+                    </div>
+                  </div>
 
                   {/* Participants */}
                   <div className="space-y-2 pt-1">
