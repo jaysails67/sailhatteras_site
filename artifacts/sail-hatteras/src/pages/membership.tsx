@@ -15,32 +15,53 @@ const memberBenefits = [
 
 const tiers = [
   {
-    name: "Local Annual",
-    price: "$95",
-    period: "/ year",
-    description: "For year-round Hatteras Island residents. Full access to all member benefits, programs, and social events.",
-    highlights: ["Full member benefits", "Youth program discounts", "Adult sailing access", "Regatta eligibility"],
+    name: "Locals Only Family",
+    badge: "Year-Round Residents",
+    price: "Contact us",
+    description: "For Hatteras Island year-round residents and their families. Full access to all member benefits, programs, social events, and regattas.",
+    highlights: [
+      "Adult Fun Sail: member rate ($95 vs $250)",
+      "Discounts on sailing programs & youth teams",
+      "Rental discounts on club boats",
+      "Full regatta eligibility",
+      "All social events & community sails",
+      "Use of club boats at club events",
+    ],
     cta: "Join as Local Member",
     href: "/contact",
     featured: false,
   },
   {
-    name: "Adult Fun Sail",
-    price: "$95",
-    period: "/ session",
-    description: "Members get a significant discount on our summer adult sailing sessions — June, July, and August. Non-members pay $250.",
-    highlights: ["Summer 2026 sessions", "June · July · August", "2 mornings/week · 4 weeks", "Mixed fleet boats"],
-    cta: "Book a Session",
-    href: "/trips/adult-fun-sail",
+    name: "Seasonal / Non-Resident Family",
+    badge: "Seasonal Visitors & Homeowners",
+    price: "Contact us",
+    description: "For Hatteras Island seasonal visitors, second-home owners, and their families who spend part of the year on the island.",
+    highlights: [
+      "Adult Community Intro to Sailing: 70% off",
+      "Intro to Cruising / Catamaran / Keelboat / Small Boats: 15% off",
+      "Opti Sailing Team: 20% off",
+      "Homeschool Cape Explorer: 10% off",
+      "Rental discounts",
+      "Social events & community sails",
+    ],
+    cta: "Join as Seasonal Member",
+    href: "/contact",
     featured: true,
   },
   {
-    name: "Vacation / Visitor",
+    name: "Cape Select",
+    badge: "Rental Property Owners",
     price: "Contact us",
-    period: "",
-    description: "Visiting the Outer Banks? Ask your rental property owner about Cape Select access, or reach out directly for visitor options.",
-    highlights: ["Weekly group options", "Rental discounts", "Charter access", "Local sailing guidance"],
-    cta: "Contact Us",
+    description: "Designed for vacation rental property owners on Hatteras Island. Provide your guests with exclusive on-water access as part of their rental amenity package.",
+    highlights: [
+      "Guest access to safe boat launch",
+      "Expert local knowledge & training",
+      "Rental discounts for guests",
+      "Charter & experience access",
+      "On-water social activities",
+      "Weekly group option available",
+    ],
+    cta: "Ask About Cape Select",
     href: "/contact",
     featured: false,
   },
@@ -132,27 +153,15 @@ export default function Membership() {
                     : "border-border bg-card"
                 }`}
               >
-                {tier.featured && (
-                  <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest mb-4 text-secondary">
-                    <Star className="h-3.5 w-3.5 fill-secondary" />
-                    Member Pricing
-                  </div>
-                )}
-                <div className="mb-1">
-                  <h3 className={`font-serif text-xl font-bold ${tier.featured ? "text-primary-foreground" : "text-foreground"}`}>
-                    {tier.name}
-                  </h3>
+                <div className={`inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest mb-4 ${
+                  tier.featured ? "text-secondary" : "text-primary"
+                }`}>
+                  {tier.featured && <Star className="h-3.5 w-3.5 fill-secondary" />}
+                  {tier.badge}
                 </div>
-                <div className="flex items-baseline gap-1 mb-4">
-                  <span className={`text-3xl font-bold ${tier.featured ? "text-primary-foreground" : "text-foreground"}`}>
-                    {tier.price}
-                  </span>
-                  {tier.period && (
-                    <span className={`text-sm ${tier.featured ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
-                      {tier.period}
-                    </span>
-                  )}
-                </div>
+                <h3 className={`font-serif text-xl font-bold mb-4 ${tier.featured ? "text-primary-foreground" : "text-foreground"}`}>
+                  {tier.name}
+                </h3>
                 <p className={`text-sm leading-relaxed mb-6 ${tier.featured ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
                   {tier.description}
                 </p>
