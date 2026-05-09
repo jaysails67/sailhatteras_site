@@ -8,7 +8,7 @@ import {
   shVesselsTable,
   shTripVesselsTable,
 } from "@workspace/db";
-import { eq, and, gte, lte, desc, asc, sql } from "drizzle-orm";
+import { eq, and, gte, lte, desc, asc, sql, inArray } from "drizzle-orm";
 import {
   ListShTripsQueryParams,
   CreateShCheckoutBody,
@@ -522,7 +522,7 @@ router.get("/sh/admin/dashboard", async (req, res) => {
       ? await db
           .select()
           .from(shTripsTable)
-          .where(sql`${shTripsTable.id} = ANY(${tripIds})`)
+          .where(inArray(shTripsTable.id, tripIds))
       : [];
   const tripsById = Object.fromEntries(trips.map((t) => [t.id, t]));
 
@@ -573,7 +573,7 @@ router.get("/sh/admin/bookings", async (req, res) => {
       ? await db
           .select()
           .from(shTripsTable)
-          .where(sql`${shTripsTable.id} = ANY(${tripIds})`)
+          .where(inArray(shTripsTable.id, tripIds))
       : [];
   const tripsById = Object.fromEntries(trips.map((t) => [t.id, t]));
 
