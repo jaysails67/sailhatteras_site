@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useParams, useLocation } from "wouter";
 import {
   Clock, Users, Anchor, ArrowLeft, Check, Heart,
-  ChevronRight, AlertCircle, Loader2, Ship, Info, Mail
+  ChevronRight, AlertCircle, Loader2, Ship, Info, Mail, CalendarDays
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,27 +12,28 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useGetShTrip, useShTripVessels, useCreateShEnrollment } from "@workspace/api-client-react";
 import type { ShVessel } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 
-const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
-function buildDateOptions() {
-  const opts: { label: string; value: string }[] = [];
-  const today = new Date();
-  for (let i = 1; i <= 90; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    const day = d.getDay();
-    if (day === 0 || day === 6) continue;
-    const iso = d.toISOString().slice(0, 10);
-    opts.push({ label: `${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`, value: iso });
-  }
-  return opts;
+function formatIsoDate(iso: string): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  return `${MONTH_NAMES[m - 1]} ${d}, ${y}`;
 }
 
-const DATE_OPTIONS = buildDateOptions();
+function isoToDate(iso: string): Date | undefined {
+  if (!iso) return undefined;
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
+function dateToIso(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
 
 function VesselCard({
   vessel,
@@ -101,6 +102,7 @@ export default function TripDetail() {
   const [selectedVessel, setSelectedVessel] = useState<ShVessel | null>(null);
   const [selectedSession, setSelectedSession] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [vacationStart, setVacationStart] = useState("");
   const [vacationEnd, setVacationEnd] = useState("");
   const [passengers, setPassengers] = useState(2);
@@ -588,17 +590,51 @@ export default function TripDetail() {
                   {/* Preferred date */}
                   <div className="space-y-2">
                     <Label>Preferred Sailing Date <span className="text-destructive">*</span></Label>
-                    <select
-                      data-testid="select-date"
-                      value={selectedDate}
-                      onChange={e => setSelectedDate(e.target.value)}
-                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                    >
-                      <option value="">Select a date...</option>
-                      {DATE_OPTIONS.slice(0, 60).map(o => (
-                        <option key={o.value} value={o.value}>{o.label}</option>
-                      ))}
-                    </select>
+                    <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+                      <PopoverTrigger asChild>
+                        <button
+                          data-testid="select-date"
+                          className={`w-full flex items-center gap-2 rounded-md border px-3 py-2 text-sm text-left transition-colors focus:outline-none focus:ring-2 focus:ring-ring ${
+                            selectedDate
+                              ? "border-input bg-background text-foreground"
+                              : "border-input bg-background text-muted-foreground"
+                          }`}
+                        >
+                          <CalendarDays className="h-4 w-4 text-muted-foreground shrink-0" />
+                          <span className="flex-1">
+                            {selectedDate ? formatIsoDate(selectedDate) : "Select a date…"}
+                          </span>
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start" sideOffset={4}>
+                        <Calendar
+                          mode="single"
+                          selected={isoToDate(selectedDate)}
+                          onSelect={(date) => {
+                            if (date) {
+                              setSelectedDate(dateToIso(date));
+                              setDatePickerOpen(false);
+                            }
+                          }}
+                          disabled={(date) => {
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            const tomorrow = new Date(today);
+                            tomorrow.setDate(today.getDate() + 1);
+                            const maxDate = new Date(today);
+                            maxDate.setDate(today.getDate() + 90);
+                            const day = date.getDay();
+                            return date < tomorrow || date > maxDate || day === 0 || day === 6;
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    {selectedDate && (
+                      <p className="text-xs text-muted-foreground">
+                        Weekdays only · subject to availability · we'll confirm via email
+                      </p>
+                    )}
                   </div>
 
                   {/* Vacation window */}
