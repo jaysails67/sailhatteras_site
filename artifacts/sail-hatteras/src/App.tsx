@@ -13,6 +13,8 @@ import Contact from "@/pages/contact";
 import About from "@/pages/about";
 import Privacy from "@/pages/privacy";
 import Payments from "@/pages/payments";
+import Membership from "@/pages/membership";
+import Support from "@/pages/support";
 import Admin from "@/pages/admin";
 import AdminBookings from "@/pages/admin-bookings";
 import AdminContacts from "@/pages/admin-contacts";
@@ -34,6 +36,8 @@ function Router() {
           <Route path="/about" component={About} />
           <Route path="/privacy" component={Privacy} />
           <Route path="/payments" component={Payments} />
+          <Route path="/membership" component={Membership} />
+          <Route path="/support" component={Support} />
           <Route path="/admin" component={Admin} />
           <Route path="/admin/bookings" component={AdminBookings} />
           <Route path="/admin/contacts" component={AdminContacts} />

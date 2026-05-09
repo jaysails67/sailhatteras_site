@@ -12,6 +12,8 @@ export function Navbar() {
     { href: "/trips?category=experiences", label: "Experiences" },
     { href: "/trips?category=learn", label: "Learn to Sail" },
     { href: "/trips?category=rentals", label: "Rentals" },
+    { href: "/membership", label: "Membership" },
+    { href: "/support", label: "Support" },
     { href: "/about", label: "Our Mission" },
     { href: "/contact", label: "Contact" },
   ];
