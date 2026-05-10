@@ -1,0 +1,51 @@
+> EOF
+[root@ded4680 ~]# chmod 600 /home/ca12a15/sites/sailhatteras_site/.env
+[root@ded4680 ~]# su - ca12a15 -s /bin/bash -c 'pm2 start /home/ca12a15/sites/sailhatteras_site/artifacts/api-server/dist/index.mjs --name sailhatteras-api; pm2 save'
+[PM2][ERROR] Script already launched, add -f option to force re-execution
+[PM2] Saving current process list...
+[PM2] Successfully saved in /home/ca12a15/.pm2/dump.pm2
+[root@ded4680 ~]# su - ca12a15 -s /bin/bash -c 'pm2 logs sailhatteras-api --lines 20 --nostream'
+[TAILING] Tailing last 20 lines for [sailhatteras-api] process (change the value with --lines option)
+/home/ca12a15/.pm2/logs/sailhatteras-api-error.log last 20 lines:
+0|sailhatt |     at NodePgPreparedQuery.queryWithCache (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.18.0_pg@8.20.0/node_modules/src/pg-core/session.ts:73:11)
+0|sailhatt |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+0|sailhatt |     at async <anonymous> (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.18.0_pg@8.20.0/node_modules/src/node-postgres/session.ts:154:19)
+0|sailhatt |     at async <anonymous> (/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/src/routes/sh.ts:573:9)
+0|sailhatt | Error: Failed query: select "id", "slug", "name", "category", "type", "short_description", "description", "duration", "price_min", "price_display", "pricing_note", "pricing_model", "max_passengers", "boat", "highlights", "image_url", "active", "coming_soon", "sort_order", "stripe_price_id", "created_at", "updated_at" from "sh_trips"where "sh_trips"."id" = ANY(($1, $2, $3))
+0|sailhatt | params: 10,2,8
+0|sailhatt |     at NodePgPreparedQuery.queryWithCache (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.18.0_pg@8.20.0/node_modules/src/pg-core/session.ts:73:11)
+0|sailhatt |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+0|sailhatt |     at async <anonymous> (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.18.0_pg@8.20.0/node_modules/src/node-postgres/session.ts:154:19)
+0|sailhatt |     at async <anonymous> (/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/src/routes/sh.ts:573:9)
+0|sailhatt | Warning: connect.session() MemoryStore is not
+0|sailhatt | designed for a production environment, as it will leak
+0|sailhatt | memory, and will not scale past a single process.
+0|sailhatt | (node:1275443) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | Warning: connect.session() MemoryStore is not
+0|sailhatt | designed for a production environment, as it will leak
+0|sailhatt | memory, and will not scale past a single process.
+0|sailhatt | (node:1277726) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+
+/home/ca12a15/.pm2/logs/sailhatteras-api-out.log last 20 lines:
+0|sailhatt | 654754,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":63,"method":"GET","url":"/api/sh/trips/beach-cat-rental/vessels"},"res":{"statusCode":200},"responseTime":5,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778432309580,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":65,"method":"GET","url":"/api/sh/trips/sunset-sail"},"res":{"statusCode":200},"responseTime":4,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778432309592,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":66,"method":"GET","url":"/api/sh/trips/sunset-sail/vessels"},"res":{"statusCode":200},"responseTime":2,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778432313376,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":67,"method":"GET","url":"/api/sh/trips"},"res":{"statusCode":200},"responseTime":2,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778433245594,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":68,"method":"GET","url":"/api/sh/trips/stiletto-x-charter"},"res":{"statusCode":200},"responseTime":5,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778433245594,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":69,"method":"GET","url":"/api/sh/trips/stiletto-x-charter/vessels"},"res":{"statusCode":200},"responseTime":4,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778439084052,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":70,"method":"GET","url":"/api/sh/trips/adult-sailing-program"},"res":{"statusCode":200},"responseTime":4,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778439084464,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":71,"method":"GET","url":"/api/sh/trips/adult-sailing-program/vessels"},"res":{"statusCode":200},"responseTime":2,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778441159793,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":72,"method":"GET","url":"/api/sh/summary"},"res":{"statusCode":200},"responseTime":5,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778447238129,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":73,"method":"GET","url":"/api/sh/trips"},"res":{"statusCode":200},"responseTime":4,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778450160882,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":75,"method":"GET","url":"/api/sh/trips/full-day-sail"},"res":{"statusCode":200},"responseTime":3,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778450160883,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":74,"method":"GET","url":"/api/sh/trips/full-day-sail/vessels"},"res":{"statusCode":200},"responseTime":5,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778450493179,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":77,"method":"GET","url":"/api/sh/trips/sunset-sail"},"res":{"statusCode":200},"responseTime":3,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778450493180,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":76,"method":"GET","url":"/api/sh/trips/sunset-sail/vessels"},"res":{"statusCode":200},"responseTime":5,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778450602278,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":78,"method":"GET","url":"/api/sh/admin/bookings"},"res":{"statusCode":200},"responseTime":5,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778450608010,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":79,"method":"GET","url":"/api/sh/admin/dashboard"},"res":{"statusCode":200},"responseTime":2,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778450617240,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":80,"method":"GET","url":"/api/sh/trips"},"res":{"statusCode":200},"responseTime":2,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778451682710,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":81,"method":"GET","url":"/api/sh/summary"},"res":{"statusCode":200},"responseTime":4,"msg":"request completed"}
+
+[root@ded4680 ~]#
