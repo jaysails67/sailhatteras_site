@@ -622,19 +622,29 @@ export default function TripDetail() {
                             const tomorrow = new Date(today);
                             tomorrow.setDate(today.getDate() + 1);
                             const maxDate = new Date(today);
-                            maxDate.setDate(today.getDate() + 90);
-                            const day = date.getDay();
-                            return date < tomorrow || date > maxDate || day === 0 || day === 6;
+                            maxDate.setMonth(today.getMonth() + 18);
+                            return date < tomorrow || date > maxDate;
                           }}
                           initialFocus
                         />
                       </PopoverContent>
                     </Popover>
-                    {selectedDate && (
-                      <p className="text-xs text-muted-foreground">
-                        Weekdays only · subject to availability · we'll confirm via email
-                      </p>
-                    )}
+                    {selectedDate && (() => {
+                      const d = new Date(selectedDate + "T12:00:00");
+                      const m = d.getMonth() + 1;
+                      const day = d.getDate();
+                      const offSeason = m < 6 || m > 9 || (m === 9 && day > 1);
+                      return offSeason ? (
+                        <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 space-y-1">
+                          <div className="font-semibold">Outside our main season (June 1 – Sept 1)</div>
+                          <div>We're generally closed during this period. Submit your request and we'll contact you to discuss availability for a special arrangement.</div>
+                        </div>
+                      ) : (
+                        <p className="text-xs text-muted-foreground">
+                          Subject to availability · we'll confirm via email within 24–48 hrs
+                        </p>
+                      );
+                    })()}
                   </div>
 
                   {/* Vacation window */}

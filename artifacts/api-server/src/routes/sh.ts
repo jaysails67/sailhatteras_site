@@ -781,12 +781,24 @@ router.post("/sh/enroll", async (req, res) => {
     specialRequests: specialRequests ?? null,
   }).returning();
 
+  // Off-season detection: season is June 1 – Sept 1
+  const isOffSeasonBooking = (() => {
+    if (!bookingDate) return false;
+    const d = new Date(bookingDate + "T12:00:00");
+    const m = d.getMonth() + 1;
+    const day = d.getDate();
+    return m < 6 || m > 9 || (m === 9 && day > 1);
+  })();
+
   // Telegram notification
   const { sendTelegramMessage } = await import("../lib/telegram");
   sendTelegramMessage(
-    `📋 <b>New Enrollment Request</b>\n` +
+    `${isOffSeasonBooking ? "⚠️ <b>OFF-SEASON INQUIRY — OVERRIDE NEEDED</b>\n" : ""}` +
+    `📋 <b>New Booking Request</b>\n` +
     `Program: ${trip.name}\n` +
     `Class/Vessel: ${vesselName ?? "—"}\n` +
+    `Date: ${bookingDate ?? "—"}${isOffSeasonBooking ? " ⚠️ off-season" : ""}\n` +
+    `Guests: ${passengers}\n` +
     `Name: ${customerName}\n` +
     `Email: ${customerEmail}\n` +
     `Phone: ${customerPhone || "—"}\n` +
@@ -812,12 +824,18 @@ router.post("/sh/enroll", async (req, res) => {
       await transporter.sendMail({
         from: process.env.SMTP_USER,
         to: adminEmail,
-        subject: `Enrollment Request: ${customerName} — ${trip.name}`,
+        subject: `${isOffSeasonBooking ? "⚠️ OFF-SEASON INQUIRY — " : ""}Booking Request: ${customerName} — ${trip.name}`,
         text: [
-          `New enrollment request received.`,
+          isOffSeasonBooking
+            ? `⚠️  OFF-SEASON INQUIRY — MANAGERIAL OVERRIDE NEEDED\n` +
+              `This booking is for ${bookingDate}, which is outside the June 1–Sept 1 season.\n` +
+              `Contact the customer to confirm whether you can accommodate this request.\n`
+            : `New booking request received.`,
           ``,
           `Program: ${trip.name}`,
-          `Class/Track: ${vesselName ?? "—"}`,
+          `Vessel/Track: ${vesselName ?? "—"}`,
+          `Date: ${bookingDate ?? "—"}`,
+          `Guests: ${passengers}`,
           ``,
           `Name:  ${customerName}`,
           `Email: ${customerEmail}`,
