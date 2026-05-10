@@ -1,0 +1,32 @@
+[root@ded4680 ~]# grep -c 'YOUR_BOT_TOKEN_HERE' /home/ca12a15/sites/sailhatteras_site/.env
+0
+[root@ded4680 ~]# su - ca12a15 -s /bin/bash -c '
+> pm2 stop sailhatteras-api
+> pm2 delete sailhatteras-api
+> pm2 start /home/ca12a15/sites/sailhatteras_site/artifacts/api-server/dist/index.mjs \
+>   --name sailhatteras-api \
+>   --cwd /home/ca12a15/sites/sailhatteras_site
+> pm2 save
+> '
+[PM2] Applying action stopProcessId on app [sailhatteras-api](ids: [ 0 ])
+[PM2] [sailhatteras-api](0) ✓
+┌────┬─────────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name                │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼─────────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ sailhatteras-api    │ default     │ 0.0.0   │ fork    │ 0        │ 0      │ 9    │ stopped   │ 0%       │ 0b       │ ca12a15  │ disabled │
+└────┴─────────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[PM2] Applying action deleteProcessId on app [sailhatteras-api](ids: [ 0 ])
+[PM2] [sailhatteras-api](0) ✓
+┌────┬───────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name      │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+└────┴───────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[PM2] Starting /home/ca12a15/sites/sailhatteras_site/artifacts/api-server/dist/index.mjs in fork_mode (1 instance)
+[PM2] Done.
+┌────┬─────────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name                │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼─────────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ sailhatteras-api    │ default     │ 0.0.0   │ fork    │ 1427301  │ 0s     │ 0    │ online    │ 0%       │ 13.8mb   │ ca12a15  │ disabled │
+└────┴─────────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[PM2] Saving current process list...
+[PM2] Successfully saved in /home/ca12a15/.pm2/dump.pm2
+[root@ded4680 ~]#
