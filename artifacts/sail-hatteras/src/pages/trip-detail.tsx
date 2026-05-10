@@ -673,7 +673,14 @@ export default function TripDetail() {
 
                   {/* Participants */}
                   <div className="space-y-2 pt-1">
-                    <Label>Participants</Label>
+                    <div>
+                      <Label>{isFlat ? "Group Size" : "Participants"}</Label>
+                      {isFlat && (
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          For planning purposes only — flat rate covers the whole boat.
+                        </p>
+                      )}
+                    </div>
                     <div className="flex items-center gap-3">
                       <button
                         onClick={() => setPassengers(p => Math.max(1, p - 1))}
@@ -694,7 +701,10 @@ export default function TripDetail() {
 
                   {selectedDate && (
                     <div className="text-xs text-right text-muted-foreground">
-                      Subtotal: <span className="font-semibold text-foreground">${((effectivePriceCents * passengers) / 100).toFixed(0)}</span>
+                      {isFlat
+                        ? <span>Flat rate: <span className="font-semibold text-foreground">${(effectivePriceCents / 100).toFixed(0)}</span> · covers up to {selectedVessel?.capacity ?? trip.maxPassengers} guests</span>
+                        : <span>Subtotal: <span className="font-semibold text-foreground">${((effectivePriceCents * passengers) / 100).toFixed(0)}</span></span>
+                      }
                     </div>
                   )}
                   <div className="flex gap-3">
