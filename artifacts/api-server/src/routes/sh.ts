@@ -619,6 +619,40 @@ router.patch("/sh/admin/bookings/:id", async (req, res) => {
     .where(eq(shTripsTable.id, updated.tripId))
     .limit(1);
 
+  // When deposit is confirmed, add to Google Calendar with a reminder
+  if (body.data.status === "confirmed" && updated.bookingDate) {
+    const { createCalendarEvent } = await import("../lib/googleCalendar");
+    const guests = updated.passengers ?? 1;
+    const amount = `$${((updated.totalCents ?? 0) / 100).toFixed(0)}`;
+    createCalendarEvent({
+      summary: `⛵ ${trip?.name ?? "Sailing Charter"} — ${updated.customerName} (${guests} guest${guests !== 1 ? "s" : ""})`,
+      description: [
+        `Booking #${updated.id}`,
+        `Customer: ${updated.customerName}`,
+        `Email: ${updated.customerEmail}`,
+        updated.customerPhone ? `Phone: ${updated.customerPhone}` : "",
+        updated.vesselName ? `Vessel: ${updated.vesselName}` : "",
+        `Guests: ${guests}`,
+        `Total paid: ${amount}`,
+        updated.specialRequests ? `Notes: ${updated.specialRequests}` : "",
+      ].filter(Boolean).join("\n"),
+      date: updated.bookingDate,
+      reminderMinutes: 2880, // 48hr popup + email reminder
+    }).catch((err) => logger.warn({ err }, "Google Calendar event failed"));
+
+    // Also send a Telegram confirmation
+    const { sendTelegramMessage } = await import("../lib/telegram");
+    sendTelegramMessage(
+      `✅ <b>Booking Confirmed</b>\n` +
+      `Program: ${trip?.name ?? "—"}\n` +
+      `Vessel: ${updated.vesselName ?? "—"}\n` +
+      `Date: ${updated.bookingDate}\n` +
+      `Customer: ${updated.customerName} (${updated.customerEmail})\n` +
+      `Guests: ${guests} · Total: ${amount}\n` +
+      `📅 Added to Google Calendar`
+    );
+  }
+
   res.json({
     id: updated.id,
     tripName: trip?.name ?? "Unknown",

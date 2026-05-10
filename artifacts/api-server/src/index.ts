@@ -1,3 +1,7 @@
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+try { require("dotenv").config(); } catch { /* dotenv optional in Replit — env vars already injected */ }
+
 import app from "./app";
 import { logger } from "./lib/logger";
 import { seed } from "./seed";
