@@ -6,6 +6,8 @@ import app from "./app";
 import { logger } from "./lib/logger";
 import { seed } from "./seed";
 import { registerWebhook } from "./lib/telegram";
+import { sendDailyBriefing } from "./lib/dailyBriefing";
+import cron from "node-cron";
 
 const rawPort = process.env["PORT"];
 
@@ -30,4 +32,22 @@ app.listen(port, async (err?: Error) => {
   logger.info({ port }, "Server listening");
   await seed();
   await registerWebhook();
+
+  // Daily 7 AM Eastern briefing via Telegram
+  // 7 AM EDT (UTC-4, summer) = 11:00 UTC → cron "0 11 * * *"
+  // 7 AM EST (UTC-5, winter) = 12:00 UTC → cron "0 12 * * *"
+  // We schedule both and the briefing function handles the ET date calculation.
+  if (process.env.NODE_ENV !== "development") {
+    cron.schedule("0 11 * * *", () => {
+      logger.info("Running daily 7 AM ET briefing (EDT schedule)");
+      sendDailyBriefing();
+    }, { timezone: "UTC" });
+
+    cron.schedule("0 12 * * *", () => {
+      logger.info("Running daily 7 AM ET briefing (EST schedule)");
+      sendDailyBriefing();
+    }, { timezone: "UTC" });
+
+    logger.info("Daily briefing cron scheduled (7 AM Eastern)");
+  }
 });
