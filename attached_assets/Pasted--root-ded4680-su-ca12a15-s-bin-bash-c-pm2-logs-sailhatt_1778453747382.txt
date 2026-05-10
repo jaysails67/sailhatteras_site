@@ -1,0 +1,37 @@
+[root@ded4680 ~]# su - ca12a15 -s /bin/bash -c 'pm2 logs sailhatteras-api --lines 15 --nostream'
+[TAILING] Tailing last 15 lines for [sailhatteras-api] process (change the value with --lines option)
+/home/ca12a15/.pm2/logs/sailhatteras-api-out.log last 15 lines:
+0|sailhatt | {"level":30,"time":1778450493179,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":77,"method":"GET","url":"/api/sh/trips/sunset-sail"},"res":{"statusCode":200},"responseTime":3,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778450493180,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":76,"method":"GET","url":"/api/sh/trips/sunset-sail/vessels"},"res":{"statusCode":200},"responseTime":5,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778450602278,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":78,"method":"GET","url":"/api/sh/admin/bookings"},"res":{"statusCode":200},"responseTime":5,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778450608010,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":79,"method":"GET","url":"/api/sh/admin/dashboard"},"res":{"statusCode":200},"responseTime":2,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778450617240,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":80,"method":"GET","url":"/api/sh/trips"},"res":{"statusCode":200},"responseTime":2,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778451682710,"pid":1277726,"hostname":"ded4680.inmotionhosting.com","req":{"id":81,"method":"GET","url":"/api/sh/summary"},"res":{"statusCode":200},"responseTime":4,"msg":"request completed"}
+0|sailhatt | ◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+0|sailhatt | {"level":30,"time":1778453368481,"pid":1426648,"hostname":"ded4680.inmotionhosting.com","port":3001,"msg":"Server listening"}
+0|sailhatt | {"level":30,"time":1778453368574,"pid":1426648,"hostname":"ded4680.inmotionhosting.com","adminEmail":"info.org","msg":"Admin user seeded"}
+0|sailhatt | {"level":30,"time":1778453368588,"pid":1426648,"hostname":"ded4680.inmotionhosting.com","msg":"Seeded Vandemere Roundtable press release"}
+0|sailhatt | {"level":30,"time":1778453368588,"pid":1426648,"hostname":"ded4680.inmotionhosting.com","msg":"Database seed complete"}
+0|sailhatt | {"level":40,"time":1778453368588,"pid":1426648,"hostname":"ded4680.inmotionhosting.com","msg":"Cannot determine webhook URL (TELEGRAM_WEBHOOK_URL and REPLIT_DEV_DOMAIN both unset) — skipping"}
+0|sailhatt | {"level":30,"time":1778453368609,"pid":1426648,"hostname":"ded4680.inmotionhosting.com","msg":"Daily briefing cron scheduled (7 AM Eastern)"}
+0|sailhatt | {"level":30,"time":1778453424136,"pid":1426648,"hostname":"ded4680.inmotionhosting.com","req":{"id":1,"method":"GET","url":"/api/sh/trips/dolphin-tour"},"res":{"statusCode":200},"responseTime":12,"msg":"request completed"}
+0|sailhatt | {"level":30,"time":1778453424499,"pid":1426648,"hostname":"ded4680.inmotionhosting.com","req":{"id":2,"method":"GET","url":"/api/sh/trips/dolphin-tour/vessels"},"res":{"statusCode":200},"responseTime":8,"msg":"request completed"}
+
+/home/ca12a15/.pm2/logs/sailhatteras-api-error.log last 15 lines:
+0|sailhatt | memory, and will not scale past a single process.
+0|sailhatt | (node:1277726) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | Warning: connect.session() MemoryStore is not
+0|sailhatt | designed for a production environment, as it will leak
+0|sailhatt | memory, and will not scale past a single process.
+0|sailhatt | (node:1426648) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | (node:1427301) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | Error: DATABASE_URL must be set. Did you forget to provision a database?
+0|sailhatt |     at <anonymous> (/home/ca12a15/sites/sailhatteras_site/lib/db/src/index.ts:8:9)
+0|sailhatt |     at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+0|sailhatt |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+0|sailhatt |     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+
+[root@ded4680 ~]#
