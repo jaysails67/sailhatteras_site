@@ -1,0 +1,22 @@
+                                            ^
+[root@ded4680 ~]# su - ca12a15 -s /bin/bash -c "
+> export \$(grep -v '^#' /home/ca12a15/sites/sailhatteras_site/.env |xargs)
+> psql \"\$DATABASE_URL\" -c \"CREATE TABLE IF NOT EXISTS sh_dev_tasks (id SERIAL PRIMARY KEY, title TEXT NOT NULL, description TEXT NOT NULL DEFAULT '', architecture_notes TEXT, status TEXT NOT NULL DEFAULT 'backlog', priority TEXT NOT NULL DEFAULT 'medium', created_at TIMESTAMP DEFAULT NOW(), updated_at TIMESTAMP DEFAULT NOW());\"
+> "
+NOTICE:  relation "sh_dev_tasks" already exists, skipping
+CREATE TABLE
+[root@ded4680 ~]# su - ca12a15 -s /bin/bash -c '
+> for task in \
+>   "{\"title\":\"Guest Liability & Photo Waiver System\",\"description\":\"After a booking is confirmed, the paying customer receives a shareable link to send to their guests. Each guest independently completes a liability waiver, photo consent, and optional newsletter opt-in.\",\"status\":\"backlog\",\"priority\":\"high\"}" \
+>   "{\"title\":\"Customer Management / CRM Expansion\",\"description\":\"Expand the contacts system into a full lightweight CRM — customerhistory, trip count, lifetime value, notes per customer, and repeat-customer tagging.\",\"status\":\"backlog\",\"priority\":\"medium\"}" \
+>   "{\"title\":\"Charter Gift Certificates / Vouchers\",\"description\":\"Allow purchase of gift certificates redeemable against any trip booking. Certificates have a code, dollar value, and optional expiry.\",\"status\":\"backlog\",\"priority\":\"medium\"}" \
+>   "{\"title\":\"Automated Post-Trip Follow-Up\",\"description\":\"After a trip date passes, automatically send a review request and rebook discount code to the booking customer.\",\"status\":\"backlog\",\"priority\":\"medium\"}" \
+>   "{\"title\":\"Fleet / Vessel Maintenance Log\",\"description\":\"Track maintenance events, inspections, and safety checks per vessel with a simple admin log interface.\",\"status\":\"backlog\",\"priority\":\"low\"}" \
+>   "{\"title\":\"Seasonal Pricing Rules\",\"description\":\"Allow trip prices to vary by date range without manual per-trip editing.\",\"status\":\"backlog\",\"priority\":\"low\"}" \
+>   "{\"title\":\"Repeat Customer Recognition\",\"description\":\"Automatically identify returning customers and surface context to staff.\",\"status\":\"backlog\",\"priority\":\"low\"}" \
+>   "{\"title\":\"Multi-Leg / Multi-Day Trip Support\",\"description\":\"Support trip offerings that span multiple days or have multiple departure legs.\",\"status\":\"backlog\",\"priority\":\"low\"}"; do
+>   curl -s -X POST http://localhost:3001/api/sh/admin/dev-tasks \
+>     -H "Content-Type: application/json" \
+>     -d "$task" | python3 -c "import sys,json; d=json.load(sys.
+>
+>
