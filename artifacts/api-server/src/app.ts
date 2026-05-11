@@ -115,6 +115,13 @@ app.use(session({
   },
 }));
 
+// Prevent Apache (and any other proxy) from caching API responses
+app.use("/api", (_req, res, next) => {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  next();
+});
+
 app.use("/api", router);
 
 export default app;
