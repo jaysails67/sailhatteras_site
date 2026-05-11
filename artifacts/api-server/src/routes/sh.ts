@@ -957,26 +957,38 @@ router.post("/sh/admin/deploy", async (req, res) => {
     log.push("\n=== build api ===");
     log.push(buildApi.stdout.trim());
 
-    log.push("\n✓ Build complete — server will restart in 3 seconds...");
+    log.push("\n=== build complete — restarting via PM2 ===");
 
-    res.json({ success: true, output: log.join("\n") });
+    // Use PM2 to restart cleanly. Spawn detached so the shell outlives
+    // this node process being killed/restarted by PM2 itself.
+    const restartCmd = `pm2 restart sailhatteras-api 2>&1`;
+    const pm2Result = await execAsync(restartCmd, { cwd }).catch((e: any) => ({ stdout: "", stderr: e.message }));
+    log.push(pm2Result.stdout?.trim() || pm2Result.stderr?.trim() || "pm2 restart issued");
 
-    // Detached restart: kill the current node process on port 3001,
-    // then start a fresh one with env vars loaded from .env.
-    // spawn with detached:true + unref() ensures the shell script
-    // outlives the current node process when it is killed.
-    setTimeout(() => {
-      // InMotion cPanel auto-restarts the node process when killed,
-      // so we just need to kill it and it will come back with new code.
-      const restartCmd = `sleep 2 && kill $(lsof -ti :3001 2>/dev/null) 2>/dev/null || true`;
+    // Poll the health endpoint (localhost) for up to 40 seconds to confirm
+    // the new process is serving requests before we report success.
+    const apiPort = process.env.PORT ?? "3001";
+    const healthUrl = `http://localhost:${apiPort}/api/healthz`;
+    let healthy = false;
+    const deadline = Date.now() + 40_000;
 
-      const child = spawn("bash", ["-c", restartCmd], {
-        detached: true,
-        stdio: "ignore",
-        cwd,
-      });
-      child.unref();
-    }, 1000);
+    while (Date.now() < deadline) {
+      await new Promise((r) => setTimeout(r, 2000));
+      try {
+        const resp = await fetch(healthUrl, { signal: AbortSignal.timeout(3000) });
+        if (resp.ok) { healthy = true; break; }
+      } catch {
+        // still restarting — keep polling
+      }
+    }
+
+    if (healthy) {
+      log.push("✓ API is healthy — deploy complete");
+      res.json({ success: true, output: log.join("\n") });
+    } else {
+      log.push("⚠️  API did not respond within 40 s after restart — check PM2 logs");
+      res.json({ success: false, output: log.join("\n") });
+    }
   } catch (err: any) {
     log.push(`\n✗ Error: ${err.message}`);
     if (err.stdout?.trim()) log.push(err.stdout.trim());
