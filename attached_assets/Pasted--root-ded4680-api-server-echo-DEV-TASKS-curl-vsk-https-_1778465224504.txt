@@ -1,0 +1,46 @@
+
+[root@ded4680 api-server]# echo "=== DEV-TASKS ===" && curl -vsk https://sailhatteras.org/api/sh/admin/dev-tasks 2>&1 | grep -E "^[<>]|HTTP" | head -20
+=== DEV-TASKS ===
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+> GET /api/sh/admin/dev-tasks HTTP/2
+> Host: sailhatteras.org
+> User-Agent: curl/7.61.1
+> Accept: */*
+>
+< HTTP/2 200
+< server: nginx/1.29.8
+< date: Mon, 11 May 2026 02:06:39 GMT
+< content-type: application/json; charset=utf-8
+< content-length: 2
+< x-powered-by: Express
+< vary: Origin
+< access-control-allow-credentials: true
+< etag: W/"2-l9Fw4VUO7kr8CvBlt4zaMCqXZ0w"
+< x-proxy-cache: HIT
+<
+[root@ded4680 api-server]#
+[root@ded4680 api-server]# # Check all recent Apache log entries (to see dev-tasks entries from our recent curls)
+[root@ded4680 api-server]# tail -20 /usr/local/apache/domlogs/sailhatteras.org.hatterassailing.org-ssl_log
+192.249.121.207 - - [10/May/2026:17:56:08 -0700] "POST /api/sh/admin/deploy HTTP/1.1" 200 2659 "https://sailhatteras.org/admin" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)Chrome/147.0.0.0 Safari/537.36"
+192.249.121.207 - - [10/May/2026:17:57:00 -0700] "GET /admin HTTP/1.1" 200 1799 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+192.249.121.207 - - [10/May/2026:18:00:17 -0700] "GET /admin/roadmap HTTP/1.1" 200 1799 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+192.249.121.207 - - [10/May/2026:18:02:03 -0700] "GET /admin/roadmap HTTP/1.1" 200 1799 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+192.249.121.207 - - [10/May/2026:18:04:07 -0700] "GET /admin/roadmap HTTP/1.1" 200 1799 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+192.249.121.207 - - [10/May/2026:18:09:34 -0700] "GET /favicon.ico HTTP/1.1" 200 1799 "https://sailhatteras.org/api/sh/admin/dev-tasks" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+192.249.121.207 - - [10/May/2026:18:25:00 -0700] "GET /admin/roadmap HTTP/1.1" 200 1799 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+192.249.121.207 - - [10/May/2026:18:25:06 -0700] "GET /admin/roadmap HTTP/1.1" 200 1799 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+192.249.121.207 - - [10/May/2026:18:28:22 -0700] "GET /admin/roadmap HTTP/1.1" 200 1799 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+192.249.121.207 - - [10/May/2026:18:28:26 -0700] "GET /admin/roadmap HTTP/1.1" 200 1799 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+192.249.121.207 - - [10/May/2026:18:33:27 -0700] "GET /admin/roadmap HTTP/1.1" 200 1799 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+192.249.121.207 - - [10/May/2026:18:33:33 -0700] "GET /admin/roadmap HTTP/1.1" 200 1799 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+192.249.121.207 - - [10/May/2026:18:34:23 -0700] "GET /admin/roadmap HTTP/1.1" 200 1799 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+192.249.121.207 - - [10/May/2026:18:42:28 -0700] "GET /admin/roadmap HTTP/1.1" 200 1799 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+192.249.121.207 - - [10/May/2026:18:42:33 -0700] "GET /admin/roadmap HTTP/1.1" 200 1799 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+192.249.121.207 - - [10/May/2026:18:45:06 -0700] "GET /robots.txt HTTP/1.1" 200 1799 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.3; robots.txt; +https://openai.com/searchbot"
+192.249.121.207 - - [10/May/2026:18:45:06 -0700] "GET /robots.txt HTTP/1.1" 200 1799 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.3; robots.txt; +https://openai.com/searchbot"
+192.249.121.207 - - [10/May/2026:18:45:07 -0700] "GET / HTTP/1.1" 2001799 "-" "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3; +https://openai.com/gptbot)"
+192.249.121.207 - - [10/May/2026:18:45:10 -0700] "GET /static/index-A50Thi3z.css HTTP/1.1" 200 132426 "https://www.sailhatteras.org/" "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3;+https://openai.com/gptbot)"
+192.249.121.207 - - [10/May/2026:18:45:13 -0700] "GET /static/index-BhsFDjYS.js HTTP/1.1" 200 610982 "https://www.sailhatteras.org/" "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3; +https://openai.com/gptbot)"
+[root@ded4680 api-server]#
