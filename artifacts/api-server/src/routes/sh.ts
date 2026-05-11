@@ -953,9 +953,13 @@ router.post("/sh/admin/deploy", async (req, res) => {
     log.push("\n=== pnpm install ===");
     log.push(install.stdout.trim());
 
-    const build = await execAsync("pnpm --filter @workspace/api-server build 2>&1", { cwd });
-    log.push("\n=== build ===");
-    log.push(build.stdout.trim());
+    const buildFrontend = await execAsync("pnpm --filter @workspace/sail-hatteras build 2>&1", { cwd });
+    log.push("\n=== build frontend ===");
+    log.push(buildFrontend.stdout.trim());
+
+    const buildApi = await execAsync("pnpm --filter @workspace/api-server build 2>&1", { cwd });
+    log.push("\n=== build api ===");
+    log.push(buildApi.stdout.trim());
 
     log.push("\n✓ Build complete — server will restart in 2 seconds...");
 
