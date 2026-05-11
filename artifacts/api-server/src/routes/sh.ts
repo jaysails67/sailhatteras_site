@@ -930,7 +930,8 @@ router.post("/sh/admin/deploy", async (req, res) => {
     return;
   }
 
-  if (process.env.NODE_ENV !== "production") {
+  const isReplit = !!process.env.REPL_ID;
+  if (isReplit) {
     res.json({
       success: false,
       output: "⚠️  Deploy skipped — this button only works on the production server (InMotion).\n\nIn the Replit dev environment, code changes are applied automatically.",
