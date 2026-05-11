@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Heart, Users, Anchor, Star, CheckCircle2, ArrowRight, Waves, Shield, BookOpen, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSeo } from "@/hooks/use-seo";
 
 const memberBenefits = [
   "Discounted rates on all sailing programs and experiences",
@@ -68,6 +69,20 @@ const tiers = [
 ];
 
 export default function Membership() {
+  useSeo({
+    title: "Membership — Hatteras Community Sailing",
+    description: "Join Hatteras Community Sailing as a member. Discounts on programs, boat rentals, community sails, and regattas. Open to Hatteras Island locals, seasonal visitors, and families.",
+    canonical: "/membership",
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "url": "https://sailhatteras.org/membership",
+      "name": "Membership — Hatteras Community Sailing",
+      "description": "Become a member of Hatteras Community Sailing. Members receive discounts on all programs, priority registration, rental access, and invitations to community sails and regattas.",
+      "publisher": { "@id": "https://sailhatteras.org/#organization" }
+    },
+  });
+
   return (
     <div className="min-h-screen pt-20 bg-background">
       {/* Hero */}

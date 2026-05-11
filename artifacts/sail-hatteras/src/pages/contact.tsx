@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCreateShContact } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
+import { useSeo } from "@/hooks/use-seo";
 
 const TRIP_OPTIONS = [
   "Sunset Sail",
@@ -30,6 +31,20 @@ export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "", tripInterest: "" });
   const contact = useCreateShContact();
+
+  useSeo({
+    title: "Contact Us — Hatteras Community Sailing",
+    description: "Get in touch with Hatteras Community Sailing. Book a program, ask about youth scholarships, or plan a group event. Call (252) 489-8193 or email info@sailhatteras.org.",
+    canonical: "/contact",
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      "url": "https://sailhatteras.org/contact",
+      "name": "Contact Hatteras Community Sailing",
+      "description": "Contact us to book a sailing program, inquire about youth scholarships, or plan a group charter on Pamlico Sound.",
+      "publisher": { "@id": "https://sailhatteras.org/#organization" }
+    },
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

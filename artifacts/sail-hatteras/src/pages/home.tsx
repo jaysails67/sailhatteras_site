@@ -3,6 +3,7 @@ import { ArrowRight, Compass, Wind, Clock, Heart, BookOpen, Users, Anchor, Waves
 import { Button } from "@/components/ui/button";
 import { useGetShHomeSummary } from "@workspace/api-client-react";
 import { useState, useEffect } from "react";
+import { useSeo } from "@/hooks/use-seo";
 
 const BASE = import.meta.env.BASE_URL;
 const slide = (file: string) => `${BASE}slideshow/${file}`;
@@ -32,6 +33,12 @@ const SLIDES = [
 export default function Home() {
   const { data: summary, isLoading } = useGetShHomeSummary();
   const [current, setCurrent] = useState(0);
+
+  useSeo({
+    title: "Hatteras Community Sailing — Sailing the Outer Banks",
+    description: "Sunset sails, private charters, dolphin tours, learn-to-sail, youth camps, and beach cat rentals on Pamlico Sound, Outer Banks NC. A 501(c)3 nonprofit — no child turned away.",
+    canonical: "/",
+  });
 
   useEffect(() => {
     const t = setInterval(() => setCurrent(i => (i + 1) % SLIDES.length), 4500);

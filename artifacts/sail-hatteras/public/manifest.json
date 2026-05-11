@@ -1,0 +1,12 @@
+{
+  "name": "Hatteras Community Sailing",
+  "short_name": "SailHatteras",
+  "description": "Sailing programs for all ages on Pamlico Sound, Outer Banks NC. A 501(c)3 nonprofit.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c2d5e",
+  "theme_color": "#0c2d5e",
+  "icons": [
+    { "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any maskable" }
+  ]
+}

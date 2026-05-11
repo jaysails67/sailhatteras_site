@@ -3,26 +3,161 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>SailHatteras.org — Hatteras Community Sailing</title>
+
+    <!-- Primary Meta -->
+    <title>Hatteras Community Sailing — Sailing the Outer Banks | SailHatteras.org</title>
+    <meta name="description" content="Sunset sails, private charters, learn-to-sail, youth camps, and beach cat rentals on Pamlico Sound, Outer Banks NC. A 501(c)3 nonprofit — no child turned away." />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0c2d5e" />
+
+    <!-- Canonical (home fallback — overridden per-page via React) -->
+    <link rel="canonical" href="https://sailhatteras.org/" />
+
+    <!-- Icons / Manifest -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Open Graph — 1200×630 (correct for Facebook, LinkedIn, iMessage, Slack) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://sailhatteras.org/" />
+    <meta property="og:site_name" content="Hatteras Community Sailing" />
+    <meta property="og:title" content="Hatteras Community Sailing — Sailing the Outer Banks" />
+    <meta property="og:description" content="Sunset sails, private charters, learn-to-sail, youth camps, and beach cat rentals on Pamlico Sound, Outer Banks NC. A 501(c)3 nonprofit." />
+    <meta property="og:image" content="https://sailhatteras.org/opengraph.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Catamaran sailing at sunset on the Pamlico Sound, Outer Banks NC" />
+
+    <!-- Twitter / X Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Hatteras Community Sailing — Sailing the Outer Banks" />
+    <meta name="twitter:description" content="Sunset sails, private charters, learn-to-sail, youth camps, and beach cat rentals on Pamlico Sound, Outer Banks NC. A 501(c)3 nonprofit." />
+    <meta name="twitter:image" content="https://sailhatteras.org/opengraph.jpg" />
+    <meta name="twitter:image:alt" content="Catamaran sailing at sunset on the Pamlico Sound, Outer Banks NC" />
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://sailhatteras.org/" />
-    <meta property="og:title" content="Hatteras Community Sailing — SailHatteras.org" />
-    <meta property="og:description" content="Sailing programs for all ages on Pamlico Sound, Outer Banks, NC. A 501(c)3 nonprofit serving the Hatteras community." />
-    <meta property="og:image" content="https://sailhatteras.org/opengraph.jpg" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Hatteras Community Sailing — SailHatteras.org" />
-    <meta name="twitter:description" content="Sailing programs for all ages on Pamlico Sound, Outer Banks, NC. A 501(c)3 nonprofit serving the Hatteras community." />
-    <meta name="twitter:image" content="https://sailhatteras.org/opengraph.jpg" />
+    <!-- JSON-LD: Organization + LocalBusiness + FAQPage (static baseline for social crawlers) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": ["SportsActivityLocation", "NonprofitOrganization"],
+          "@id": "https://sailhatteras.org/#organization",
+          "name": "Hatteras Community Sailing",
+          "alternateName": ["HCS", "SailHatteras"],
+          "url": "https://sailhatteras.org",
+          "logo": "https://sailhatteras.org/logo.png",
+          "image": "https://sailhatteras.org/opengraph.jpg",
+          "description": "Hatteras Community Sailing is a 501(c)3 nonprofit providing sailing programs for all ages on Pamlico Sound, Outer Banks NC — including sunset sails, private charters, youth development programs, learn-to-sail camps, and beach cat rentals. No child turned away for inability to pay.",
+          "nonprofitStatus": "Nonprofit501c3",
+          "telephone": "+12524898193",
+          "email": "info@sailhatteras.org",
+          "address": [
+            {
+              "@type": "PostalAddress",
+              "streetAddress": "48962 NC-12",
+              "addressLocality": "Buxton",
+              "addressRegion": "NC",
+              "postalCode": "27920",
+              "addressCountry": "US"
+            },
+            {
+              "@type": "PostalAddress",
+              "streetAddress": "40039 NC-12",
+              "addressLocality": "Avon",
+              "addressRegion": "NC",
+              "postalCode": "27915",
+              "addressCountry": "US"
+            }
+          ],
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 35.2668,
+            "longitude": -75.5285
+          },
+          "areaServed": "Outer Banks, North Carolina",
+          "sameAs": [
+            "https://www.facebook.com/sailhatteras",
+            "https://www.instagram.com/sailhatteras"
+          ],
+          "openingHoursSpecification": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+            "opens": "08:00",
+            "closes": "20:00",
+            "validFrom": "2026-04-01",
+            "validThrough": "2026-10-31"
+          },
+          "priceRange": "$–$$$",
+          "currenciesAccepted": "USD",
+          "paymentAccepted": "Cash, Credit Card",
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Sailing Programs",
+            "itemListElement": [
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Sunset Sail", "url": "https://sailhatteras.org/trips/sunset-sail" } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Half Day Charter", "url": "https://sailhatteras.org/trips/half-day-sail" } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Dolphin & Wildlife Tour", "url": "https://sailhatteras.org/trips/dolphin-tour" } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Beach Cat Sailing Lesson", "url": "https://sailhatteras.org/trips/beach-cat-lesson" } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Cape Explorers Youth Camp", "url": "https://sailhatteras.org/trips/visitor-intensive" } }
+            ]
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://sailhatteras.org/#website",
+          "url": "https://sailhatteras.org",
+          "name": "SailHatteras.org",
+          "publisher": { "@id": "https://sailhatteras.org/#organization" },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://sailhatteras.org/trips?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Where does Hatteras Community Sailing operate?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Hatteras Community Sailing operates on Pamlico Sound from Buxton, NC (marina at 48962 NC-12) with an office in Avon, NC (40039 NC-12), on the Outer Banks of North Carolina." }
+            },
+            {
+              "@type": "Question",
+              "name": "Do I need sailing experience to join a program?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No experience is needed for our sailing experiences and tours — we take care of everything. Learn-to-sail programs start from complete beginners. Youth programs welcome kids with zero prior experience." }
+            },
+            {
+              "@type": "Question",
+              "name": "How much do sailing programs cost?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Prices vary by program. Sunset sails start at $75/person. Private charters begin around $750 for the boat. Youth camps start at $350/week. Youth scholarships are available — no child turned away for inability to pay." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is Hatteras Community Sailing a nonprofit?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Hatteras Community Sailing is a 501(c)3 nonprofit organization. A portion of every charter and ticket sold funds free youth sailing programs on Hatteras Island. Donations are tax-deductible." }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I book a sailing program?",
+              "acceptedAnswer": { "@type": "Answer", "text": "You can book online at sailhatteras.org/trips, call us at (252) 489-8193, or email info@sailhatteras.org. Our AI chat assistant on the website can also answer questions and help you choose the right program." }
+            },
+            {
+              "@type": "Question",
+              "name": "When is sailing season on the Outer Banks?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Our main sailing season runs April through October. Sunset sails and charters are most popular June through August. Youth programs run June through August with year-round development options for local youth." }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

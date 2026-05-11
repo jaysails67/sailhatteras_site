@@ -2,9 +2,24 @@ import { Link } from "wouter";
 import { Heart, Anchor, Users, BookOpen, Waves, Shield, ArrowRight, Compass, Fish, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useGetShHomeSummary } from "@workspace/api-client-react";
+import { useSeo } from "@/hooks/use-seo";
 
 export default function About() {
   const { data: summary } = useGetShHomeSummary();
+
+  useSeo({
+    title: "Our Mission & Story — Hatteras Community Sailing",
+    description: "Learn how Hatteras Community Sailing connects Outer Banks youth to the ocean through sailing, powerboating, diving, and maritime careers. A 501(c)3 nonprofit — no child turned away.",
+    canonical: "/about",
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "AboutPage",
+      "url": "https://sailhatteras.org/about",
+      "name": "About Hatteras Community Sailing",
+      "description": "Hatteras Community Sailing is a 501(c)3 nonprofit connecting Outer Banks youth to the ocean through sailing programs, youth development, and maritime education.",
+      "publisher": { "@id": "https://sailhatteras.org/#organization" }
+    },
+  });
 
   return (
     <div className="min-h-screen pt-20 bg-background">

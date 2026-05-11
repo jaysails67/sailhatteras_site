@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useParams, useLocation } from "wouter";
+import { useSeo } from "@/hooks/use-seo";
 import {
   Clock, Users, Anchor, ArrowLeft, Check, Heart,
   ChevronRight, AlertCircle, Loader2, Ship, Info, Mail, CalendarDays
@@ -110,6 +111,31 @@ export default function TripDetail() {
   const [enrolled, setEnrolled] = useState(false);
 
   const enroll = useCreateShEnrollment();
+
+  useSeo({
+    title: trip ? `${trip.name} — Hatteras Community Sailing` : "Sailing Program — Hatteras Community Sailing",
+    description: trip?.shortDescription ?? "Book a sailing program on Pamlico Sound, Outer Banks NC with Hatteras Community Sailing.",
+    canonical: `/trips/${params.slug}`,
+    image: trip?.imageUrl ? `https://sailhatteras.org/${trip.imageUrl.replace(/^\//, "")}` : undefined,
+    jsonLd: trip ? {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "@id": `https://sailhatteras.org/trips/${trip.slug}`,
+      "name": trip.name,
+      "description": trip.shortDescription,
+      "url": `https://sailhatteras.org/trips/${trip.slug}`,
+      "provider": { "@id": "https://sailhatteras.org/#organization" },
+      "areaServed": "Outer Banks, North Carolina",
+      "serviceType": "Sailing",
+      "offers": {
+        "@type": "Offer",
+        "name": trip.name,
+        "description": trip.priceDisplay,
+        "url": `https://sailhatteras.org/trips/${trip.slug}`,
+        "seller": { "@id": "https://sailhatteras.org/#organization" }
+      }
+    } : undefined,
+  });
 
   const isLearnTrip = trip?.category === "learn";
   const skipSessionStep = trip?.slug === "adult-fun-sail";

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useListShTrips } from "@workspace/api-client-react";
+import { useSeo } from "@/hooks/use-seo";
 
 const CATEGORIES = [
   { value: "all", label: "All Programs" },
@@ -101,6 +102,20 @@ function TripCardSkeleton() {
 }
 
 export default function Trips() {
+  useSeo({
+    title: "Sailing Programs — Hatteras Community Sailing",
+    description: "Browse all sailing programs on Pamlico Sound, Outer Banks NC. Sunset sails, private charters, dolphin tours, learn-to-sail, youth camps, and beach cat rentals. A 501(c)3 nonprofit.",
+    canonical: "/trips",
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "url": "https://sailhatteras.org/trips",
+      "name": "Sailing Programs — Hatteras Community Sailing",
+      "description": "All sailing programs and experiences offered by Hatteras Community Sailing on Pamlico Sound, Outer Banks NC.",
+      "publisher": { "@id": "https://sailhatteras.org/#organization" }
+    },
+  });
+
   const search = useSearch();
   const params = new URLSearchParams(search);
   const categoryParam = params.get("category") ?? "all";

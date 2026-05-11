@@ -13,6 +13,7 @@ import storageRouter from "./storage";
 import shRouter from "./sh";
 import shChatRouter from "./sh-chat";
 import shAgentMailRouter from "./sh-agentmail";
+import shSitemapRouter from "./sh-sitemap";
 
 const router: IRouter = Router();
 
@@ -30,5 +31,6 @@ router.use(storageRouter);
 router.use(shRouter);
 router.use(shChatRouter);
 router.use(shAgentMailRouter);
+router.use(shSitemapRouter);
 
 export default router;
