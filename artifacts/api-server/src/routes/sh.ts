@@ -962,14 +962,9 @@ router.post("/sh/admin/deploy", async (req, res) => {
     // spawn with detached:true + unref() ensures the shell script
     // outlives the current node process when it is killed.
     setTimeout(() => {
-      const restartCmd = [
-        `sleep 2`,
-        `kill $(lsof -ti :3001 2>/dev/null) 2>/dev/null || true`,
-        `sleep 1`,
-        `cd "${cwd}"`,
-        `export $(grep -v '^#' .env | xargs)`,
-        `nohup node artifacts/api-server/dist/index.mjs >> /home/ca12a15/sailhatteras-api.log 2>&1`,
-      ].join(" && ");
+      // InMotion cPanel auto-restarts the node process when killed,
+      // so we just need to kill it and it will come back with new code.
+      const restartCmd = `sleep 2 && kill $(lsof -ti :3001 2>/dev/null) 2>/dev/null || true`;
 
       const child = spawn("bash", ["-c", restartCmd], {
         detached: true,
