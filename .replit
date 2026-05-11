@@ -58,6 +58,9 @@ VITE_GA_MEASUREMENT_ID = "G-KBKXSSC10Z"
 SMTP_HOST = "mail.pamliecoconnect.com"
 SMTP_PORT = "465"
 SMTP_USER = "info@pamliecoconnect.com"
+AGENTMAIL_HOPE_INBOX_ID = "am_us_inbox_3fe2995a790b5eb0bb5e7f508f3d50df143e773826dbc900cbf8926d54bb9cf1"
+AGENTMAIL_HUKILAU_INBOX_ID = "am_us_inbox_bec57d13aef1a5792fd452b51b15e05510c3fc6c582ca8fb60233b7e974e3b71"
+AGENTMAIL_DANFORTH_INBOX_ID = "am_us_inbox_32206e5a52f35fb8cfe11b10fdeb2b9cd45205da1a0098aed24894e598d75d45"
 
 [userenv.production]
 TELEGRAM_WEBHOOK_URL = "https://doma-website-builder.replit.app"
