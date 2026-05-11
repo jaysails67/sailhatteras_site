@@ -1,0 +1,51 @@
+[5/11/2026 7:44 PM] Hukilau: On this box, the SailHatteras Node/Express API is running on port 3001.
+
+Apache/nginx proxy config (from the deployment skill) is:
+
+ProxyPass        /api/ http://127.0.0.1:3001/api/
+ProxyPassReverse /api/ http://127.0.0.1:3001/api/
+
+So for Replit:
+
+• If you’re trying to mirror production API behavior, have your Node server listen on 3001 in dev.
+• Externally, users hit https://sailhatteras.org on the normal HTTPS port (443); Apache/nginx forwards /api/* over to 127.0.0.1:3001.
+[5/11/2026 7:45 PM] Jay Phillips: openclaws port
+[5/11/2026 7:45 PM] Hukilau: OpenClaw’s gateway on this box is running on port 18789.
+
+• HTTP dashboard: http://127.0.0.1:18789/
+• WebSocket: ws://127.0.0.1:18789
+
+It’s bound to localhost only, so if Replit ever needs to reach it directly, it would have to go through an SSH tunnel or a reverse proxy on a public port.
+[5/11/2026 7:47 PM] Hukilau: Here’s a concrete curl you can run against this Gateway to send a single chat message and get a reply back, using the OpenAI-compatible endpoint.
+
+Assumptions:
+
+• Gateway is on this box at http://127.0.0.1:18789
+• You have your Gateway token/password (replace YOUR_TOKEN_HERE)
+
+curl -sS http://127.0.0.1:18789/v1/chat/completions \
+  -H 'Authorization: Bearer YOUR_TOKEN_HERE' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model": "openclaw/default",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Hello Hukilau, this is a test from Replit."
+      }
+    ]
+  }'
+
+Key pieces:
+
+• Endpoint path: /v1/chat/completions
+• Full URL: http://127.0.0.1:18789/v1/chat/completions
+• Headers:
+  • Authorization: Bearer YOUR_TOKEN_HERE
+(use gateway.auth.token or gateway.auth.password, depending on your config)
+  • Content-Type: application/json
+• JSON body:
+  • model: "openclaw/default" (routes to the main agent, i.e., me)
+  • messages: standard OpenAI-style array with {role, content}
+
+For Replit, you’d just swap 127.0.0.1 for whatever host:port you expose (or tunnel) the Gateway on, and keep the same path, headers, and body format.
