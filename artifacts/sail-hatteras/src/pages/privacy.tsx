@@ -68,13 +68,27 @@ export default function Privacy() {
             </div>
 
             <div>
+              <h2 className="font-serif text-2xl font-bold text-foreground mb-3">Cookies</h2>
+              <p>
+                Our website uses cookies — small text files stored on your device — to help the site function correctly and to understand how visitors use it. We use:
+              </p>
+              <ul className="list-disc pl-6 mt-3 space-y-2">
+                <li><strong className="text-foreground">Essential cookies:</strong> Required for the website to work (e.g., session handling, booking flow). These cannot be disabled.</li>
+                <li><strong className="text-foreground">Analytics cookies (Google Analytics 4):</strong> We use Google Analytics 4 to collect anonymous information about how visitors navigate our site — pages viewed, time on site, and general geographic region. This data is aggregated and never linked to your identity. IP addresses are anonymized. You can opt out using the <a href="https://tools.google.com/dlpage/gaoptout" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">Google Analytics Opt-out Browser Add-on</a>.</li>
+              </ul>
+              <p className="mt-4">
+                We do not use advertising cookies, retargeting pixels, or any third-party tracking for marketing purposes.
+              </p>
+            </div>
+
+            <div>
               <h2 className="font-serif text-2xl font-bold text-foreground mb-3">Third-Party Services</h2>
               <p>
                 We use the following third-party services:
               </p>
               <ul className="list-disc pl-6 mt-3 space-y-2">
-                <li><strong className="text-foreground">Stripe:</strong> For secure payment processing. Stripe is PCI-DSS compliant. We do not store card data.</li>
-                <li><strong className="text-foreground">Google Analytics:</strong> For anonymous website usage analytics to help us improve our community programs. Data is anonymized and not linked to individual users.</li>
+                <li><strong className="text-foreground">Stripe:</strong> For secure payment processing. Stripe is PCI-DSS compliant. We do not store card data. See <a href="https://stripe.com/privacy" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">Stripe's Privacy Policy</a>.</li>
+                <li><strong className="text-foreground">Google Analytics 4:</strong> For anonymous website usage analytics to help us improve our programs and community outreach. Data is anonymized, IP addresses are not stored in identifiable form, and data is not linked to individual users. See <a href="https://policies.google.com/privacy" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">Google's Privacy Policy</a>.</li>
               </ul>
             </div>
 
