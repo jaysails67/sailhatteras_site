@@ -1,11 +1,35 @@
 import { Router } from "express";
-import { openai } from "@workspace/integrations-openai-ai-server";
+import OpenAI from "openai";
 import { db } from "@workspace/db";
 import { shTripsTable } from "@workspace/db";
 import { eq, asc } from "drizzle-orm";
 import { logger } from "../lib/logger";
 
 const router = Router();
+
+function getAIClient(): { client: OpenAI; model: string } {
+  if (process.env.OPENCLAW_BASE_URL) {
+    return {
+      client: new OpenAI({
+        baseURL: process.env.OPENCLAW_BASE_URL,
+        apiKey: process.env.OPENCLAW_API_KEY ?? "no-key",
+      }),
+      model: process.env.OPENCLAW_MODEL ?? "openclaw/default",
+    };
+  }
+
+  if (!process.env.AI_INTEGRATIONS_OPENAI_BASE_URL || !process.env.AI_INTEGRATIONS_OPENAI_API_KEY) {
+    throw new Error("No AI backend configured. Set OPENCLAW_BASE_URL or the OpenAI AI integration env vars.");
+  }
+
+  return {
+    client: new OpenAI({
+      baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+      apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+    }),
+    model: "gpt-4o",
+  };
+}
 
 const SYSTEM_PROMPT = `You are the friendly customer service assistant for Hatteras Community Sailing (HCS), a 501(c)3 nonprofit sailing organization on the Outer Banks of North Carolina. Your name is "SailHatteras Guide".
 
@@ -75,9 +99,10 @@ router.post("/sh/chat", async (req, res) => {
   res.setHeader("X-Accel-Buffering", "no");
 
   try {
-    const stream = await openai.chat.completions.create({
-      model: "gpt-5.4",
-      max_completion_tokens: 8192,
+    const { client, model } = getAIClient();
+
+    const stream = await client.chat.completions.create({
+      model,
       messages: [
         { role: "system", content: systemPrompt },
         ...messages.slice(-20).map((m: { role: string; content: string }) => ({
