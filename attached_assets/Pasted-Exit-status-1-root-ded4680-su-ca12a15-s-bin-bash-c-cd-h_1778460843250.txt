@@ -1,0 +1,50 @@
+Exit status 1
+[root@ded4680 ~]# su - ca12a15 -s /bin/bash -c '
+> cd /home/ca12a15/sites/sailhatteras_site
+> export $(grep -v "^#" .env | xargs)
+> pnpm --filter @workspace/db push
+> '
+
+> @workspace/db@0.0.0 push /home/ca12a15/sites/sailhatteras_site/lib/db
+> drizzle-kit push --config ./drizzle.config.ts
+
+Reading config file '/home/ca12a15/sites/sailhatteras_site/lib/db/drizzle.config.ts'
+Using 'pg' driver for database querying
+[✓] Pulling schema from database...
+· You're about to add content_pages_slug_unique unique constraint to the table, which contains 16 items. If this statement fails, you will receive an error from the database. Do you want to truncate content_pages table?
+
+· You're about to add users_email_unique unique constraint to the tabl
+e, which contains 6 items. If this statement fails, you will receive an error from the database. Do you want to truncate users table?
+
+· You're about to add sh_trips_slug_unique unique constraint to the ta
+ble, which contains 12 items. If this statement fails, you will receive an error from the database. Do you want to truncate sh_trips table?
+
+· You're about to add waitlist_email_unique unique constraint to the t
+able, which contains 1 items. If this statement fails, you will receive an error from the database. Do you want to truncate waitlist table?
+
+error: must be owner of relation contact_submissions
+    at /home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/pg-pool@3.13.0_pg@8.20.0/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Object.query (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/drizzle-kit@0.31.9/node_modules/drizzle-kit/bin.cjs:80623:26)
+    at async pgPush (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/drizzle-kit@0.31.9/node_modules/drizzle-kit/bin.cjs:84485:13)
+    at async Object.handler (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/drizzle-kit@0.31.9/node_modules/drizzle-kit/bin.cjs:93943:9)
+    at async run (/home/ca12a15/sites/sailhatteras_site/node_modules/.pnpm/drizzle-kit@0.31.9/node_modules/drizzle-kit/bin.cjs:93189:7) {
+  length: 105,
+  severity: 'ERROR',
+  code: '42501',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'aclchk.c',
+  line: '3418',
+  routine: 'aclcheck_error'
+}
+[root@ded4680 ~]#
