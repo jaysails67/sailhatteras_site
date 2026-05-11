@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Facebook, Instagram, Mail, Phone, MapPin, Heart } from "lucide-react";
-import logo from "/logo.png";
+import logo from "/logo.webp";
 
 export function Footer() {
   return (

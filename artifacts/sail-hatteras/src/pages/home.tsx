@@ -9,25 +9,25 @@ const BASE = import.meta.env.BASE_URL;
 const slide = (file: string) => `${BASE}slideshow/${file}`;
 
 const SLIDES = [
-  { src: slide("s06-catamaran-sunset.jpg"),  alt: "Evening sail on the Pamlico Sound" },
-  { src: slide("s11-junior-girl.jpg"),        alt: "Junior sailor in her Optimist dinghy" },
-  { src: slide("s04-catamaran-beach.jpg"),    alt: "Catamaran beached on the Outer Banks" },
-  { src: slide("s09-junior-boy.jpg"),         alt: "Young sailor at the helm" },
-  { src: slide("s05-sunset-couple.jpg"),      alt: "Sunset sail on the sound" },
-  { src: slide("s14-teens-sailing.jpg"),      alt: "Teen sailors racing on the Pamlico Sound" },
-  { src: slide("s07-aerial-cat.jpg"),         alt: "Aerial view of catamaran on the sound" },
-  { src: slide("s12-team-photo.jpg"),         alt: "Hatteras Community Sailing junior team" },
-  { src: slide("s03-boy-sunset.jpg"),         alt: "Kid and dog aboard at sunset" },
-  { src: slide("s15-girls-dinghy.jpg"),       alt: "Girls sailing together on the Pamlico Sound" },
-  { src: slide("s10-outer-banks-opti.jpg"),   alt: "Sailing an Optimist on the Outer Banks" },
-  { src: slide("s18-awards.jpg"),             alt: "Community sailing awards ceremony" },
-  { src: slide("s16-kid-cockpit.jpg"),        alt: "Young sailor in the cockpit" },
-  { src: slide("s01-youth-group.jpg"),        alt: "Youth sailing program participants" },
-  { src: slide("s13-kid-on-boat.jpg"),        alt: "Kids on the water" },
-  { src: slide("s17-kid-at-dock.jpg"),        alt: "Young sailor rigging at the dock" },
-  { src: slide("s08-kids-on-trailer.jpg"),    alt: "Kids excited about a new boat" },
-  { src: slide("s02-campfire.jpg"),           alt: "Community gathering after a sail" },
-  { src: slide("s19-campfire2.jpg"),          alt: "Hatteras sailing community bonfire" },
+  { src: slide("s06-catamaran-sunset.webp"),  alt: "Evening sail on the Pamlico Sound" },
+  { src: slide("s11-junior-girl.webp"),        alt: "Junior sailor in her Optimist dinghy" },
+  { src: slide("s04-catamaran-beach.webp"),    alt: "Catamaran beached on the Outer Banks" },
+  { src: slide("s09-junior-boy.webp"),         alt: "Young sailor at the helm" },
+  { src: slide("s05-sunset-couple.webp"),      alt: "Sunset sail on the sound" },
+  { src: slide("s14-teens-sailing.webp"),      alt: "Teen sailors racing on the Pamlico Sound" },
+  { src: slide("s07-aerial-cat.webp"),         alt: "Aerial view of catamaran on the sound" },
+  { src: slide("s12-team-photo.webp"),         alt: "Hatteras Community Sailing junior team" },
+  { src: slide("s03-boy-sunset.webp"),         alt: "Kid and dog aboard at sunset" },
+  { src: slide("s15-girls-dinghy.webp"),       alt: "Girls sailing together on the Pamlico Sound" },
+  { src: slide("s10-outer-banks-opti.webp"),   alt: "Sailing an Optimist on the Outer Banks" },
+  { src: slide("s18-awards.webp"),             alt: "Community sailing awards ceremony" },
+  { src: slide("s16-kid-cockpit.webp"),        alt: "Young sailor in the cockpit" },
+  { src: slide("s01-youth-group.webp"),        alt: "Youth sailing program participants" },
+  { src: slide("s13-kid-on-boat.webp"),        alt: "Kids on the water" },
+  { src: slide("s17-kid-at-dock.webp"),        alt: "Young sailor rigging at the dock" },
+  { src: slide("s08-kids-on-trailer.webp"),    alt: "Kids excited about a new boat" },
+  { src: slide("s02-campfire.webp"),           alt: "Community gathering after a sail" },
+  { src: slide("s19-campfire2.webp"),          alt: "Hatteras sailing community bonfire" },
 ];
 
 export default function Home() {
@@ -156,7 +156,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <Link href="/trips?category=experiences" className="group relative rounded-2xl overflow-hidden aspect-[4/5] hover-elevate shadow-sm hover:shadow-md transition-shadow">
-              <img src={slide("s06-catamaran-sunset.jpg")} alt="Sailing Experiences" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src={slide("s06-catamaran-sunset.webp")} alt="Sailing Experiences" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
               <div className="absolute inset-0 p-8 flex flex-col justify-end text-white">
                 <h3 className="font-serif text-3xl font-bold mb-2">Experiences</h3>
@@ -169,7 +169,7 @@ export default function Home() {
             </Link>
 
             <Link href="/trips?category=learn" className="group relative rounded-2xl overflow-hidden aspect-[4/5] hover-elevate shadow-sm hover:shadow-md transition-shadow">
-              <img src={slide("s11-junior-girl.jpg")} alt="Learn to Sail" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src={slide("s11-junior-girl.webp")} alt="Learn to Sail" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
               <div className="absolute inset-0 p-8 flex flex-col justify-end text-white">
                 <h3 className="font-serif text-3xl font-bold mb-2">Learn &amp; Grow</h3>
@@ -182,7 +182,7 @@ export default function Home() {
             </Link>
 
             <Link href="/trips?category=rentals" className="group relative rounded-2xl overflow-hidden aspect-[4/5] hover-elevate shadow-sm hover:shadow-md transition-shadow">
-              <img src={slide("s04-catamaran-beach.jpg")} alt="Rentals" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src={slide("s04-catamaran-beach.webp")} alt="Rentals" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
               <div className="absolute inset-0 p-8 flex flex-col justify-end text-white">
                 <h3 className="font-serif text-3xl font-bold mb-2">Rentals</h3>
