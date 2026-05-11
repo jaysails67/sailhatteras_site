@@ -18,6 +18,7 @@ import Support from "@/pages/support";
 import Admin from "@/pages/admin";
 import AdminBookings from "@/pages/admin-bookings";
 import AdminContacts from "@/pages/admin-contacts";
+import AdminRoadmap from "@/pages/admin-roadmap";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ function Router() {
           <Route path="/admin" component={Admin} />
           <Route path="/admin/bookings" component={AdminBookings} />
           <Route path="/admin/contacts" component={AdminContacts} />
+          <Route path="/admin/roadmap" component={AdminRoadmap} />
           <Route component={NotFound} />
         </Switch>
       </main>

@@ -121,6 +121,24 @@ export const shContactsTable = pgTable("sh_contacts", {
     .defaultNow(),
 });
 
+export const shDevTasksTable = pgTable("sh_dev_tasks", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description").notNull().default(""),
+  architectureNotes: text("architecture_notes").notNull().default(""),
+  status: text("status").notNull().default("backlog"),
+  priority: text("priority").notNull().default("medium"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+
+export type ShDevTask = typeof shDevTasksTable.$inferSelect;
+
 export const insertShTripSchema = createInsertSchema(shTripsTable).omit({
   id: true,
   createdAt: true,

@@ -4,3 +4,4 @@ export { setBaseUrl, setAuthTokenGetter } from "./custom-fetch";
 export type { AuthTokenGetter } from "./custom-fetch";
 export * from "./vessels";
 export * from "./enrollment";
+export * from "./roadmap";

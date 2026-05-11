@@ -1,12 +1,88 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { Anchor, BarChart3, Calendar, Users, DollarSign, ArrowRight, Lock } from "lucide-react";
+import { Anchor, BarChart3, Calendar, Users, DollarSign, ArrowRight, Lock, ListTodo, GitPullRequest, CheckCircle2, XCircle, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useListShAdminBookings, useGetShAdminDashboard } from "@workspace/api-client-react";
 
 const ADMIN_KEY = "hcs-admin-2026";
+
+type DeployState = "idle" | "running" | "success" | "error";
+
+function DeployPanel() {
+  const [state, setState] = useState<DeployState>("idle");
+  const [output, setOutput] = useState("");
+  const [confirm, setConfirm] = useState(false);
+
+  const handleDeploy = async () => {
+    setConfirm(false);
+    setState("running");
+    setOutput("");
+    try {
+      const res = await fetch("/api/sh/admin/deploy", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Admin-Key": ADMIN_KEY },
+      });
+      const data = await res.json();
+      setOutput(data.output ?? "");
+      setState(data.success ? "success" : "error");
+    } catch (err: any) {
+      setOutput(`Network error: ${err.message}`);
+      setState("error");
+    }
+  };
+
+  return (
+    <div className="bg-card border border-border rounded-xl overflow-hidden mb-8">
+      <div className="px-6 py-4 border-b border-border flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <GitPullRequest className="h-4 w-4 text-muted-foreground" />
+          <span className="font-semibold text-sm">Deploy Latest Code</span>
+          {state === "running" && (
+            <span className="flex items-center gap-1 text-xs text-yellow-600 font-medium">
+              <Loader2 className="h-3 w-3 animate-spin" /> Building…
+            </span>
+          )}
+          {state === "success" && (
+            <span className="flex items-center gap-1 text-xs text-green-600 font-medium">
+              <CheckCircle2 className="h-3 w-3" /> Success — server restarting
+            </span>
+          )}
+          {state === "error" && (
+            <span className="flex items-center gap-1 text-xs text-red-600 font-medium">
+              <XCircle className="h-3 w-3" /> Deploy failed
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          {state !== "idle" && state !== "running" && (
+            <Button variant="ghost" size="sm" onClick={() => { setState("idle"); setOutput(""); setConfirm(false); }}>
+              <RefreshCw className="h-3.5 w-3.5 mr-1" /> Reset
+            </Button>
+          )}
+          {!confirm && state === "idle" && (
+            <Button size="sm" variant="outline" onClick={() => setConfirm(true)}>
+              <GitPullRequest className="h-3.5 w-3.5 mr-1.5" /> Pull & Deploy
+            </Button>
+          )}
+          {confirm && (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">Pull from GitHub and rebuild?</span>
+              <Button size="sm" variant="destructive" onClick={handleDeploy}>Yes, deploy</Button>
+              <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>Cancel</Button>
+            </div>
+          )}
+        </div>
+      </div>
+      {output && (
+        <div className="px-6 py-4 bg-zinc-950">
+          <pre className="text-xs text-zinc-200 font-mono whitespace-pre-wrap leading-relaxed max-h-64 overflow-y-auto">{output}</pre>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function StatCard({ icon: Icon, label, value, sub }: { icon: any; label: string; value: string | number; sub?: string }) {
   return (
@@ -36,6 +112,8 @@ function AdminDashboard() {
         </div>
         <h1 className="font-serif text-3xl font-bold">Dashboard</h1>
       </div>
+
+      <DeployPanel />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         <StatCard icon={Calendar} label="Total Bookings" value={dashboard?.totalBookings ?? "—"} sub="All time" />
@@ -85,7 +163,7 @@ function AdminDashboard() {
       </div>
 
       {/* Quick Links */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Link href="/admin/bookings" className="bg-card border border-border rounded-xl p-5 hover:border-primary/50 transition-colors group">
           <Calendar className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors mb-3" />
           <div className="font-semibold">Manage Bookings</div>
@@ -100,6 +178,11 @@ function AdminDashboard() {
           <Users className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors mb-3" />
           <div className="font-semibold">Contact Inquiries</div>
           <div className="text-sm text-muted-foreground">View all contact form submissions</div>
+        </Link>
+        <Link href="/admin/roadmap" className="bg-card border border-border rounded-xl p-5 hover:border-primary/50 transition-colors group">
+          <ListTodo className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors mb-3" />
+          <div className="font-semibold">Dev Roadmap</div>
+          <div className="text-sm text-muted-foreground">Feature backlog & architecture notes</div>
         </Link>
       </div>
     </div>

@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { exec } from "child_process";
+import { promisify } from "util";
 import { db } from "@workspace/db";
 import {
   shTripsTable,
@@ -7,6 +9,7 @@ import {
   shContactsTable,
   shVesselsTable,
   shTripVesselsTable,
+  shDevTasksTable,
 } from "@workspace/db";
 import { eq, and, gte, lte, desc, asc, sql, inArray } from "drizzle-orm";
 import {
@@ -27,6 +30,7 @@ import {
 import { getUncachableStripeClient } from "../stripeClient";
 import { logger } from "../lib/logger";
 
+const execAsync = promisify(exec);
 const router = Router();
 
 /** Always return /trip-photos/<filename> regardless of what legacy value is stored in the DB */
@@ -913,6 +917,110 @@ router.post("/sh/enroll", async (req, res) => {
   }
 
   res.status(201).json({ bookingId: booking.id, message: "Enrollment request received" });
+});
+
+// ─── Deploy ───────────────────────────────────────────
+
+const DEPLOY_KEY = "hcs-admin-2026";
+
+// POST /sh/admin/deploy
+router.post("/sh/admin/deploy", async (req, res) => {
+  if (req.headers["x-admin-key"] !== DEPLOY_KEY) {
+    res.status(403).json({ error: "Unauthorized" });
+    return;
+  }
+
+  if (process.env.NODE_ENV !== "production") {
+    res.json({
+      success: false,
+      output: "⚠️  Deploy skipped — this button only works on the production server (InMotion).\n\nIn the Replit dev environment, code changes are applied automatically.",
+    });
+    return;
+  }
+
+  const cwd = process.cwd();
+  const log: string[] = [];
+
+  try {
+    log.push(`=== Deploy started at ${new Date().toLocaleString("en-US", { timeZone: "America/New_York" })} ET ===\n`);
+
+    const pull = await execAsync("git pull origin main", { cwd });
+    log.push("=== git pull ===");
+    log.push(pull.stdout.trim());
+    if (pull.stderr?.trim()) log.push(pull.stderr.trim());
+
+    const install = await execAsync("pnpm install --frozen-lockfile 2>&1", { cwd });
+    log.push("\n=== pnpm install ===");
+    log.push(install.stdout.trim());
+
+    const build = await execAsync("pnpm --filter @workspace/api-server build 2>&1", { cwd });
+    log.push("\n=== build ===");
+    log.push(build.stdout.trim());
+
+    log.push("\n✓ Build complete — server will restart in 2 seconds...");
+
+    res.json({ success: true, output: log.join("\n") });
+
+    setTimeout(() => {
+      exec("pm2 restart sailhatteras-api", { cwd });
+    }, 2000);
+  } catch (err: any) {
+    log.push(`\n✗ Error: ${err.message}`);
+    if (err.stdout?.trim()) log.push(err.stdout.trim());
+    if (err.stderr?.trim()) log.push(err.stderr.trim());
+    res.json({ success: false, output: log.join("\n") });
+  }
+});
+
+// ─── Dev Roadmap ───────────────────────────────────────────
+
+// GET /sh/admin/dev-tasks
+router.get("/sh/admin/dev-tasks", async (_req, res) => {
+  const tasks = await db
+    .select()
+    .from(shDevTasksTable)
+    .orderBy(asc(shDevTasksTable.createdAt));
+  res.json(tasks);
+});
+
+// POST /sh/admin/dev-tasks
+router.post("/sh/admin/dev-tasks", async (req, res) => {
+  const { title, description = "", architectureNotes = "", status = "backlog", priority = "medium" } = req.body as {
+    title?: string;
+    description?: string;
+    architectureNotes?: string;
+    status?: string;
+    priority?: string;
+  };
+  if (!title?.trim()) {
+    res.status(400).json({ error: "title is required" });
+    return;
+  }
+  const [task] = await db
+    .insert(shDevTasksTable)
+    .values({ title: title.trim(), description, architectureNotes, status, priority })
+    .returning();
+  res.status(201).json(task);
+});
+
+// PATCH /sh/admin/dev-tasks/:id
+router.patch("/sh/admin/dev-tasks/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  if (Number.isNaN(id)) { res.status(400).json({ error: "invalid id" }); return; }
+  const { title, description, architectureNotes, status, priority } = req.body as Record<string, string>;
+  const updates: Record<string, string> = {};
+  if (title !== undefined) updates.title = title;
+  if (description !== undefined) updates.description = description;
+  if (architectureNotes !== undefined) updates.architectureNotes = architectureNotes;
+  if (status !== undefined) updates.status = status;
+  if (priority !== undefined) updates.priority = priority;
+  const [task] = await db
+    .update(shDevTasksTable)
+    .set(updates)
+    .where(eq(shDevTasksTable.id, id))
+    .returning();
+  if (!task) { res.status(404).json({ error: "not found" }); return; }
+  res.json(task);
 });
 
 export default router;
