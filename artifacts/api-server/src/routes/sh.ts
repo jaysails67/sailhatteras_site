@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { exec } from "child_process";
+import { exec, spawn } from "child_process";
 import { promisify } from "util";
 import { db } from "@workspace/db";
 import {
@@ -953,13 +953,31 @@ router.post("/sh/admin/deploy", async (req, res) => {
     log.push("\n=== build api ===");
     log.push(buildApi.stdout.trim());
 
-    log.push("\n✓ Build complete — server will restart in 2 seconds...");
+    log.push("\n✓ Build complete — server will restart in 3 seconds...");
 
     res.json({ success: true, output: log.join("\n") });
 
+    // Detached restart: kill the current node process on port 3001,
+    // then start a fresh one with env vars loaded from .env.
+    // spawn with detached:true + unref() ensures the shell script
+    // outlives the current node process when it is killed.
     setTimeout(() => {
-      exec("pm2 restart sailhatteras-api", { cwd });
-    }, 2000);
+      const restartCmd = [
+        `sleep 2`,
+        `kill $(lsof -ti :3001 2>/dev/null) 2>/dev/null || true`,
+        `sleep 1`,
+        `cd "${cwd}"`,
+        `export $(grep -v '^#' .env | xargs)`,
+        `nohup node artifacts/api-server/dist/index.mjs >> /home/ca12a15/sailhatteras-api.log 2>&1`,
+      ].join(" && ");
+
+      const child = spawn("bash", ["-c", restartCmd], {
+        detached: true,
+        stdio: "ignore",
+        cwd,
+      });
+      child.unref();
+    }, 1000);
   } catch (err: any) {
     log.push(`\n✗ Error: ${err.message}`);
     if (err.stdout?.trim()) log.push(err.stdout.trim());
