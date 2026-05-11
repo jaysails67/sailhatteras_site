@@ -7,6 +7,7 @@ import { logger } from "./lib/logger";
 import { seed } from "./seed";
 import { registerWebhook } from "./lib/telegram";
 import { sendDailyBriefing } from "./lib/dailyBriefing";
+import { startEmailAgent } from "./routes/sh-agentmail";
 import cron from "node-cron";
 
 const rawPort = process.env["PORT"];
@@ -32,6 +33,7 @@ app.listen(port, async (err?: Error) => {
   logger.info({ port }, "Server listening");
   await seed();
   await registerWebhook();
+  startEmailAgent();
 
   // Daily 7 AM Eastern briefing via Telegram
   // 7 AM EDT (UTC-4, summer) = 11:00 UTC → cron "0 11 * * *"

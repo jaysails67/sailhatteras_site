@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { ChatWidget } from "@/components/chat/ChatWidget";
 
 import Home from "@/pages/home";
 import Trips from "@/pages/trips";
@@ -47,6 +48,7 @@ function Router() {
         </Switch>
       </main>
       <Footer />
+      <ChatWidget />
     </div>
   );
 }

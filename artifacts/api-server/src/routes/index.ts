@@ -11,6 +11,8 @@ import adminRouter from "./admin";
 import telegramRouter from "./telegram";
 import storageRouter from "./storage";
 import shRouter from "./sh";
+import shChatRouter from "./sh-chat";
+import shAgentMailRouter from "./sh-agentmail";
 
 const router: IRouter = Router();
 
@@ -26,5 +28,7 @@ router.use(adminRouter);
 router.use(telegramRouter);
 router.use(storageRouter);
 router.use(shRouter);
+router.use(shChatRouter);
+router.use(shAgentMailRouter);
 
 export default router;
