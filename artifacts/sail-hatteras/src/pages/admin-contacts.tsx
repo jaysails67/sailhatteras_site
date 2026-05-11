@@ -24,7 +24,7 @@ export default function AdminContacts() {
   const { data: contacts, isLoading } = useQuery<Contact[]>({
     queryKey: ["admin-contacts"],
     queryFn: async () => {
-      const res = await fetch("/api/sh/admin/contacts");
+      const res = await fetch(`${import.meta.env.BASE_URL}api/sh/admin/contacts`);
       if (!res.ok) throw new Error("Failed to load contacts");
       return res.json();
     },
