@@ -1,0 +1,200 @@
+=== Deploy started at 5/11/2026, 5:15:43 PM ET ===
+
+=== git pull ===
+Updating 599eecd..5151a35
+Fast-forward
+ .replit                                            |   3 +
+ artifacts/api-server/package.json                  |   1 +
+ artifacts/api-server/src/app.ts                    |   8 +
+ artifacts/api-server/src/index.ts                  |   2 +
+ artifacts/api-server/src/routes/index.ts           |   6 +
+ artifacts/api-server/src/routes/sh-agentmail.ts    | 344 ++++++++++++++++++
+ artifacts/api-server/src/routes/sh-chat.ts         | 107 ++++++
+ artifacts/api-server/src/routes/sh-sitemap.ts      |  67 ++++
+ artifacts/api-server/src/routes/sh.ts              |  30 +-
+ artifacts/api-server/tsconfig.json                 |   3 +
+ artifacts/sail-hatteras/index.html                 | 164 ++++++++-
+ artifacts/sail-hatteras/public/manifest.json       |  12 +
+ artifacts/sail-hatteras/public/opengraph.jpg       | Bin 97013 -> 97468 bytes
+ artifacts/sail-hatteras/public/robots.txt          |   4 +
+ artifacts/sail-hatteras/src/App.tsx                |   4 +
+ .../src/components/chat/ChatWidget.tsx             | 296 ++++++++++++++++
+ .../sail-hatteras/src/components/layout/Footer.tsx |   1 +
+ artifacts/sail-hatteras/src/hooks/use-seo.ts       |  81 +++++
+ artifacts/sail-hatteras/src/pages/about.tsx        |  15 +
+ .../sail-hatteras/src/pages/admin-bookings.tsx     |   2 +
+ .../sail-hatteras/src/pages/admin-contacts.tsx     |   2 +
+ .../sail-hatteras/src/pages/admin-roadmap.tsx      |   2 +
+ artifacts/sail-hatteras/src/pages/admin.tsx        |   2 +
+ .../src/pages/booking-confirmation.tsx             |   7 +
+ artifacts/sail-hatteras/src/pages/contact.tsx      |  15 +
+ artifacts/sail-hatteras/src/pages/home.tsx         |   7 +
+ artifacts/sail-hatteras/src/pages/membership.tsx   |  15 +
+ artifacts/sail-hatteras/src/pages/not-found.tsx    |   7 +
+ artifacts/sail-hatteras/src/pages/payments.tsx     |   7 +
+ artifacts/sail-hatteras/src/pages/privacy.tsx      |  26 +-
+ artifacts/sail-hatteras/src/pages/sitemap.tsx      | 140 ++++++++
+ artifacts/sail-hatteras/src/pages/support.tsx      |  14 +
+ artifacts/sail-hatteras/src/pages/trip-detail.tsx  |  26 ++
+ artifacts/sail-hatteras/src/pages/trips.tsx        |  15 +
+ ...ackup-first-root-ded4680-api-_1778466008971.txt |  35 ++
+ ...at-usr-local-apache-conf-user_1778464100462.txt | 137 +++++++
+ ...url-sk-https-sailhatteras-org_1778464842129.txt |  36 ++
+ ...cho-DEV-TASKS-curl-vsk-https-_1778465224504.txt |  46 +++
+ ...rep-dev-tasks-usr-local-apach_1778464614005.txt |  15 +
+ ...T-http-localhost-3001-api-sh-_1778461369854.txt |  29 ++
+ ...localhost-3001-api-sh-admin-d_1778461517984.txt |   1 +
+ ...-site-pm2-restart-sailhattera_1778462607012.txt |   7 +
+ ...-s-bin-bash-c-e-1778461136786_1778461136786.txt |  22 ++
+ ...ache-2-4-67-cPanel-OpenSSL-1-_1778463872909.txt |  96 +++++
+ ...-su-ca12a15-s-bin-bash-c-cd-h_1778460843250.txt |  50 +++
+ ...i-server-root-ded4680-api-ser_1778465551631.txt |  44 +++
+ attached_assets/image_1778461260627.png            | Bin 0 -> 188874 bytes
+ attached_assets/image_1778463490053.png            | Bin 0 -> 132217 bytes
+ attached_assets/image_1778463774763.png            | Bin 0 -> 191242 bytes
+ attached_assets/image_1778533151219.png            | Bin 0 -> 250665 bytes
+ lib/db/src/schema/conversations.ts                 |  17 +
+ lib/db/src/schema/messages.ts                      |  23 ++
+ lib/integrations-openai-ai-react/package.json      |  13 +
+ .../src/audio/audio-playback-worklet.js            | 111 ++++++
+ .../src/audio/audio-utils.ts                       |  38 ++
+ .../src/audio/index.ts                             |  45 +++
+ .../src/audio/useAudioPlayback.ts                  | 108 ++++++
+ .../src/audio/useVoiceRecorder.ts                  |  72 ++++
+ .../src/audio/useVoiceStream.ts                    | 392 +++++++++++++++++++++
+ lib/integrations-openai-ai-react/src/index.ts      |   4 +
+ lib/integrations-openai-ai-react/tsconfig.json     |  12 +
+ lib/integrations-openai-ai-server/package.json     |  17 +
+ .../src/audio/client.ts                            | 251 +++++++++++++
+ .../src/audio/index.ts                             |  13 +
+ .../src/batch/index.ts                             |   6 +
+ .../src/batch/utils.ts                             | 139 ++++++++
+ lib/integrations-openai-ai-server/src/client.ts    |  18 +
+ .../src/image/client.ts                            |  62 ++++
+ .../src/image/index.ts                             |   1 +
+ lib/integrations-openai-ai-server/src/index.ts     |   3 +
+ lib/integrations-openai-ai-server/tsconfig.json    |  12 +
+ .../src/client/audio/audio-playback-worklet.js     | 112 ++++++
+ .../src/client/audio/audio-utils.ts                |  36 ++
+ .../src/client/audio/index.ts                      |  45 +++
+ .../src/client/audio/useAudioPlayback.ts           | 105 ++++++
+ .../src/client/audio/useVoiceRecorder.ts           |  52 +++
+ .../src/server/audio/client.ts                     | 239 +++++++++++++
+ .../src/server/audio/index.ts                      |  14 +
+ .../src/server/batch/index.ts                      |   6 +
+ .../src/server/batch/utils.ts                      | 167 +++++++++
+ .../src/server/image/client.ts                     |  58 +++
+ .../src/server/image/index.ts                      |   2 +
+ pnpm-lock.yaml                                     |  50 +++
+ replit.md                                          |  40 +++
+ tsconfig.json                                      |   3 +
+ 85 files changed, 4214 insertions(+), 25 deletions(-)
+ create mode 100644 artifacts/api-server/src/routes/sh-agentmail.ts
+ create mode 100644 artifacts/api-server/src/routes/sh-chat.ts
+ create mode 100644 artifacts/api-server/src/routes/sh-sitemap.ts
+ create mode 100644 artifacts/sail-hatteras/public/manifest.json
+ create mode 100644 artifacts/sail-hatteras/public/robots.txt
+ create mode 100644 artifacts/sail-hatteras/src/components/chat/ChatWidget.tsx
+ create mode 100644 artifacts/sail-hatteras/src/hooks/use-seo.ts
+ create mode 100644 artifacts/sail-hatteras/src/pages/sitemap.tsx
+ create mode 100644 attached_assets/Pasted--root-ded4680-api-server-Backup-first-root-ded4680-api-_1778466008971.txt
+ create mode 100644 attached_assets/Pasted--root-ded4680-api-server-cat-usr-local-apache-conf-user_1778464100462.txt
+ create mode 100644 attached_assets/Pasted--root-ded4680-api-server-curl-sk-https-sailhatteras-org_1778464842129.txt
+ create mode 100644 attached_assets/Pasted--root-ded4680-api-server-echo-DEV-TASKS-curl-vsk-https-_1778465224504.txt
+ create mode 100644 attached_assets/Pasted--root-ded4680-api-server-grep-dev-tasks-usr-local-apach_1778464614005.txt
+ create mode 100644 attached_assets/Pasted--root-ded4680-curl-s-X-POST-http-localhost-3001-api-sh-_1778461369854.txt
+ create mode 100644 attached_assets/Pasted--root-ded4680-curl-s-http-localhost-3001-api-sh-admin-d_1778461517984.txt
+ create mode 100644 attached_assets/Pasted--root-ded4680-sailhatteras-site-pm2-restart-sailhattera_1778462607012.txt
+ create mode 100644 attached_assets/Pasted--root-ded4680-su-ca12a15-s-bin-bash-c-e-1778461136786_1778461136786.txt
+ create mode 100644 attached_assets/Pasted-707-tid-1058707-AH00489-Apache-2-4-67-cPanel-OpenSSL-1-_1778463872909.txt
+ create mode 100644 attached_assets/Pasted-Exit-status-1-root-ded4680-su-ca12a15-s-bin-bash-c-cd-h_1778460843250.txt
+ create mode 100644 attached_assets/Pasted-li-1-0-0rc-root-ded4680-api-server-root-ded4680-api-ser_1778465551631.txt
+ create mode 100644 attached_assets/image_1778461260627.png
+ create mode 100644 attached_assets/image_1778463490053.png
+ create mode 100644 attached_assets/image_1778463774763.png
+ create mode 100644 attached_assets/image_1778533151219.png
+ create mode 100644 lib/db/src/schema/conversations.ts
+ create mode 100644 lib/db/src/schema/messages.ts
+ create mode 100644 lib/integrations-openai-ai-react/package.json
+ create mode 100644 lib/integrations-openai-ai-react/src/audio/audio-playback-worklet.js
+ create mode 100644 lib/integrations-openai-ai-react/src/audio/audio-utils.ts
+ create mode 100644 lib/integrations-openai-ai-react/src/audio/index.ts
+ create mode 100644 lib/integrations-openai-ai-react/src/audio/useAudioPlayback.ts
+ create mode 100644 lib/integrations-openai-ai-react/src/audio/useVoiceRecorder.ts
+ create mode 100644 lib/integrations-openai-ai-react/src/audio/useVoiceStream.ts
+ create mode 100644 lib/integrations-openai-ai-react/src/index.ts
+ create mode 100644 lib/integrations-openai-ai-react/tsconfig.json
+ create mode 100644 lib/integrations-openai-ai-server/package.json
+ create mode 100644 lib/integrations-openai-ai-server/src/audio/client.ts
+ create mode 100644 lib/integrations-openai-ai-server/src/audio/index.ts
+ create mode 100644 lib/integrations-openai-ai-server/src/batch/index.ts
+ create mode 100644 lib/integrations-openai-ai-server/src/batch/utils.ts
+ create mode 100644 lib/integrations-openai-ai-server/src/client.ts
+ create mode 100644 lib/integrations-openai-ai-server/src/image/client.ts
+ create mode 100644 lib/integrations-openai-ai-server/src/image/index.ts
+ create mode 100644 lib/integrations-openai-ai-server/src/index.ts
+ create mode 100644 lib/integrations-openai-ai-server/tsconfig.json
+ create mode 100644 lib/integrations/openai_ai_integrations/src/client/audio/audio-playback-worklet.js
+ create mode 100644 lib/integrations/openai_ai_integrations/src/client/audio/audio-utils.ts
+ create mode 100644 lib/integrations/openai_ai_integrations/src/client/audio/index.ts
+ create mode 100644 lib/integrations/openai_ai_integrations/src/client/audio/useAudioPlayback.ts
+ create mode 100644 lib/integrations/openai_ai_integrations/src/client/audio/useVoiceRecorder.ts
+ create mode 100644 lib/integrations/openai_ai_integrations/src/server/audio/client.ts
+ create mode 100644 lib/integrations/openai_ai_integrations/src/server/audio/index.ts
+ create mode 100644 lib/integrations/openai_ai_integrations/src/server/batch/index.ts
+ create mode 100644 lib/integrations/openai_ai_integrations/src/server/batch/utils.ts
+ create mode 100644 lib/integrations/openai_ai_integrations/src/server/image/client.ts
+ create mode 100644 lib/integrations/openai_ai_integrations/src/server/image/index.ts
+From https://github.com/jaysails67/sailhatteras_site
+ * branch            main       -> FETCH_HEAD
+   599eecd..5151a35  main       -> origin/main
+
+=== pnpm install ===
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +3
++++
+Progress: resolved 3, reused 0, downloaded 3, added 3, done
+
+. preinstall$ sh -c 'rm -f package-lock.json yarn.lock; case "$npm_config_user_agent" in pnpm/*) ;; *) echo "Use pnpm instead" >&2; exit 1 ;; esac'
+. preinstall: Done
+Done in 2s using pnpm v10.33.2
+
+=== build frontend ===
+> @workspace/sail-hatteras@0.0.0 build /home/ca12a15/sites/sailhatteras_site/artifacts/sail-hatteras
+> vite build --config vite.config.ts
+
+vite v7.3.2 building client environment for production...
+transforming...
+src/components/ui/tooltip.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+src/components/ui/label.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+src/components/ui/select.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+src/components/ui/calendar.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+✓ 2798 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/public/index.html                   9.52 kB │ gzip:   2.81 kB
+dist/public/static/index-D6apyypt.css  135.21 kB │ gzip:  20.80 kB
+dist/public/static/index-BIHZqV8j.js   630.31 kB │ gzip: 185.71 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 3.58s
+
+✗ Error: Command failed: pnpm --filter @workspace/api-server build 2>&1
+
+> @workspace/api-server@0.0.0 build /home/ca12a15/sites/sailhatteras_site/artifacts/api-server
+> node ./build.mjs
+
+[Error: EACCES: permission denied, unlink '/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/dist/index.mjs'] {
+  errno: -13,
+  code: 'EACCES',
+  syscall: 'unlink',
+  path: '/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/dist/index.mjs'
+}
+/home/ca12a15/sites/sailhatteras_site/artifacts/api-server:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/api-server@0.0.0 build: `node ./build.mjs`
+Exit status 1

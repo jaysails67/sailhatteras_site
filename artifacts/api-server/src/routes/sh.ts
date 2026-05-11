@@ -949,6 +949,10 @@ router.post("/sh/admin/deploy", async (req, res) => {
     log.push("\n=== build frontend ===");
     log.push(buildFrontend.stdout.trim());
 
+    // Remove old dist before API build to avoid EACCES if dist was created by a different user/process
+    await execAsync("rm -rf artifacts/api-server/dist", { cwd }).catch(() => {});
+    log.push("\n=== cleared api dist ===");
+
     const buildApi = await execAsync("pnpm --filter @workspace/api-server build 2>&1", { cwd });
     log.push("\n=== build api ===");
     log.push(buildApi.stdout.trim());
