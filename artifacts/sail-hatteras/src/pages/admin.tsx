@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { Anchor, BarChart3, Calendar, Users, DollarSign, ArrowRight, Lock, ListTodo, GitPullRequest, CheckCircle2, XCircle, Loader2, RefreshCw } from "lucide-react";
+import { Anchor, BarChart3, Calendar, Users, DollarSign, ArrowRight, Lock, ListTodo, GitPullRequest, CheckCircle2, XCircle, Loader2, RefreshCw, Github, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -185,6 +185,34 @@ function AdminDashboard() {
           <div className="font-semibold">Dev Roadmap</div>
           <div className="text-sm text-muted-foreground">Feature backlog & architecture notes</div>
         </Link>
+      </div>
+
+      {/* Developer Resources */}
+      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <a
+          href="https://github.com/jaysails67/sailhatteras_site/blob/main/.agents/skills/github-push/SKILL.md"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-zinc-950 border border-zinc-800 rounded-xl p-5 hover:border-zinc-600 transition-colors group flex items-start gap-4"
+        >
+          <BookOpen className="h-5 w-5 text-zinc-400 group-hover:text-white transition-colors mt-0.5 shrink-0" />
+          <div>
+            <div className="font-semibold text-zinc-200 text-sm">GitHub Push Skill</div>
+            <div className="text-xs text-zinc-500 mt-0.5 leading-relaxed">Step-by-step guide for pushing Replit → GitHub from any session. Includes credential workaround & troubleshooting.</div>
+          </div>
+        </a>
+        <a
+          href="https://github.com/jaysails67/sailhatteras_site"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-zinc-950 border border-zinc-800 rounded-xl p-5 hover:border-zinc-600 transition-colors group flex items-start gap-4"
+        >
+          <Github className="h-5 w-5 text-zinc-400 group-hover:text-white transition-colors mt-0.5 shrink-0" />
+          <div>
+            <div className="font-semibold text-zinc-200 text-sm">GitHub Repository</div>
+            <div className="text-xs text-zinc-500 mt-0.5 leading-relaxed">jaysails67/sailhatteras_site — view commits, branches, and source history.</div>
+          </div>
+        </a>
       </div>
     </div>
   );
