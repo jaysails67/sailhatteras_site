@@ -1,0 +1,67 @@
+[root@ded4680 ~]# su - ca12a15 -s /bin/bash -c "pm2 logs sailhatteras-api --lines 30 --nostream"
+[TAILING] Tailing last 30 lines for [sailhatteras-api] process (change the value with --lines option)
+/home/ca12a15/.pm2/logs/sailhatteras-api-out.log last 30 lines:
+0|sailhatt | [13:55:40.123] INFO (1449770): request completed
+0|sailhatt |     req: {
+0|sailhatt |       "id": 60,
+0|sailhatt |       "method": "GET",
+0|sailhatt |       "url": "/api/sh/admin/bookings"
+0|sailhatt |     }
+0|sailhatt |     res: {
+0|sailhatt |       "statusCode": 200
+0|sailhatt |     }
+0|sailhatt |     responseTime: 5
+0|sailhatt | [14:15:51.417] INFO (1449770): request completed
+0|sailhatt |     req: {
+0|sailhatt |       "id": 61,
+0|sailhatt |       "method": "POST",
+0|sailhatt |       "url": "/api/sh/admin/deploy"
+0|sailhatt |     }
+0|sailhatt |     res: {
+0|sailhatt |       "statusCode": 200
+0|sailhatt |     }
+0|sailhatt |     responseTime: 8051
+0|sailhatt | [14:22:28.273] INFO (1449770): request completed
+0|sailhatt |     req: {
+0|sailhatt |       "id": 62,
+0|sailhatt |       "method": "POST",
+0|sailhatt |       "url": "/api/sh/admin/deploy"
+0|sailhatt |     }
+0|sailhatt |     res: {
+0|sailhatt |       "statusCode": 200
+0|sailhatt |     }
+0|sailhatt |     responseTime: 7525
+
+/home/ca12a15/.pm2/logs/sailhatteras-api-error.log last 30 lines:
+0|sailhatt |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+0|sailhatt |     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+0|sailhatt | (node:1680992) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | Error: AI_INTEGRATIONS_OPENAI_BASE_URL must be set. Did you forget to provision the OpenAI AI integration?
+0|sailhatt |     at <anonymous> (/home/ca12a15/sites/sailhatteras_site/lib/integrations-openai-ai-server/src/client.ts:4:9)
+0|sailhatt |     at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+0|sailhatt |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+0|sailhatt |     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+0|sailhatt | (node:1681018) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | Error: AI_INTEGRATIONS_OPENAI_BASE_URL must be set. Did you forget to provision the OpenAI AI integration?
+0|sailhatt |     at <anonymous> (/home/ca12a15/sites/sailhatteras_site/lib/integrations-openai-ai-server/src/client.ts:4:9)
+0|sailhatt |     at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+0|sailhatt |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+0|sailhatt |     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+0|sailhatt | (node:1681033) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | Error: AI_INTEGRATIONS_OPENAI_BASE_URL must be set. Did you forget to provision the OpenAI AI integration?
+0|sailhatt |     at <anonymous> (/home/ca12a15/sites/sailhatteras_site/lib/integrations-openai-ai-server/src/client.ts:4:9)
+0|sailhatt |     at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+0|sailhatt |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+0|sailhatt |     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+0|sailhatt | (node:1681055) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | Error: AI_INTEGRATIONS_OPENAI_BASE_URL must be set. Did you forget to provision the OpenAI AI integration?
+0|sailhatt |     at <anonymous> (/home/ca12a15/sites/sailhatteras_site/lib/integrations-openai-ai-server/src/client.ts:4:9)
+0|sailhatt |     at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+0|sailhatt |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+0|sailhatt |     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+
+[root@ded4680 ~]#
