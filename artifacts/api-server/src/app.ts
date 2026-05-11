@@ -115,10 +115,11 @@ app.use(session({
   },
 }));
 
-// Prevent Apache (and any other proxy) from caching API responses
+// Prevent nginx, Apache, and any other proxy from caching API responses
 app.use("/api", (_req, res, next) => {
   res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
   res.setHeader("Pragma", "no-cache");
+  res.setHeader("X-Accel-Expires", "0"); // nginx-specific: bypass proxy cache
   next();
 });
 

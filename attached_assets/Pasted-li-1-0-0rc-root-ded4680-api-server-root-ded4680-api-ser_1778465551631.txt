@@ -1,0 +1,44 @@
+li-1.0.0rc
+[root@ded4680 api-server]#
+[root@ded4680 api-server]# # Find the cache directory from the config
+[root@ded4680 api-server]# nginx -T 2>/dev/null | grep -E "proxy_cache_path|cache_path" | head -5
+proxy_cache_path /var/nginx/cache/ca12a15 levels=1 keys_zone=ca12a15:128m inactive=1h;
+proxy_cache_path /var/nginx/cache/n772627 levels=1 keys_zone=n772627:128m inactive=1h;
+[root@ded4680 api-server]#
+[root@ded4680 api-server]# # Find ALL nginx cache files (takes a sec)
+[root@ded4680 api-server]# find / -maxdepth 6 -path "*/nginx/cache*" -type d 2>/dev/null | head -10
+/var/nginx/cache
+/var/nginx/cache/n772627
+/var/nginx/cache/n772627/0
+/var/nginx/cache/n772627/c
+/var/nginx/cache/n772627/3
+/var/nginx/cache/n772627/1
+/var/nginx/cache/n772627/f
+/var/nginx/cache/n772627/5
+/var/nginx/cache/n772627/2
+/var/nginx/cache/n772627/e
+[root@ded4680 api-server]# find / -maxdepth 6 -name "proxy_cache*" -type d 2>/dev/null | head -5
+[root@ded4680 api-server]# # Clear the right cache directory for thisaccount
+[root@ded4680 api-server]# find /var/nginx/cache/ca12a15 -type f -delete && echo "Cache cleared"
+Cache cleared
+[root@ded4680 api-server]#
+[root@ded4680 api-server]# # Verify immediately
+[root@ded4680 api-server]# curl -vsk https://sailhatteras.org/api/sh/admin/dev-tasks 2>&1 | grep -E "proxy-cache|content-length"
+< content-length: 300
+[root@ded4680 api-server]# nginx -T 2>/dev/null | grep -B5 "ca12a15" | grep -E "server_name|include|conf" | head -10
+# configuration file /etc/nginx/vhosts/ca12a15__hatterassailing_org.conf:
+# ngxconf v2.4.24 (29 Apr 2026)
+    server_name hatterassailing.org www.hatterassailing.org mail.hatterassailing.org;
+    server_name cpanel.hatterassailing.org cpcontacts.hatterassailing.org autodiscover.hatterassailing.org cpcalendars.hatterassailing.org ;
+    server_name webmail.hatterassailing.org ;
+    server_name whm.hatterassailing.org ;
+    server_name webdisk.hatterassailing.org ;
+# configuration file /etc/nginx/vhosts/ca12a15__pamliecoconnect_com_hatterassailing_org.conf:
+# ngxconf v2.4.24 (29 Apr 2026)
+    server_name pamliecoconnect.com.hatterassailing.org mail.pamliecoconnect.com pamliecoconnect.com www.pamliecoconnect.com www.pamliecoconnect.com.hatterassailing.org;
+[root@ded4680 api-server]# find /etc/nginx /var/nginx /usr/local/nginx -name "*.conf" 2>/dev/null | xargs grep -l "ca12a15" 2>/dev/null | head -5
+/etc/nginx/vhosts/ca12a15__pamliecoconnect_com_hatterassailing_org.conf
+/etc/nginx/vhosts/ca12a15__sailhatteras_org_hatterassailing_org.conf
+/etc/nginx/vhosts/ca12a15__phillipsboatworks_com_hatterassailing_org.conf
+/etc/nginx/vhosts/ca12a15__hatterassailing_org.conf
+[root@ded4680 api-server]#
