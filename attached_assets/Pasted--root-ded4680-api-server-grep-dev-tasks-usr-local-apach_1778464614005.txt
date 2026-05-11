@@ -1,0 +1,15 @@
+[root@ded4680 api-server]# grep "dev-tasks" /usr/local/apache/domlogs/sailhatteras.org* 2>/dev/null | tail -5
+/usr/local/apache/domlogs/sailhatteras.org.hatterassailing.org-ssl_log:192.249.121.207 - - [10/May/2026:17:48:36 -0700] "GET /api/sh/admin/dev-tasks HTTP/1.1" 500 1063 "https://sailhatteras.org/admin/roadmap" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+/usr/local/apache/domlogs/sailhatteras.org.hatterassailing.org-ssl_log:192.249.121.207 - - [10/May/2026:17:48:38 -0700] "GET /api/sh/admin/dev-tasks HTTP/1.1" 500 1063 "https://sailhatteras.org/admin/roadmap" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+/usr/local/apache/domlogs/sailhatteras.org.hatterassailing.org-ssl_log:192.249.121.207 - - [10/May/2026:17:48:42 -0700] "GET /api/sh/admin/dev-tasks HTTP/1.1" 500 1063 "https://sailhatteras.org/admin/roadmap" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+/usr/local/apache/domlogs/sailhatteras.org.hatterassailing.org-ssl_log:192.249.121.207 - - [10/May/2026:17:55:52 -0700] "GET /api/sh/admin/dev-tasks HTTP/1.1" 200 2 "https://sailhatteras.org/admin/roadmap" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+/usr/local/apache/domlogs/sailhatteras.org.hatterassailing.org-ssl_log:192.249.121.207 - - [10/May/2026:18:09:34 -0700] "GET /favicon.ico HTTP/1.1" 200 1799 "https://sailhatteras.org/api/sh/admin/dev-tasks" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+[root@ded4680 api-server]#
+[root@ded4680 api-server]# # Make a request then immediately check the node process logs
+[root@ded4680 api-server]# curl -sk https://sailhatteras.org/api/sh/admin/dev-tasks
+[][root@ded4680 api-server]# grep "dev-tasks\|sh_dev_tasks" /proc/$(ls -ti :3001)/fd/1 2>/dev/null | tail -3
+[root@ded4680 api-server]#
+[root@ded4680 api-server]# # Also check if dashboard endpoint still works through Apache
+[root@ded4680 api-server]# curl -sk https://sailhatteras.org/api/sh/admin/dashboard | head -c 100
+{"totalBookings":8,"confirmedBookings":0,"pendingBookings":0,"revenueThisMonth":0,"recentBookings":[[root@ded4680 api-server]#
+[root@ded4680 api-server]#
