@@ -1,0 +1,35 @@
+[root@ded4680 api-server]# # Backup first
+[root@ded4680 api-server]# cp /etc/nginx/vhosts/ca12a15__sailhatteras_org_hatterassailing_org.conf \
+>    /etc/nginx/vhosts/ca12a15__sailhatteras_org_hatterassailing_org.conf.bak
+[root@ded4680 api-server]#
+[root@ded4680 api-server]# # Insert /api/ no-cache location block before the main location /
+[root@ded4680 api-server]# python3 - << 'EOF'
+> path = '/etc/nginx/vhosts/ca12a15__sailhatteras_org_hatterassailing_org.conf'
+> content = open(path).read()
+> api_block = '''    location ^~ /api/ {
+>         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;>         proxy_set_header X-Real-IP $remote_addr;
+>         proxy_set_header Host $http_host;
+>         proxy_set_header X-Forwarded-Proto $scheme;
+>         proxy_no_cache 1;
+>         proxy_cache_bypass 1;
+>         add_header X-Proxy-Cache $upstream_cache_status;
+>         proxy_pass http://192.249.121.207:8080;
+>     }
+>
+>     location / {'''
+> content = content.replace('    location / {\n        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n        proxy_set_header X-Real-IP $remote_addr;\n        proxy_set_header Host $http_host;\n        proxy_set_header X-Forwarded-Proto $scheme;\n\n        proxy_no_cache $cache_bypass;', api_block + '\n        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n        proxy_set_header X-Real-IP $remote_addr;\n        proxy_set_header Host $http_host;\n proxy_set_header X-Forwarded-Proto $scheme;\n\n        proxy_no_cache $cache_bypass;', 1)
+> open(path, 'w').write(content)
+> print('Done')
+> EOF
+Done
+[root@ded4680 api-server]#
+[root@ded4680 api-server]# # Verify config and reload
+[root@ded4680 api-server]# nginx -t && nginx -s reload && echo "nginxreloaded OK"
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+nginx reloaded OK
+[root@ded4680 api-server]#
+[root@ded4680 api-server]# # Confirm api now bypasses cache (should show MISS or BYPASS, not HIT)
+[root@ded4680 api-server]# curl -vsk https://sailhatteras.org/api/sh/admin/dev-tasks 2>&1 | grep -E "proxy-cache|content-length"
+< content-length: 300
+[root@ded4680 api-server]#
