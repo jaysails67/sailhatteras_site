@@ -4,6 +4,7 @@ import { ArrowLeft, Anchor, Search, Mail, Phone, MessageSquare } from "lucide-re
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
+import { useSeo } from "@/hooks/use-seo";
 
 interface Contact {
   id: number;
@@ -16,6 +17,7 @@ interface Contact {
 }
 
 export default function AdminContacts() {
+  useSeo({ title: "Admin Contacts — Hatteras Community Sailing", description: "Admin contacts.", noIndex: true });
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState<number | null>(null);
 

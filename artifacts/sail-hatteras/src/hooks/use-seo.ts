@@ -6,6 +6,7 @@ interface SeoOptions {
   image?: string;
   canonical?: string;
   type?: "website" | "article";
+  noIndex?: boolean;
 }
 
 const SITE_NAME = "Hatteras Community Sailing";
@@ -44,7 +45,7 @@ function setJsonLd(id: string, data: object) {
 }
 
 export function useSeo(options: SeoOptions & { jsonLd?: object | object[] }) {
-  const { title, description, image = DEFAULT_IMAGE, canonical, type = "website", jsonLd } = options;
+  const { title, description, image = DEFAULT_IMAGE, canonical, type = "website", noIndex = false, jsonLd } = options;
 
   const fullTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}`;
   const canonicalUrl = canonical ? `${BASE_URL}${canonical}` : BASE_URL;
@@ -54,7 +55,7 @@ export function useSeo(options: SeoOptions & { jsonLd?: object | object[] }) {
     document.title = fullTitle;
 
     setMeta("description", description, "name");
-    setMeta("robots", "index, follow", "name");
+    setMeta("robots", noIndex ? "noindex, nofollow" : "index, follow", "name");
 
     setMeta("og:type", type);
     setMeta("og:url", canonicalUrl);

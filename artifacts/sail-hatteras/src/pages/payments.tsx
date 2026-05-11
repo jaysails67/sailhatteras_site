@@ -1,8 +1,15 @@
 import { Link } from "wouter";
 import { Heart, CreditCard, Mail, DollarSign, Smartphone, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSeo } from "@/hooks/use-seo";
 
 export default function Payments() {
+  useSeo({
+    title: "Payment Options — Hatteras Community Sailing",
+    description: "Ways to pay for sailing programs at Hatteras Community Sailing — credit card, Venmo, Zelle, check, and cash. Secure and flexible payment options for all programs.",
+    canonical: "/payments",
+  });
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-2xl mx-auto px-6 py-16 space-y-10">

@@ -3,8 +3,15 @@ import { CheckCircle, Heart, Anchor, ArrowRight, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetShBooking } from "@workspace/api-client-react";
+import { useSeo } from "@/hooks/use-seo";
 
 export default function BookingConfirmation() {
+  useSeo({
+    title: "Booking Confirmed — Hatteras Community Sailing",
+    description: "Your sailing program booking is confirmed. We look forward to seeing you on the water.",
+    noIndex: true,
+  });
+
   const search = useSearch();
   const params = new URLSearchParams(search);
   const bookingId = params.get("bookingId");

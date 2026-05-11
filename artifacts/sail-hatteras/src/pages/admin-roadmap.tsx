@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { useListShDevTasks, useCreateShDevTask, useUpdateShDevTask } from "@workspace/api-client-react";
+import { useSeo } from "@/hooks/use-seo";
 import type { ShDevTask } from "@workspace/api-client-react";
 
 const STATUS_ORDER = ["in-progress", "planned", "backlog", "done"];
@@ -284,6 +285,7 @@ function AddTaskForm({ onAdded }: { onAdded: () => void }) {
 }
 
 export default function AdminRoadmap() {
+  useSeo({ title: "Admin Roadmap — Hatteras Community Sailing", description: "Admin roadmap.", noIndex: true });
   const { data: tasks, isLoading, refetch } = useListShDevTasks();
 
   const grouped = STATUS_ORDER.reduce<Record<string, ShDevTask[]>>((acc, status) => {

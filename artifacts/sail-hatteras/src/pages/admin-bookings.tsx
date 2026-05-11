@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { useListShAdminBookings, useUpdateShAdminBooking } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
+import { useSeo } from "@/hooks/use-seo";
 
 const STATUS_COLORS: Record<string, string> = {
   confirmed: "bg-green-100 text-green-800",
@@ -16,6 +17,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function AdminBookings() {
+  useSeo({ title: "Admin Bookings — Hatteras Community Sailing", description: "Admin bookings.", noIndex: true });
   const { toast } = useToast();
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [search, setSearch] = useState("");

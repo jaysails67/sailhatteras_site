@@ -1,7 +1,15 @@
 import { Heart } from "lucide-react";
+import { useSeo } from "@/hooks/use-seo";
 
 export default function Privacy() {
   const updated = "May 7, 2026";
+
+  useSeo({
+    title: "Privacy Policy — Hatteras Community Sailing",
+    description: "Privacy policy for SailHatteras.org. Learn how Hatteras Community Sailing collects, uses, and protects your personal information.",
+    canonical: "/privacy",
+    noIndex: false,
+  });
   return (
     <div className="min-h-screen pt-20 bg-background">
       <section className="py-16 px-6 bg-muted/30 border-b border-border">

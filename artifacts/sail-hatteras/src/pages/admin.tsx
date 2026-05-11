@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useListShAdminBookings, useGetShAdminDashboard } from "@workspace/api-client-react";
+import { useSeo } from "@/hooks/use-seo";
 
 const ADMIN_KEY = "hcs-admin-2026";
 
@@ -190,6 +191,7 @@ function AdminDashboard() {
 }
 
 export default function Admin() {
+  useSeo({ title: "Admin — Hatteras Community Sailing", description: "Admin dashboard.", noIndex: true });
   const [key, setKey] = useState("");
   const [authed, setAuthed] = useState(() => {
     try { return localStorage.getItem("hcs-admin") === ADMIN_KEY; } catch { return false; }

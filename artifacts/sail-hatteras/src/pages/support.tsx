@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Heart, ArrowRight, Shield, Anchor, Users, Star, DollarSign, Gift, Megaphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSeo } from "@/hooks/use-seo";
 
 const waysToSupport = [
   {
@@ -54,6 +55,19 @@ const waysToSupport = [
 ];
 
 export default function Support() {
+  useSeo({
+    title: "Support Our Mission — Hatteras Community Sailing",
+    description: "Support Hatteras Community Sailing with a donation, sponsorship, or volunteer time. Your contribution funds free youth sailing programs on Hatteras Island. 501(c)3 — tax deductible.",
+    canonical: "/support",
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "DonateAction",
+      "name": "Support Hatteras Community Sailing",
+      "description": "Donate to Hatteras Community Sailing, a 501(c)3 nonprofit. Funds go directly to youth sailing scholarships and programs on Hatteras Island.",
+      "url": "https://sailhatteras.org/support",
+      "recipient": { "@id": "https://sailhatteras.org/#organization" }
+    },
+  });
   return (
     <div className="min-h-screen pt-20 bg-background">
       {/* Hero */}
