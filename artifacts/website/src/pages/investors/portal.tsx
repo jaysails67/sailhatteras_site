@@ -617,22 +617,37 @@ type PlanSection = {
 };
 
 const PLAN_SECTIONS: PlanSection[] = [
-  { slug: "exec-summary",      label: "Executive Summary" },
-  { slug: "company-overview",  label: "Company Overview" },
-  { slug: "market-analysis",   label: "Market Analysis" },
-  { slug: "services",          label: "Service Model" },
-  { slug: "products",          label: "Vessel & Technology" },
-  { slug: "marketing-plan",    label: "P3 Partnership" },
-  { slug: "operations",        label: "Operations Plan" },
-  { slug: "financial-plan",    label: "Financial Plan" },
-  { slug: "economic-impact",   label: "Economic Impact" },
-  { slug: "risk-analysis",     label: "Risk Analysis" },
-  { slug: "timeline",          label: "Implementation" },
-  { slug: "conclusion",        label: "Investors & Funding" },
-  { slug: "grants",            label: "Grant Opportunities" },
-  { slug: "management-team",        label: "Management Team",               staticContent: <ManagementTeamSection /> },
-  { slug: "the-offering",           label: "The Offering",                  staticContent: <TheOfferingSection /> },
-  { slug: "subscription-agreement", label: "Subscription Agreement",        staticContent: <SubscriptionAgreementSection /> },
+  // ── Front matter ──────────────────────────────────────────────────────────
+  { slug: "cover-page",              label: "Cover Page" },
+  // ── Core business plan ────────────────────────────────────────────────────
+  { slug: "exec-summary",            label: "Executive Summary" },
+  { slug: "company-overview",        label: "Company Overview" },
+  { slug: "market-analysis",         label: "Market Analysis" },
+  { slug: "services",                label: "Service Model" },
+  { slug: "products",                label: "Vessel & Technology" },
+  { slug: "vessel-platform",         label: "Vessel Platform" },
+  { slug: "jones-act-strategy",      label: "Jones Act Strategy" },
+  { slug: "regulatory-pathway",      label: "Regulatory Pathway" },
+  { slug: "marketing-plan",          label: "P3 Partnership" },
+  { slug: "operations",              label: "Operations Plan" },
+  // ── Financial ─────────────────────────────────────────────────────────────
+  { slug: "financial-plan",          label: "Financial Plan" },
+  { slug: "capital-structure",       label: "Capital Structure" },
+  { slug: "five-year-proforma",      label: "Five-Year Proforma" },
+  { slug: "corporate-structure",     label: "Corporate Structure" },
+  { slug: "governance-philosophy",   label: "Governance Philosophy" },
+  // ── Impact & risk ─────────────────────────────────────────────────────────
+  { slug: "economic-impact",         label: "Economic Impact" },
+  { slug: "risk-analysis",           label: "Risk Analysis" },
+  { slug: "timeline",                label: "Implementation" },
+  { slug: "conclusion",              label: "Investors & Funding" },
+  { slug: "grants",                  label: "Grant Opportunities" },
+  // ── Static sections ───────────────────────────────────────────────────────
+  { slug: "management-team",         label: "Management Team",              staticContent: <ManagementTeamSection /> },
+  { slug: "disclaimer",              label: "Disclaimer" },
+  { slug: "disclaimer-about",        label: "Disclaimer About Disclaimer" },
+  { slug: "the-offering",            label: "The Offering",                 staticContent: <TheOfferingSection /> },
+  { slug: "subscription-agreement",  label: "Subscription Agreement",       staticContent: <SubscriptionAgreementSection /> },
 ];
 
 // ─── Portal page ─────────────────────────────────────────────────────────────
