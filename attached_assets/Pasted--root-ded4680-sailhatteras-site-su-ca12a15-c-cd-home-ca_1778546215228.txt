@@ -1,0 +1,43 @@
+[root@ded4680 sailhatteras_site]# su - ca12a15 -c "cd /home/ca12a15/sites/sailhatteras_site && git pull origin main"
+remote: Enumerating objects: 51, done.
+remote: Counting objects: 100% (51/51), done.
+remote: Compressing objects: 100% (12/12), done.
+remote: Total 41 (delta 30), reused 40 (delta 29), pack-reused 0 (from 0)
+Unpacking objects: 100% (41/41), 13.02 KiB | 218.00 KiB/s, done.
+From https://github.com/jaysails67/sailhatteras_site
+ * branch            main       -> FETCH_HEAD
+   7dfe3fe..62e01cf  main       -> origin/main
+Updating 7dfe3fe..62e01cf
+Fast-forward
+ artifacts/api-server/build.mjs               |   1 +
+ artifacts/api-server/package.json            |   1 +
+ artifacts/api-server/src/routes/sh-chat.ts   | 105 ++++++++----
+ ...Check-the-docs-page-con_1778545781472.txt |  61 +++++++
+ ...cat-root-openclaw-hukil_1778545685307.txt |  93 ++++++++++
+ ...cat-root-openclaw-openc_1778545591598.txt | 152 +++++++++++++++++
+ ...curl-sS-http-127-0-0-1-_1778544619018.txt |  43 +++++
+ ...ls-la-root-openclaw-2-d_1778545501869.txt |  70 ++++++++
+ ...su-ca12a15-c-pm2-env-0-_1778544323169.txt | 119 +++++++++++++
+ pnpm-lock.yaml                               |   3 +
+ 10 files changed, 617 insertions(+), 31 deletions(-)
+ create mode 100644 attached_assets/Pasted--root-ded4680-sailhatteras-site-Check-the-docs-page-con_1778545781472.txt
+ create mode 100644 attached_assets/Pasted--root-ded4680-sailhatteras-site-cat-root-openclaw-hukil_1778545685307.txt
+ create mode 100644 attached_assets/Pasted--root-ded4680-sailhatteras-site-cat-root-openclaw-openc_1778545591598.txt
+ create mode 100644 attached_assets/Pasted--root-ded4680-sailhatteras-site-curl-sS-http-127-0-0-1-_1778544619018.txt
+ create mode 100644 attached_assets/Pasted--root-ded4680-sailhatteras-site-ls-la-root-openclaw-2-d_1778545501869.txt
+ create mode 100644 attached_assets/Pasted--root-ded4680-sailhatteras-site-su-ca12a15-c-pm2-env-0-_1778544323169.txt
+[root@ded4680 sailhatteras_site]# su - ca12a15 -c "echo 'OPENCLAW_AGENT=true' >> /home/ca12a15/sites/sailhatteras_site/.env"
+[root@ded4680 sailhatteras_site]# su - ca12a15 -c "cd /home/ca12a15/sites/sailhatteras_site && set -a && source .env && set +a && pm2 restart sailhatteras-api --update-env"
+[PM2] Applying action restartProcessId on app [sailhatteras-api](ids:[ 0 ])
+[PM2] [sailhatteras-api](0) ✓
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ sailhatteras-api   │ fork     │ 1546 │ online    │ 0%       │ 13.8mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+[root@ded4680 sailhatteras_site]# curl -s -X POST http://localhost:3001/api/sh/chat \
+>   -H 'Content-Type: application/json' \
+>   -d '{"messages":[{"role":"user","content":"what sunset sails do you offer?"}]}' | head -5
+data: {"error":"AI response failed. Please try again."}
+
+[root@ded4680 sailhatteras_site]#
