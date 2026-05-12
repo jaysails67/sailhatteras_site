@@ -1,0 +1,152 @@
+[root@ded4680 sailhatteras_site]# cat /root/.openclaw/openclaw.json
+{
+  "meta": {
+    "lastTouchedVersion": "2026.5.2",
+    "lastTouchedAt": "2026-05-10T01:23:57.264Z"
+  },
+  "wizard": {
+    "lastRunAt": "2026-04-20T04:56:28.516Z",
+    "lastRunVersion": "2026.4.15",
+    "lastRunCommand": "doctor",
+    "lastRunMode": "local"
+  },
+  "auth": {
+    "profiles": {
+      "openrouter:default": {
+        "provider": "openrouter",
+        "mode": "api_key"
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "openrouter/auto"
+      },
+      "models": {
+        "openrouter/auto": {
+          "alias": "OpenRouter"
+        },
+        "google/gemini-2.0-flash-001": {
+          "alias": "Gemini Flash"
+        }
+      },
+      "workspace": "/root/.openclaw/workspace",
+      "compaction": {
+        "mode": "safeguard",
+        "reserveTokensFloor": 40000
+      },
+      "maxConcurrent": 4,
+      "contextTokens": 32000,
+      "contextPruning": {
+        "mode": "cache-ttl",
+        "ttl": "60m",
+        "keepLastAssistants": 3,
+        "softTrimRatio": 0.3,
+        "hardClearRatio": 0.5,
+        "minPrunableToolChars": 50000,
+        "softTrim": {
+          "maxChars": 4000,
+          "headChars": 1500,
+          "tailChars": 1500
+        },
+        "hardClear": {
+          "enabled": true,
+          "placeholder": "[Old tool result content cleared]"
+        },
+        "tools": {
+          "deny": [
+            "browser",
+            "canvas"
+          ]
+        }
+      },
+      "subagents": {
+        "maxConcurrent": 8
+      }
+    }
+  },
+  "messages": {
+    "ackReactionScope": "group-mentions"
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  },
+  "session": {
+    "dmScope": "per-channel-peer"
+  },
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "dmPolicy": "open",
+      "botToken": "8769911544:AAHlcCN5THukIAs31GneL639pecw4IUjQJ4",
+      "allowFrom": [
+        "*"
+      ],
+      "groupPolicy": "allowlist",
+      "streaming": {
+        "mode": "partial"
+      }
+    },
+    "discord": {
+      "enabled": true
+    }
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "loopback",
+    "auth": {
+      "mode": "token",
+      "token": "c7f088b6646ff21f11548a4c82a43952594b29b4bbdad74a"
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    }
+  },
+  "plugins": {
+    "allow": [
+      "lossless-claw",
+      "google",
+      "telegram",
+      "openrouter",
+      "discord",
+      "memory-core"
+    ],
+    "entries": {
+      "telegram": {
+        "enabled": true
+      },
+      "lossless-claw": {
+        "enabled": true
+      },
+      "google": {
+        "enabled": true
+      },
+      "openrouter": {
+        "enabled": true
+      },
+      "discord": {
+        "enabled": true
+      }
+    }
+  },
+  "skills": {
+    "entries": {
+      "agentmail": {
+        "apiKey": "am_us_inbox_bec57d13aef1a5792fd452b51b15e05510c3fc6c582ca8fb60233b7e974e3b71"
+      }
+    }
+  },
+  "tools": {
+    "exec": {
+      "host": "gateway",
+      "security": "full",
+      "ask": "off"
+    }
+  }
+}[root@ded4680 sailhatteras_site]#
