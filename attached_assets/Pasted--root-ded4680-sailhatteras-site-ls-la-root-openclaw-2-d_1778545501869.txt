@@ -1,0 +1,70 @@
+[root@ded4680 sailhatteras_site]# ls -la /root/.openclaw/ 2>/dev/null|| ls -la /root/openclaw* 2>/dev/null
+total 456
+drwx------  23 root root   4096 May 11 16:53 .
+dr-xr-x---. 23 root root   4096 May 11 16:56 ..
+drwxr-xr-x   3 root root   4096 Mar 18 21:01 agents
+-rwxr-xr-x   1 root root    268 Mar 23 09:04 backup-lossless-claw.sh
+drwxr-xr-x   3 root root   4096 Mar 23 09:04 backups
+drwxr-xr-x   2 root root   4096 Mar 18 21:14 canvas
+drwxr-xr-x   2 root root   4096 Apr  3 04:36 completions
+drwx------   2 root root   4096 Mar 18 21:44 credentials
+drwx------   2 root root   4096 Mar 18 21:14 cron
+drwx------   3 root root   4096 May  9 06:16 delivery-queue
+drwxr-xr-x   2 root root   4096 May 11 16:45 devices
+-rw-r--r--   1 root root    891 Apr  6 20:26 .env
+-rw-------   1 root root    242 May 11 16:53 exec-approvals.json
+drwxr-xr-x   5 root root   4096 Apr 25 11:11 extensions
+drwx------   2 root root   4096 Apr  3 04:36 flows
+-rw-------   1 root root    658 May  3 20:49 gateway.systemd.env
+-rw-r--r--   1 root root   3460 Mar 31 23:19 hukilau_client.py
+drwxr-xr-x   2 root root   4096 Mar 23 07:54 identity
+-rw-r--r--   1 root root 163840 Mar 23 08:56 lcm.db
+-rw-r--r--   1 root root  32768 Apr 25 11:11 lcm.db-shm
+-rw-r--r--   1 root root  90672 Apr 25 11:11 lcm.db-wal
+drwx------   2 root root   4096 Apr  1 07:08 logs
+drwx------   3 root root   4096 Mar 23 09:37 media
+drwxr-xr-x   2 root root   4096 May  3 23:18 memory
+drwxr-xr-x   3 root root   4096 May  3 20:49 npm
+-rw-------   1 root root   3075 May 10 19:51 openclaw.json
+-rw-------   1 root root   2833 May  9 18:23 openclaw.json.bak
+-rw-------   1 root root   2250 May  9 17:12 openclaw.json.bak.1
+-rw-------   1 root root   2084 May  3 20:49 openclaw.json.bak.2
+-rw-------   1 root root   3369 Apr 25 11:11 openclaw.json.bak.3
+-rw-------   1 root root   3323 Apr 19 21:56 openclaw.json.bak.4
+-rw-------   1 root root   3603 Apr 19 21:35 openclaw.json.bakx2
+-rw-------   1 root root   3605 Apr 19 21:17 openclaw.json.clobbered.2026-04-20T04-17-39-940Z
+-rw-------   1 root root   3603 Apr 19 21:30 openclaw.json.clobbered.2026-04-20T04-30-20-587Z
+-rw-------   1 root root   2304 May  9 15:05 openclaw.json.clobbered.2026-05-09T22-05-58-632Z
+-rw-------   1 root root   2304 May  9 15:05 openclaw.json.clobbered.2026-05-09T22-05-58-638Z
+-rw-------   1 root root   3603 Apr 19 21:40 openclaw.json.fullbak
+-rw-------   1 root root   3075 May 11 17:21 openclaw.json.last-good
+-rw-r--r--   1 root root    409 Mar 23 10:03 pbw-oauth.json
+drwx------   2 root root   4096 May  3 20:49 plugins
+drwxr-xr-x   3 root root   4096 Apr  6 20:05 qqbot
+drwx------   2 root root   4096 Apr  1 03:52 tasks
+drwxr-xr-x   2 root root   4096 May 11 16:52 telegram
+-rw-------   1 root root    187 May 10 21:05 update-check.json
+drwxr-xr-x  21 root root   4096 May  8 02:46 workspace
+drwxr-xr-x   9 root root   4096 Apr  1 07:30 workspace_backup_20260406
+[root@ded4680 sailhatteras_site]# find /root -name "*.toml" -o -name "*.yaml" -o -name "*.json" -o -name "*.conf" 2>/dev/null | grep -iv "history\|bash\|vim\|ssh" | head -20
+/root/.cpanm/work/1772647447.2025286/Try-Tiny-0.32/META.json
+/root/.cpanm/work/1772647447.2025286/Try-Tiny-0.32/blib/meta/install.json
+/root/.cpanm/work/1772647447.2025286/Try-Tiny-0.32/blib/meta/MYMETA.json
+/root/.cpanm/work/1772647447.2025286/Try-Tiny-0.32/MYMETA.json
+/root/.cpanm/work/1772647447.2025286/IO-Tty-1.20/META.json
+/root/.cpanm/work/1772647447.2025286/IO-Tty-1.20/blib/meta/install.json
+/root/.cpanm/work/1772647447.2025286/IO-Tty-1.20/blib/meta/MYMETA.json
+/root/.cpanm/work/1772647447.2025286/IO-Tty-1.20/MYMETA.json
+/root/.cpanm/work/1772647447.2025286/local-lib-2.000029/META.json
+/root/.cpanm/work/1772647447.2025286/local-lib-2.000029/blib/meta/install.json
+/root/.cpanm/work/1772647447.2025286/local-lib-2.000029/blib/meta/MYMETA.json
+/root/.cpanm/work/1772647447.2025286/local-lib-2.000029/MYMETA.json
+/root/.cpanm/work/1772647447.2025286/HTTP-Tiny-0.092/META.json
+/root/.cpanm/work/1772647447.2025286/HTTP-Tiny-0.092/blib/meta/install.json
+/root/.cpanm/work/1772647447.2025286/HTTP-Tiny-0.092/blib/meta/MYMETA.json
+/root/.cpanm/work/1772647447.2025286/HTTP-Tiny-0.092/MYMETA.json
+/root/.cpanm/work/1772647447.2025286/CPAN-Meta-Requirements-2.145/META.json
+/root/.cpanm/work/1772647447.2025286/CPAN-Meta-Requirements-2.145/blib/meta/install.json
+/root/.cpanm/work/1772647447.2025286/CPAN-Meta-Requirements-2.145/blib/meta/MYMETA.json
+/root/.cpanm/work/1772647447.2025286/CPAN-Meta-Requirements-2.145/MYMETA.json
+[root@ded4680 sailhatteras_site]#
