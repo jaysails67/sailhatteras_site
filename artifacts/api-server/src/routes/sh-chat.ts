@@ -23,13 +23,13 @@ function getOpenAIClient(): { client: OpenAI; model: string } {
 }
 
 // ─── Production: call `openclaw agent` CLI (one-shot, returns full reply) ──
-function runViaOpenClaw(prompt: string): Promise<string> {
+function runViaOpenClaw(sessionId: string, prompt: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const openclawBin = process.env.OPENCLAW_BIN ?? "openclaw";
-    const proc = spawn(openclawBin, ["agent", "--json", "-m", prompt], {
-      // Override HOME so openclaw finds its config at /root/.openclaw/
-      // even when the Node process runs as a non-root user (e.g. ca12a15)
-      env: { ...process.env, HOME: process.env.OPENCLAW_HOME ?? process.env.HOME ?? "/root" },
+    // --session-id keeps the conversation thread in OpenClaw's storage;
+    // HOME=/root ensures openclaw finds its config at /root/.openclaw/
+    const proc = spawn(openclawBin, ["agent", "--session-id", sessionId, "--json", "-m", prompt], {
+      env: { ...process.env, HOME: "/root" },
     });
 
     let stdout = "";
@@ -46,8 +46,11 @@ function runViaOpenClaw(prompt: string): Promise<string> {
       }
       try {
         const parsed = JSON.parse(stdout);
-        // OpenClaw JSON output: { reply: "...", ... } or { text: "..." }
-        const text = parsed.reply ?? parsed.text ?? parsed.content ?? stdout.trim();
+        // OpenClaw JSON: { payloads: [{ text: "..." }], meta: {...} }
+        const text =
+          parsed?.payloads?.[0]?.text ??
+          parsed.reply ?? parsed.text ?? parsed.content ??
+          stdout.trim();
         resolve(text);
       } catch {
         // Not JSON — treat raw stdout as the response
@@ -117,7 +120,11 @@ AVAILABLE PROGRAMS:
 If someone asks to book, guide them to the appropriate trip page. If they describe what they want (sunset, family, learn to sail, charter, etc.), recommend the best matching trip and give them the link.`;
 
 router.post("/sh/chat", async (req, res) => {
-  const { messages } = req.body;
+  const { messages, sessionId: rawSessionId } = req.body;
+  // Sanitize session ID — alphanumeric + hyphens only, max 64 chars
+  const sessionId = typeof rawSessionId === "string" && /^[\w-]{1,64}$/.test(rawSessionId)
+    ? rawSessionId
+    : `sh-${Date.now()}`;
 
   if (!Array.isArray(messages) || messages.length === 0) {
     res.status(400).json({ error: "messages must be a non-empty array" });
@@ -148,17 +155,15 @@ router.post("/sh/chat", async (req, res) => {
 
   try {
     if (useOpenClaw) {
-      // Build a single prompt combining system context + conversation history
-      const history = messages
-        .slice(-10)
-        .map((m: { role: string; content: string }) =>
-          `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`,
-        )
-        .join("\n");
+      // On first turn inject the system context; subsequent turns let OpenClaw
+      // maintain its own session history so we only send the latest message.
+      const isFirstTurn = messages.length <= 1;
+      const lastUserMsg = messages.filter((m: { role: string }) => m.role === "user").at(-1)?.content ?? "";
+      const prompt = isFirstTurn
+        ? `${systemPrompt}\n\n---\nUser: ${lastUserMsg}`
+        : lastUserMsg;
 
-      const fullPrompt = `${systemPrompt}\n\n--- Conversation ---\n${history}\n\nAssistant:`;
-
-      const reply = await runViaOpenClaw(fullPrompt);
+      const reply = await runViaOpenClaw(sessionId, prompt);
       if (reply) {
         res.write(`data: ${JSON.stringify({ content: reply })}\n\n`);
       }

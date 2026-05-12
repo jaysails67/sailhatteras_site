@@ -82,6 +82,10 @@ const CHIPS = [
   "What are your prices?",
 ];
 
+function randomId() {
+  return `sh-${Math.random().toString(36).slice(2, 10)}-${Date.now()}`;
+}
+
 // ─── Main widget ──────────────────────────────────────────────────────────
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
@@ -89,6 +93,8 @@ export function ChatWidget() {
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [hasUserSent, setHasUserSent] = useState(false);
+  // Stable session ID for the lifetime of this widget instance
+  const sessionId = useRef(randomId());
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -132,7 +138,7 @@ export function ChatWidget() {
         const response = await fetch(`${import.meta.env.BASE_URL}api/sh/chat`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: history }),
+          body: JSON.stringify({ messages: history, sessionId: sessionId.current }),
         });
 
         if (!response.ok || !response.body) {
