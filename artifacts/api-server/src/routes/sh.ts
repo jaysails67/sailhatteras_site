@@ -1,4 +1,5 @@
 import { Router } from "express";
+import multer from "multer";
 import { exec, spawn } from "child_process";
 import { promisify } from "util";
 import { db } from "@workspace/db";
@@ -1047,5 +1048,84 @@ router.patch("/sh/admin/dev-tasks/:id", async (req, res) => {
   if (!task) { res.status(404).json({ error: "not found" }); return; }
   res.json(task);
 });
+
+// ── Check payment upload ──────────────────────────────────────────────────────
+const checkUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 12 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype.startsWith("image/")) cb(null, true);
+    else cb(new Error("Only image files are accepted"));
+  },
+});
+
+router.post(
+  "/sh/check-payment",
+  checkUpload.fields([
+    { name: "frontImage", maxCount: 1 },
+    { name: "backImage", maxCount: 1 },
+  ]),
+  async (req, res): Promise<void> => {
+    const files = req.files as Record<string, Express.Multer.File[]> | undefined;
+    const front = files?.frontImage?.[0];
+    const back  = files?.backImage?.[0];
+
+    if (!front || !back) {
+      res.status(400).json({ error: "Both front and back check images are required." });
+      return;
+    }
+
+    const { customerName, customerEmail, reservationRef } = req.body as Record<string, string>;
+    if (!customerName?.trim() || !customerEmail?.trim()) {
+      res.status(400).json({ error: "Your name and email are required." });
+      return;
+    }
+
+    const smtpOk = process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS;
+    if (!smtpOk) {
+      res.status(503).json({ error: "Email service is not configured on this server." });
+      return;
+    }
+
+    try {
+      const nodemailer = await import("nodemailer");
+      const smtpPort = Number(process.env.SMTP_PORT ?? 587);
+      const transporter = nodemailer.default.createTransport({
+        host: process.env.SMTP_HOST,
+        port: smtpPort,
+        secure: smtpPort === 465,
+        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+      });
+
+      const ext = (f: Express.Multer.File) => f.mimetype.split("/")[1] ?? "jpg";
+      await transporter.sendMail({
+        from: process.env.SMTP_USER,
+        to: "reservations@sailhatteras.org",
+        replyTo: customerEmail,
+        subject: `Check Payment — ${customerName}${reservationRef ? ` · Ref: ${reservationRef}` : ""}`,
+        html: `
+          <h2 style="margin:0 0 12px">Check Payment Submission</h2>
+          <table style="font-size:14px;border-collapse:collapse">
+            <tr><td style="padding:4px 16px 4px 0;color:#666">Name</td><td><strong>${customerName}</strong></td></tr>
+            <tr><td style="padding:4px 16px 4px 0;color:#666">Email</td><td>${customerEmail}</td></tr>
+            ${reservationRef ? `<tr><td style="padding:4px 16px 4px 0;color:#666">Reservation Ref</td><td>${reservationRef}</td></tr>` : ""}
+          </table>
+          <p style="margin:16px 0 8px">Front and back check images are attached below.</p>
+          <p style="margin:0;color:#c00;font-weight:bold">⚠ Reservation date is NOT held until this check clears.</p>
+          <p style="margin:8px 0 0;font-size:12px;color:#888">If either image is unclear or badly skewed, reply to this email requesting a resend.</p>
+        `,
+        attachments: [
+          { filename: `check-front.${ext(front)}`, content: front.buffer, contentType: front.mimetype },
+          { filename: `check-back.${ext(back)}`,  content: back.buffer,  contentType: back.mimetype  },
+        ],
+      });
+
+      res.json({ success: true, message: "Check images received. We'll confirm once your check clears — your reservation date is not held until then." });
+    } catch (err) {
+      logger.error({ err }, "Failed to send check payment email");
+      res.status(500).json({ error: "Failed to send your images. Please try again or email us directly." });
+    }
+  }
+);
 
 export default router;
