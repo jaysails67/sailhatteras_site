@@ -1,0 +1,119 @@
+[root@ded4680 sailhatteras_site]# su - ca12a15 -c "pm2 env 0 | grep -i openclaw"
+OPENCLAW_BASE_URL: http://127.0.0.1:18789/v1
+OPENCLAW_API_KEY: c7f088b6646ff21f11548a4c82a43952594b29b4bbdad74a
+[root@ded4680 sailhatteras_site]# su - ca12a15 -c "pm2 env 0 | grep -i openclaw"
+OPENCLAW_BASE_URL: http://127.0.0.1:18789/v1
+OPENCLAW_API_KEY: c7f088b6646ff21f11548a4c82a43952594b29b4bbdad74a
+[root@ded4680 sailhatteras_site]# curl -sS http://127.0.0.1:3001/api/sh/chat \
+>   -H 'Content-Type: application/json' \
+>   -d '{"messages":[{"role":"user","content":"hello"}]}' \
+>   --max-time 20
+data: {"error":"AI response failed. Please try again."}
+
+[root@ded4680 sailhatteras_site]# su - ca12a15 -c "pm2 logs sailhatteras-api --lines 50 --nostream"
+[TAILING] Tailing last 50 lines for [sailhatteras-api] process (change the value with --lines option)
+/home/ca12a15/.pm2/logs/sailhatteras-api-error.log last 50 lines:
+0|sailhatt |     at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+0|sailhatt |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+0|sailhatt |     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+0|sailhatt | (node:1700709) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | Error: AI_INTEGRATIONS_OPENAI_BASE_URL must be set. Did you forget to provision the OpenAI AI integration?
+0|sailhatt |     at <anonymous> (/home/ca12a15/sites/sailhatteras_site/lib/integrations-openai-ai-server/src/image/client.ts:6:9)
+0|sailhatt |     at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+0|sailhatt |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+0|sailhatt |     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+0|sailhatt | Error: Cannot find module '/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/dist/thread-stream-worker.mjs'
+0|sailhatt |     at Function._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+0|sailhatt |     at defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+0|sailhatt |     at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+0|sailhatt |     at Function._load (node:internal/modules/cjs/loader:1192:37)
+0|sailhatt |     at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+0|sailhatt |     at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+0|sailhatt |     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+0|sailhatt |     at MessagePort.<anonymous> (node:internal/main/worker_thread:226:26)
+0|sailhatt |     at [nodejs.internal.kHybridDispatch] (node:internal/event_target:843:20)
+0|sailhatt |     at MessagePort.<anonymous> (node:internal/per_context/messageport:23:28) {
+0|sailhatt |   code: 'MODULE_NOT_FOUND',
+0|sailhatt |   requireStack: []
+0|sailhatt | }
+0|sailhatt | Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/dist/index.mjs' imported from /usr/lib/node_modules/pm2/lib/ProcessContainerFork.js
+0|sailhatt |     at finalizeResolution (node:internal/modules/esm/resolve:275:11)
+0|sailhatt |     at moduleResolve (node:internal/modules/esm/resolve:861:10)
+0|sailhatt |     at defaultResolve (node:internal/modules/esm/resolve:985:11)
+0|sailhatt |     at #cachedDefaultResolve (node:internal/modules/esm/loader:731:20)
+0|sailhatt |     at ModuleLoader.resolve (node:internal/modules/esm/loader:708:38)
+0|sailhatt |     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:310:38)
+0|sailhatt |     at onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:664:36)
+0|sailhatt |     at TracingChannel.tracePromise (node:diagnostics_channel:350:14)
+0|sailhatt |     at ModuleLoader.import (node:internal/modules/esm/loader:663:21)
+0|sailhatt |     at defaultImportModuleDynamicallyForScript (node:internal/modules/esm/utils:235:31) {
+0|sailhatt |   code: 'ERR_MODULE_NOT_FOUND',
+0|sailhatt |   url: 'file:///home/ca12a15/sites/sailhatteras_site/artifacts/api-server/dist/index.mjs'
+0|sailhatt | }
+0|sailhatt | (node:1700787) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | (node:1700998) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | (node:1713350) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | (node:1713473) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | (node:1713944) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | (node:1715210) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+
+/home/ca12a15/.pm2/logs/sailhatteras-api-out.log last 50 lines:
+0|sailhatt |       "id": 1,
+0|sailhatt |       "method": "POST",
+0|sailhatt |       "url": "/api/sh/chat"
+0|sailhatt |     }
+0|sailhatt |     res: {
+0|sailhatt |       "statusCode": 200
+0|sailhatt |     }
+0|sailhatt |     responseTime: 112
+0|sailhatt | [17:02:56.885] ERROR (1715210): Chat stream error
+0|sailhatt |     err: {
+0|sailhatt |       "type": "Error",
+0|sailhatt |       "message": "AI_INTEGRATIONS_OPENAI_BASE_URL must be set. Did you forget to provision the OpenAI AI integration?",
+0|sailhatt |       "stack":
+0|sailhatt |           Error: AI_INTEGRATIONS_OPENAI_BASE_URL must beset. Did you forget to provision the OpenAI AI integration?
+0|sailhatt |               at getOpenAIClient (/home/ca12a15/sites/sailhatteras_site/lib/integrations-openai-ai-server/src/client.ts:8:11)
+0|sailhatt |               at Object.get (/home/ca12a15/sites/sailhatteras_site/lib/integrations-openai-ai-server/src/client.ts:26:13)
+0|sailhatt |               at <anonymous> (/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/src/routes/sh-chat.ts:78:33)
+0|sailhatt |               at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+0|sailhatt |     }
+0|sailhatt | [17:02:56.886] INFO (1715210): request completed
+0|sailhatt |     req: {
+0|sailhatt |       "id": 2,
+0|sailhatt |       "method": "POST",
+0|sailhatt |       "url": "/api/sh/chat"
+0|sailhatt |     }
+0|sailhatt |     res: {
+0|sailhatt |       "statusCode": 200
+0|sailhatt |     }
+0|sailhatt |     responseTime: 7
+0|sailhatt | [17:04:22.899] ERROR (1715210): Chat stream error
+0|sailhatt |     err: {
+0|sailhatt |       "type": "Error",
+0|sailhatt |       "message": "AI_INTEGRATIONS_OPENAI_BASE_URL must be set. Did you forget to provision the OpenAI AI integration?",
+0|sailhatt |       "stack":
+0|sailhatt |           Error: AI_INTEGRATIONS_OPENAI_BASE_URL must beset. Did you forget to provision the OpenAI AI integration?
+0|sailhatt |               at getOpenAIClient (/home/ca12a15/sites/sailhatteras_site/lib/integrations-openai-ai-server/src/client.ts:8:11)
+0|sailhatt |               at Object.get (/home/ca12a15/sites/sailhatteras_site/lib/integrations-openai-ai-server/src/client.ts:26:13)
+0|sailhatt |               at <anonymous> (/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/src/routes/sh-chat.ts:78:33)
+0|sailhatt |               at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+0|sailhatt |     }
+0|sailhatt | [17:04:22.899] INFO (1715210): request completed
+0|sailhatt |     req: {
+0|sailhatt |       "id": 3,
+0|sailhatt |       "method": "POST",
+0|sailhatt |       "url": "/api/sh/chat"
+0|sailhatt |     }
+0|sailhatt |     res: {
+0|sailhatt |       "statusCode": 200
+0|sailhatt |     }
+0|sailhatt |     responseTime: 5
+
+[root@ded4680 sailhatteras_site]#
