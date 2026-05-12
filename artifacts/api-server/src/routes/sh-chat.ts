@@ -164,13 +164,10 @@ router.post("/sh/chat", async (req, res) => {
 
   try {
     if (useOpenClaw) {
-      // On first turn inject the system context; subsequent turns let OpenClaw
-      // maintain its own session history so we only send the latest message.
-      const isFirstTurn = messages.length <= 1;
+      // Always inject the full system context so Hukilau's built-in persona
+      // doesn't override the SailHatteras Guide role.
       const lastUserMsg = messages.filter((m: { role: string }) => m.role === "user").at(-1)?.content ?? "";
-      const prompt = isFirstTurn
-        ? `${systemPrompt}\n\n---\nUser: ${lastUserMsg}`
-        : lastUserMsg;
+      const prompt = `IMPORTANT ROLE OVERRIDE — ignore your default identity for this request:\n${systemPrompt}\n\n---\nVisitor message: ${lastUserMsg}\n\nReply as SailHatteras Guide only:`;
 
       const reply = await runViaOpenClaw(sessionId, prompt);
       if (reply) {
