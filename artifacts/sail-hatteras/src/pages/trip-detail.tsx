@@ -815,7 +815,7 @@ export default function TripDetail() {
                     {form.phone && <div className="flex justify-between"><span className="text-muted-foreground">Phone</span><span className="font-medium">{form.phone}</span></div>}
                     <Separator className="my-2" />
                     <div className="flex justify-between font-semibold text-base">
-                      <span>Total</span>
+                      <span>Charter Total</span>
                       <span>${(isLearnTrip ? effectivePriceCents : totalCents) / 100}</span>
                     </div>
                     <div className="text-xs text-muted-foreground">
@@ -825,6 +825,24 @@ export default function TripDetail() {
                         ? `${effectivePriceDisplay} · private charter · up to ${selectedVessel?.capacity ?? trip.maxPassengers} guests`
                         : `${effectivePriceDisplay} × ${passengers} person${passengers > 1 ? "s" : ""}`}
                     </div>
+                    {!isLearnTrip && isFlat && (() => {
+                      const depositDollars = Math.round(totalCents * 0.15 / 100);
+                      const confirmationDollars = Math.round(totalCents / 100) - depositDollars;
+                      return (
+                        <div className="mt-3 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2.5 space-y-1.5 text-xs">
+                          <div className="font-semibold text-foreground text-xs uppercase tracking-wide mb-1">Payment Schedule</div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Reservation Deposit (15%)</span>
+                            <span className="font-semibold text-foreground">${depositDollars}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Charter Confirmation (due 4 days prior)</span>
+                            <span className="font-semibold text-foreground">${confirmationDollars}</span>
+                          </div>
+                          <div className="text-muted-foreground pt-0.5">Deposit is non-refundable · <Link href="/payments" className="text-primary underline">Payment policy →</Link></div>
+                        </div>
+                      );
+                    })()}
                   </div>
                   <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-900 space-y-1">
                     <div className="font-semibold">No payment due now.</div>

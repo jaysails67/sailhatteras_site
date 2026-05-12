@@ -48,9 +48,9 @@ export default function Payments() {
               <CloudSun className="h-5 w-5 text-primary" />
             </div>
             <div className="space-y-1.5">
-              <div className="font-semibold text-foreground">Final Balance Due 4 Days Before Your Charter</div>
+              <div className="font-semibold text-foreground">Charter Confirmation Due 4 Days Before Your Reservation</div>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Your Confirmation Payment (remaining balance) is due <strong className="text-foreground">4 days before your reservation date</strong>,
+                Your Charter Confirmation (final balance) is due <strong className="text-foreground">4 days prior to your reservation date</strong>,
                 unless your Reservation Consultant has made other arrangements with you.
               </p>
               <p className="text-sm text-muted-foreground leading-relaxed">
@@ -95,7 +95,7 @@ export default function Payments() {
                 </p>
                 <ul className="text-sm text-muted-foreground space-y-1 mt-2 list-none">
                   <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-green-600 shrink-0 mt-0.5" /><span>Hatteras Community Sailing is unable to fulfill your charter for any reason, <em>or</em></span></li>
-                  <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-green-600 shrink-0 mt-0.5" /><span>Weather conditions require rescheduling and you are not able to adjust your date around the forecast.</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-green-600 shrink-0 mt-0.5" /><span>Weather conditions require rescheduling and you are unable to reschedule.</span></li>
                 </ul>
                 <p className="text-sm text-muted-foreground leading-relaxed mt-2">
                   We work hard to reschedule around weather whenever possible. Our goal is to get
