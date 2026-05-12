@@ -22,28 +22,34 @@ function getOpenAIClient(): { client: OpenAI; model: string } {
   };
 }
 
-// ─── Production: stream via `openclaw agent` CLI ───────────────────────────
-function streamViaOpenClaw(
-  prompt: string,
-  onChunk: (text: string) => void,
-): Promise<void> {
+// ─── Production: call `openclaw agent` CLI (one-shot, returns full reply) ──
+function runViaOpenClaw(prompt: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const args = ["agent", "--output", "stream-text", prompt];
-    const proc = spawn("openclaw", args, {
+    const proc = spawn("openclaw", ["agent", "--json", "-m", prompt], {
       env: { ...process.env },
     });
 
-    proc.stdout.on("data", (chunk: Buffer) => {
-      onChunk(chunk.toString());
-    });
+    let stdout = "";
+    let stderr = "";
 
-    proc.stderr.on("data", (chunk: Buffer) => {
-      logger.warn({ stderr: chunk.toString() }, "openclaw agent stderr");
-    });
+    proc.stdout.on("data", (chunk: Buffer) => { stdout += chunk.toString(); });
+    proc.stderr.on("data", (chunk: Buffer) => { stderr += chunk.toString(); });
 
     proc.on("close", (code) => {
-      if (code === 0) resolve();
-      else reject(new Error(`openclaw agent exited with code ${code}`));
+      if (stderr) logger.warn({ stderr }, "openclaw agent stderr");
+      if (code !== 0) {
+        reject(new Error(`openclaw agent exited ${code}: ${stderr}`));
+        return;
+      }
+      try {
+        const parsed = JSON.parse(stdout);
+        // OpenClaw JSON output: { reply: "...", ... } or { text: "..." }
+        const text = parsed.reply ?? parsed.text ?? parsed.content ?? stdout.trim();
+        resolve(text);
+      } catch {
+        // Not JSON — treat raw stdout as the response
+        resolve(stdout.trim());
+      }
     });
 
     proc.on("error", reject);
@@ -149,9 +155,10 @@ router.post("/sh/chat", async (req, res) => {
 
       const fullPrompt = `${systemPrompt}\n\n--- Conversation ---\n${history}\n\nAssistant:`;
 
-      await streamViaOpenClaw(fullPrompt, (text) => {
-        res.write(`data: ${JSON.stringify({ content: text })}\n\n`);
-      });
+      const reply = await runViaOpenClaw(fullPrompt);
+      if (reply) {
+        res.write(`data: ${JSON.stringify({ content: reply })}\n\n`);
+      }
     } else {
       const { client, model } = getOpenAIClient();
       const stream = await client.chat.completions.create({
