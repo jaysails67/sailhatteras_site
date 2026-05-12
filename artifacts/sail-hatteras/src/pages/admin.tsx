@@ -21,7 +21,7 @@ function DeployPanel() {
     setState("running");
     setOutput("");
     try {
-      const res = await fetch(`${import.meta.env.BASE_URL}api/sh/admin/deploy`, {
+      const res = await fetch(`/api/sh/admin/deploy`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-Admin-Key": ADMIN_KEY },
       });
