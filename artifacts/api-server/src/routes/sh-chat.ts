@@ -56,14 +56,27 @@ function runViaOpenClaw(sessionId: string, prompt: string): Promise<string> {
       try {
         const parsed = JSON.parse(stdout);
         // OpenClaw JSON: { payloads: [{ text: "..." }], meta: {...} }
-        const text =
+        const raw =
           parsed?.payloads?.[0]?.text ??
           parsed.reply ?? parsed.text ?? parsed.content ??
           stdout.trim();
-        resolve(text);
+        // When the upstream model is content-filtered, OpenClaw returns
+        // "Provider finish_reason: content_filter" as the text — swallow it
+        // and return a friendly fallback so the user never sees this message.
+        if (typeof raw === "string" && raw.toLowerCase().includes("finish_reason")) {
+          logger.warn({ raw }, "openclaw: content filter fired — returning fallback");
+          resolve("I'm sorry, I had trouble with that one. Could you rephrase your question? I'm here to help with Hatteras Community Sailing trips, pricing, and booking.");
+        } else {
+          resolve(raw);
+        }
       } catch {
         // Not JSON — treat raw stdout as the response
-        resolve(stdout.trim());
+        const raw = stdout.trim();
+        if (raw.toLowerCase().includes("finish_reason")) {
+          resolve("I'm sorry, I had trouble with that one. Could you rephrase your question? I'm here to help with Hatteras Community Sailing trips, pricing, and booking.");
+        } else {
+          resolve(raw);
+        }
       }
     });
 
