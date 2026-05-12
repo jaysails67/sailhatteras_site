@@ -25,11 +25,16 @@ function getOpenAIClient(): { client: OpenAI; model: string } {
 // ─── Production: call `openclaw agent` CLI (one-shot, returns full reply) ──
 function runViaOpenClaw(sessionId: string, prompt: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const openclawBin = process.env.OPENCLAW_BIN ?? "openclaw";
-    // --session-id keeps the conversation thread in OpenClaw's storage;
-    // HOME=/root ensures openclaw finds its config at /root/.openclaw/
-    const proc = spawn(openclawBin, ["agent", "--session-id", sessionId, "--json", "-m", prompt], {
-      env: { ...process.env, HOME: "/root" },
+    const openclawBin = process.env.OPENCLAW_BIN ?? "/bin/openclaw";
+    // On InMotion the Node process runs as ca12a15 but openclaw's config lives
+    // in /root/.openclaw — inaccessible to ca12a15. OPENCLAW_SUDO=true makes
+    // the spawn use "sudo -u root -H" so openclaw runs as root and finds it.
+    const useSudo = process.env.OPENCLAW_SUDO === "true";
+    const [cmd, ...cmdArgs] = useSudo
+      ? ["sudo", "-u", "root", "-H", openclawBin, "agent", "--session-id", sessionId, "--json", "-m", prompt]
+      : [openclawBin, "agent", "--session-id", sessionId, "--json", "-m", prompt];
+    const proc = spawn(cmd, cmdArgs, {
+      env: { ...process.env },
     });
 
     let stdout = "";
