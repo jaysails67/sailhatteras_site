@@ -53,9 +53,35 @@ function renderContent(text: string): React.ReactNode[] {
   });
 }
 
+// ─── Typing indicator (three bouncing dots) ────────────────────────────────
+function TypingDots() {
+  return (
+    <div className="flex items-center gap-1 px-1 py-0.5">
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          className="block w-2 h-2 rounded-full bg-foreground/40"
+          style={{
+            animation: "sh-bounce 1.2s ease-in-out infinite",
+            animationDelay: `${i * 0.2}s`,
+          }}
+        />
+      ))}
+      <style>{`
+        @keyframes sh-bounce {
+          0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+          30% { transform: translateY(-5px); opacity: 1; }
+        }
+      `}</style>
+    </div>
+  );
+}
+
 // ─── Single message bubble ─────────────────────────────────────────────────
 function Bubble({ msg }: { msg: Message }) {
   const isUser = msg.role === "user";
+  const isWaiting = msg.streaming && !msg.content;
+
   return (
     <div className={`flex mb-3 ${isUser ? "justify-end" : "justify-start"}`}>
       <div
@@ -65,9 +91,15 @@ function Bubble({ msg }: { msg: Message }) {
             : "bg-muted text-foreground rounded-bl-sm"
         }`}
       >
-        {renderContent(msg.content)}
-        {msg.streaming && (
-          <span className="inline-block w-1.5 h-3.5 ml-0.5 bg-current opacity-60 animate-pulse rounded-sm align-middle" />
+        {isWaiting ? (
+          <TypingDots />
+        ) : (
+          <>
+            {renderContent(msg.content)}
+            {msg.streaming && (
+              <span className="inline-block w-1.5 h-3.5 ml-0.5 bg-current opacity-60 animate-pulse rounded-sm align-middle" />
+            )}
+          </>
         )}
       </div>
     </div>
@@ -226,7 +258,7 @@ export function ChatWidget() {
               <div>
                 <p className="font-semibold text-sm leading-tight">SailHatteras Guide</p>
                 <p className="text-[11px] text-primary-foreground/70">
-                  Booking assistant · Usually instant
+                  {busy ? "Thinking…" : "Booking assistant · Usually instant"}
                 </p>
               </div>
             </div>
