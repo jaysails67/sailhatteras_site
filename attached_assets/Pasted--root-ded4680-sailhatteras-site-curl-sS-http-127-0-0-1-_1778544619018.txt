@@ -1,0 +1,43 @@
+[root@ded4680 sailhatteras_site]# curl -sS http://127.0.0.1:3001/api/sh/chat \
+>   -H 'Content-Type: application/json' \
+>   -d '{"messages":[{"role":"user","content":"What sunset sails do you offer?"}]}' \
+>   --max-time 30 | head -8
+data: {"error":"AI response failed. Please try again."}
+
+[root@ded4680 sailhatteras_site]# su - ca12a15 -c "pm2 logs sailhatteras-api --lines 20 --nostream" 2>&1 | tail -30
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | (node:1713944) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | (node:1715210) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | (node:1716464) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+
+/home/ca12a15/.pm2/logs/sailhatteras-api-out.log last 20 lines:
+0|sailhatt |     err: {
+0|sailhatt |       "type": "Error",
+0|sailhatt |       "message": "AI_INTEGRATIONS_OPENAI_BASE_URL must be set. Did you forget to provision the OpenAI AI integration?",
+0|sailhatt |       "stack":
+0|sailhatt |           Error: AI_INTEGRATIONS_OPENAI_BASE_URL must beset. Did you forget to provision the OpenAI AI integration?
+0|sailhatt |               at getOpenAIClient (/home/ca12a15/sites/sailhatteras_site/lib/integrations-openai-ai-server/src/client.ts:8:11)
+0|sailhatt |               at Object.get (/home/ca12a15/sites/sailhatteras_site/lib/integrations-openai-ai-server/src/client.ts:26:13)
+0|sailhatt |               at <anonymous> (/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/src/routes/sh-chat.ts:78:33)
+0|sailhatt |               at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+0|sailhatt |     }
+0|sailhatt | [17:08:14.854] INFO (1716464): request completed
+0|sailhatt |     req: {
+0|sailhatt |       "id": 1,
+0|sailhatt |       "method": "POST",
+0|sailhatt |       "url": "/api/sh/chat"
+0|sailhatt |     }
+0|sailhatt |     res: {
+0|sailhatt |       "statusCode": 200
+0|sailhatt |     }
+0|sailhatt |     responseTime: 131
+
+[root@ded4680 sailhatteras_site]# curl -sS http://127.0.0.1:18789/v1/chat/completions \
+>   -H 'Authorization: Bearer c7f088b6646ff21f11548a4c82a43952594b29b4bbdad74a' \
+>   -H 'Content-Type: application/json' \
+>   -d '{"model":"openclaw/default","messages":[{"role":"user","content":"hello"}]}' \
+>   --max-time 15
+Not Found[root@ded4680 sailhatteras_site]#
