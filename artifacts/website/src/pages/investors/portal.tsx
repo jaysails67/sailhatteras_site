@@ -801,10 +801,13 @@ export default function Portal() {
                         staticContent
                       ) : page ? (
                         <>
-                          <h1 className="font-display text-4xl font-bold text-foreground mb-8 pb-4 border-b border-border">
-                            {label}
-                          </h1>
-                          <div className="prose prose-invert prose-headings:font-display prose-headings:text-foreground prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-10 prose-h2:mb-3 prose-h3:text-lg prose-h3:font-semibold prose-h3:mt-8 prose-h3:mb-2 prose-p:text-muted-foreground prose-p:leading-relaxed prose-li:text-muted-foreground prose-strong:text-foreground max-w-none">
+                          {/* Skip label H1 when the content supplies its own <h1> */}
+                          {!page.content.startsWith("<h1>") && (
+                            <h1 className="font-display text-4xl font-bold text-foreground mb-8 pb-4 border-b border-border">
+                              {label}
+                            </h1>
+                          )}
+                          <div className="prose prose-invert prose-headings:font-display prose-headings:text-foreground prose-h1:text-4xl prose-h1:font-bold prose-h1:mb-2 prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-10 prose-h2:mb-3 prose-h3:text-lg prose-h3:font-semibold prose-h3:mt-8 prose-h3:mb-2 prose-p:text-muted-foreground prose-p:leading-relaxed prose-li:text-muted-foreground prose-strong:text-foreground max-w-none">
                             <div dangerouslySetInnerHTML={{ __html: extractH2s(page.content, slug).html }} />
                           </div>
                         </>
