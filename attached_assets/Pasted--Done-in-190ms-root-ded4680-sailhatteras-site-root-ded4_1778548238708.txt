@@ -1,0 +1,93 @@
+
+⚡ Done in 190ms
+[root@ded4680 sailhatteras_site]#
+[root@ded4680 sailhatteras_site]# # What did PM2 log for that last request?
+[root@ded4680 sailhatteras_site]# su - ca12a15 -c "pm2 logs sailhatteras-api --lines 20 --nostream" 2>&1 | tail -30
+0|sailhatt |       "method": "POST",
+0|sailhatt |       "url": "/api/sh/chat"
+0|sailhatt |     }
+0|sailhatt |     res: {
+0|sailhatt |       "statusCode": 200
+0|sailhatt |     }
+0|sailhatt |     responseTime: 114
+
+/home/ca12a15/.pm2/logs/sailhatteras-api-error.log last 20 lines:
+0|sailhatt |     at defaultResolve (node:internal/modules/esm/resolve:985:11)
+0|sailhatt |     at #cachedDefaultResolve (node:internal/modules/esm/loader:731:20)
+0|sailhatt |     at ModuleLoader.resolve (node:internal/modules/esm/loader:708:38)
+0|sailhatt |     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:310:38)
+0|sailhatt |     at ModuleJob._link (node:internal/modules/esm/module_job:182:49)
+0|sailhatt |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+0|sailhatt |   code: 'ERR_MODULE_NOT_FOUND'
+0|sailhatt | }
+0|sailhatt | Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'openai' imported from /home/ca12a15/sites/sailhatteras_site/artifacts/api-server/dist/index.mjs
+0|sailhatt |     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+0|sailhatt |     at packageResolve (node:internal/modules/esm/resolve:768:81)
+0|sailhatt |     at moduleResolve (node:internal/modules/esm/resolve:855:18)
+0|sailhatt |     at defaultResolve (node:internal/modules/esm/resolve:985:11)
+0|sailhatt |     at #cachedDefaultResolve (node:internal/modules/esm/loader:731:20)
+0|sailhatt |     at ModuleLoader.resolve (node:internal/modules/esm/loader:708:38)
+0|sailhatt |     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:310:38)
+0|sailhatt |     at ModuleJob._link (node:internal/modules/esm/module_job:182:49)
+0|sailhatt |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+0|sailhatt |   code: 'ERR_MODULE_NOT_FOUND'
+0|sailhatt | }
+
+[root@ded4680 sailhatteras_site]#
+[root@ded4680 sailhatteras_site]# # Test openclaw directly with same args our code uses
+[root@ded4680 sailhatteras_site]# HOME=/root openclaw agent --session-id test-1 --json -m "do you have sunset sails?" 2>&1 | tail -20
+        }
+      ],
+      "fallbackUsed": false,
+      "runner": "embedded"
+    },
+    "requestShaping": {
+      "authMode": "auth-profile",
+      "thinking": "off"
+    },
+    "completion": {
+      "stopReason": "stop",
+      "finishReason": "stop"
+    },
+    "contextManagement": {
+      "lastTurnCompactions": 1
+    },
+    "transport": "embedded",
+    "fallbackFrom": "gateway"
+  }
+}
+[root@ded4680 sailhatteras_site]# # 1. Install deps (gets 'openai' into node_modules on InMotion)
+[root@ded4680 sailhatteras_site]# su - ca12a15 -c "cd /home/ca12a15/sites/sailhatteras_site && pnpm install --frozen-lockfile 2>&1 | tail -10"
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Already up to date
+
+. preinstall$ sh -c 'rm -f package-lock.json yarn.lock; case "$npm_config_user_agent" in pnpm/*) ;; *) echo "Use pnpm instead" >&2; exit 1 ;; esac'
+. preinstall: Done
+Done in 1.6s using pnpm v10.33.2
+[root@ded4680 sailhatteras_site]#
+[root@ded4680 sailhatteras_site]# # 2. Rebuild with fresh deps
+[root@ded4680 sailhatteras_site]# su - ca12a15 -c "cd /home/ca12a15/sites/sailhatteras_site/artifacts/api-server && pnpm run build 2>&1 | tail -5"
+  dist/pino-file.mjs.map             229.1kb
+  dist/pino-pretty.mjs.map           203.9kb
+  dist/thread-stream-worker.mjs.map   12.0kb
+
+⚡ Done in 181ms
+[root@ded4680 sailhatteras_site]#
+[root@ded4680 sailhatteras_site]# # 3. Restart
+[root@ded4680 sailhatteras_site]# su - ca12a15 -c "cd /home/ca12a15/sites/sailhatteras_site && set -a && source .env && set +a && pm2 restart sailhatteras-api --update-env"
+[PM2] Applying action restartProcessId on app [sailhatteras-api](ids:[ 0 ])
+[PM2] [sailhatteras-api](0) ✓
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ sailhatteras-api   │ fork     │ 1550 │ online    │ 0%       │ 13.8mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+[root@ded4680 sailhatteras_site]#
+[root@ded4680 sailhatteras_site]# # 4. Test
+[root@ded4680 sailhatteras_site]# curl -s -X POST http://localhost:3001/api/sh/chat \
+>   -H 'Content-Type: application/json' \
+>   -d '{"messages":[{"role":"user","content":"do you have sunset sails?"}],"sessionId":"test-1"}' | head -3
+data: {"error":"AI response failed. Please try again."}
+
+[root@ded4680 sailhatteras_site]#
