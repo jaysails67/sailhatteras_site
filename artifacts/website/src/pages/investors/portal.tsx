@@ -10,6 +10,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 
+// ─── Helper: parse H2s from content HTML, inject IDs ─────────────────────────
+function extractH2s(html: string, slug: string): { html: string; headings: { id: string; text: string }[] } {
+  const headings: { id: string; text: string }[] = [];
+  const processed = html.replace(/<h2>([^<]+)<\/h2>/g, (_, text) => {
+    const id = `${slug}--${text.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 42)}`;
+    headings.push({ id, text });
+    return `<h2 id="${id}">${text}</h2>`;
+  });
+  return { html: processed, headings };
+}
+
 // ─── Static section: Management Team ────────────────────────────────────────
 
 const coreTeam = [
@@ -709,22 +720,42 @@ export default function Portal() {
             Investor Business Plan
           </div>
 
-          <nav className="flex flex-col gap-1 flex-1">
-            {PLAN_SECTIONS.map(({ slug, label }) => (
-              <button
-                key={slug}
-                onClick={() => scrollTo(slug)}
-                data-testid={`btn-portal-section-${slug}`}
-                className={`flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium transition-colors text-left w-full ${
-                  activeSlug === slug
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
-                }`}
-              >
-                <span>{label}</span>
-                {activeSlug === slug && <ChevronRight className="h-4 w-4 shrink-0" />}
-              </button>
-            ))}
+          <nav className="flex flex-col gap-1 flex-1 overflow-y-auto">
+            {PLAN_SECTIONS.map(({ slug, label }) => {
+              const page = pageMap[slug];
+              const { headings } = page ? extractH2s(page.content, slug) : { headings: [] as { id: string; text: string }[] };
+              const isActive = activeSlug === slug;
+              return (
+                <div key={slug}>
+                  <button
+                    onClick={() => scrollTo(slug)}
+                    data-testid={`btn-portal-section-${slug}`}
+                    className={`flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium transition-colors text-left w-full ${
+                      isActive
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                    }`}
+                  >
+                    <span>{label}</span>
+                    {isActive && <ChevronRight className="h-4 w-4 shrink-0" />}
+                  </button>
+                  {isActive && headings.length > 0 && (
+                    <div className="ml-3 mt-0.5 mb-1 flex flex-col gap-0.5 border-l border-border pl-2">
+                      {headings.slice(0, 8).map(h => (
+                        <button
+                          key={h.id}
+                          onClick={() => document.getElementById(h.id)?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                          className="text-left text-xs text-muted-foreground hover:text-foreground py-0.5 leading-snug truncate w-full"
+                          title={h.text}
+                        >
+                          {h.text.length > 30 ? h.text.slice(0, 30) + "…" : h.text}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </nav>
 
           <div className="mt-6 pt-4 border-t border-border space-y-2">
@@ -769,12 +800,17 @@ export default function Portal() {
                       {staticContent ? (
                         staticContent
                       ) : page ? (
-                        <div className="prose prose-invert prose-headings:font-display prose-headings:text-foreground prose-p:text-muted-foreground prose-li:text-muted-foreground prose-strong:text-foreground max-w-none">
-                          <div dangerouslySetInnerHTML={{ __html: page.content }} />
-                        </div>
+                        <>
+                          <h1 className="font-display text-4xl font-bold text-foreground mb-8 pb-4 border-b border-border">
+                            {label}
+                          </h1>
+                          <div className="prose prose-invert prose-headings:font-display prose-headings:text-foreground prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-10 prose-h2:mb-3 prose-h3:text-lg prose-h3:font-semibold prose-h3:mt-8 prose-h3:mb-2 prose-p:text-muted-foreground prose-p:leading-relaxed prose-li:text-muted-foreground prose-strong:text-foreground max-w-none">
+                            <div dangerouslySetInnerHTML={{ __html: extractH2s(page.content, slug).html }} />
+                          </div>
+                        </>
                       ) : (
                         <div>
-                          <h2 className="font-display text-3xl font-bold text-foreground mb-4">{label}</h2>
+                          <h1 className="font-display text-4xl font-bold text-foreground mb-8 pb-4 border-b border-border">{label}</h1>
                           <p className="text-muted-foreground">Content for this section is coming soon.</p>
                         </div>
                       )}
