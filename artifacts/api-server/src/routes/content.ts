@@ -12,6 +12,7 @@ import { requireAdmin, requireApprovedInvestor } from "../middlewares/auth";
 const router: IRouter = Router();
 
 const INVESTOR_SLUGS = [
+  // original sections
   "exec-summary",
   "company-overview",
   "market-analysis",
@@ -25,6 +26,17 @@ const INVESTOR_SLUGS = [
   "timeline",
   "conclusion",
   "grants",
+  // new sections added May 2026
+  "cover-page",
+  "vessel-platform",
+  "jones-act-strategy",
+  "regulatory-pathway",
+  "capital-structure",
+  "five-year-proforma",
+  "corporate-structure",
+  "governance-philosophy",
+  "disclaimer",
+  "disclaimer-about",
 ];
 
 function formatPage(page: typeof contentPagesTable.$inferSelect) {
