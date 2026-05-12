@@ -23,7 +23,7 @@ const coreTeam = [
     name: "John Edward Elion",
     title: "Chief Financial Officer",
     initials: "JE",
-    bio: "Responsible for capital strategy, financial planning & analysis, investor relations, and oversight of grant/loan structures. John has served as Chair of the Waterworks Foundation, a Chesapeake Bay environmental organization. He has owned and built several multihull brands across the United States and Canada, combining deep financial acumen with a lifelong commitment to environmental stewardship.",
+    bio: "John Edward Elion serves as Chief Financial Officer of PamliEcoConnect. He is responsible for capital strategy, financial planning and analysis, investor relations, and oversight of grant and loan structures. John is the Director of the Waterworks Foundation, an Annapolis-based environmental nonprofit with over 30 years of active work on Chesapeake Bay ecological and maritime conservation. In that capacity, he has been a central figure in the region's clean maritime and environmental community, and was instrumental in stimulating the discussions that led to the formation of the five-county Chesapeake Bay Passenger Ferry Consortium — the federally funded initiative that has validated demand for exactly the vessel class PamliEcoConnect is developing. John has owned and built several multimaran brands across the United States and Canada, combining deep financial acumen with a lifelong commitment to environmental stewardship and coastal community development.",
   },
 ];
 
@@ -618,7 +618,7 @@ type PlanSection = {
 
 const PLAN_SECTIONS: PlanSection[] = [
   // ── Front matter ──────────────────────────────────────────────────────────
-  { slug: "cover-page",              label: "Cover Page" },
+  { slug: "cover-page",              label: "Start Here" },
   // ── Core business plan ────────────────────────────────────────────────────
   { slug: "exec-summary",            label: "Executive Summary" },
   { slug: "company-overview",        label: "Company Overview" },
@@ -632,8 +632,8 @@ const PLAN_SECTIONS: PlanSection[] = [
   { slug: "operations",              label: "Operations Plan" },
   // ── Financial ─────────────────────────────────────────────────────────────
   { slug: "financial-plan",          label: "Financial Plan" },
-  { slug: "capital-structure",       label: "Capital Structure" },
-  { slug: "five-year-proforma",      label: "Five-Year Proforma" },
+  { slug: "capital-structure",       label: "Investment Structure" },
+  { slug: "five-year-proforma",      label: "5-Year Proforma" },
   { slug: "corporate-structure",     label: "Corporate Structure" },
   { slug: "governance-philosophy",   label: "Governance Philosophy" },
   // ── Impact & risk ─────────────────────────────────────────────────────────
@@ -644,7 +644,7 @@ const PLAN_SECTIONS: PlanSection[] = [
   { slug: "grants",                  label: "Grant Opportunities" },
   // ── Static sections ───────────────────────────────────────────────────────
   { slug: "management-team",         label: "Management Team",              staticContent: <ManagementTeamSection /> },
-  { slug: "disclaimer",              label: "Disclaimer" },
+  { slug: "disclaimer",              label: "Disclaimer & Disclosures" },
   { slug: "disclaimer-about",        label: "Disclaimer About Disclaimer" },
   { slug: "the-offering",            label: "The Offering",                 staticContent: <TheOfferingSection /> },
   { slug: "subscription-agreement",  label: "Subscription Agreement",       staticContent: <SubscriptionAgreementSection /> },
