@@ -39,9 +39,13 @@ function runViaOpenClaw(sessionId: string, prompt: string): Promise<string> {
     proc.stderr.on("data", (chunk: Buffer) => { stderr += chunk.toString(); });
 
     proc.on("close", (code) => {
-      if (stderr) logger.warn({ stderr }, "openclaw agent stderr");
-      if (code !== 0) {
-        reject(new Error(`openclaw agent exited ${code}: ${stderr}`));
+      if (stderr) logger.warn({ stderr: stderr.slice(0, 500) }, "openclaw agent stderr");
+      logger.info({ code, stdoutLen: stdout.length }, "openclaw agent exited");
+
+      // Non-zero exit is expected when gateway fails and embedded fallback runs.
+      // Only hard-reject if there is no stdout to work with.
+      if (code !== 0 && !stdout.trim()) {
+        reject(new Error(`openclaw agent exited ${code} with no output: ${stderr.slice(0, 300)}`));
         return;
       }
       try {
