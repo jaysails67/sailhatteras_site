@@ -1,0 +1,67 @@
+[root@ded4680 sailhatteras_site]# su - ca12a15 -c "pm2 logs sailhatteras-api --lines 30 --nostream"
+[TAILING] Tailing last 30 lines for [sailhatteras-api] process (change the value with --lines option)
+/home/ca12a15/.pm2/logs/sailhatteras-api-error.log last 30 lines:
+0|sailhatt |     at #cachedDefaultResolve (node:internal/modules/esm/loader:731:20)
+0|sailhatt |     at ModuleLoader.resolve (node:internal/modules/esm/loader:708:38)
+0|sailhatt |     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:310:38)
+0|sailhatt |     at onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:664:36)
+0|sailhatt |     at TracingChannel.tracePromise (node:diagnostics_channel:350:14)
+0|sailhatt |     at ModuleLoader.import (node:internal/modules/esm/loader:663:21)
+0|sailhatt |     at defaultImportModuleDynamicallyForScript (node:internal/modules/esm/utils:235:31) {
+0|sailhatt |   code: 'ERR_MODULE_NOT_FOUND',
+0|sailhatt |   url: 'file:///home/ca12a15/sites/sailhatteras_site/artifacts/api-server/dist/index.mjs'
+0|sailhatt | }
+0|sailhatt | (node:1700787) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | (node:1700998) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | (node:1713350) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | (node:1713473) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | (node:1713944) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | (node:1715210) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | (node:1716464) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | (node:1717639) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | (node:1718988) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+0|sailhatt | (node:1722077) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+0|sailhatt | (Use `node --trace-deprecation ...` to show where the warning was created)
+
+/home/ca12a15/.pm2/logs/sailhatteras-api-out.log last 30 lines:
+0|sailhatt | ◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+0|sailhatt | [17:36:09.186] INFO (1722077): Server listening
+0|sailhatt |     port: 3001
+0|sailhatt | [17:36:09.186] WARN (1722077): ADMIN_PASSWORD env var isnot set — skipping admin user seed. Set ADMIN_PASSWORD (and optionally ADMIN_EMAIL) to bootstrap the admin account.
+0|sailhatt | [17:36:09.213] INFO (1722077): Seeded Vandemere Roundtable press release
+0|sailhatt | [17:36:09.213] INFO (1722077): Database seed complete
+0|sailhatt | [17:36:09.213] WARN (1722077): Cannot determine webhook URL (TELEGRAM_WEBHOOK_URL and REPLIT_DEV_DOMAIN both unset) — skipping
+0|sailhatt | [17:36:09.213] WARN (1722077): Email Agent: no inbox bearer tokens configured — skipping startup
+0|sailhatt | [17:36:09.234] INFO (1722077): Daily briefing cron scheduled (7 AM Eastern)
+0|sailhatt | [17:36:20.960] ERROR (1722077): Chat stream error
+0|sailhatt |     err: {
+0|sailhatt |       "type": "Error",
+0|sailhatt |       "message": "AI_INTEGRATIONS_OPENAI_BASE_URL must be set. Did you forget to provision the OpenAI AI integration?",
+0|sailhatt |       "stack":
+0|sailhatt |           Error: AI_INTEGRATIONS_OPENAI_BASE_URL must beset. Did you forget to provision the OpenAI AI integration?
+0|sailhatt |               at getOpenAIClient (/home/ca12a15/sites/sailhatteras_site/lib/integrations-openai-ai-server/src/client.ts:8:11)
+0|sailhatt |               at Object.get (/home/ca12a15/sites/sailhatteras_site/lib/integrations-openai-ai-server/src/client.ts:26:13)
+0|sailhatt |               at <anonymous> (/home/ca12a15/sites/sailhatteras_site/artifacts/api-server/src/routes/sh-chat.ts:78:33)
+0|sailhatt |               at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+0|sailhatt |     }
+0|sailhatt | [17:36:21.062] INFO (1722077): request completed
+0|sailhatt |     req: {
+0|sailhatt |       "id": 1,
+0|sailhatt |       "method": "POST",
+0|sailhatt |       "url": "/api/sh/chat"
+0|sailhatt |     }
+0|sailhatt |     res: {
+0|sailhatt |       "statusCode": 200
+0|sailhatt |     }
+0|sailhatt |     responseTime: 114
+
+[root@ded4680 sailhatteras_site]#
