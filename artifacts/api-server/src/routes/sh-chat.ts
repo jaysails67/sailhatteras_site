@@ -25,8 +25,11 @@ function getOpenAIClient(): { client: OpenAI; model: string } {
 // ─── Production: call `openclaw agent` CLI (one-shot, returns full reply) ──
 function runViaOpenClaw(prompt: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const proc = spawn("openclaw", ["agent", "--json", "-m", prompt], {
-      env: { ...process.env },
+    const openclawBin = process.env.OPENCLAW_BIN ?? "openclaw";
+    const proc = spawn(openclawBin, ["agent", "--json", "-m", prompt], {
+      // Override HOME so openclaw finds its config at /root/.openclaw/
+      // even when the Node process runs as a non-root user (e.g. ca12a15)
+      env: { ...process.env, HOME: process.env.OPENCLAW_HOME ?? process.env.HOME ?? "/root" },
     });
 
     let stdout = "";
