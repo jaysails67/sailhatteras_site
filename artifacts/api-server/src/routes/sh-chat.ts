@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { spawn } from "node:child_process";
 import OpenAI from "openai";
 import { db } from "@workspace/db";
 import { shTripsTable } from "@workspace/db";
@@ -7,21 +8,11 @@ import { logger } from "../lib/logger";
 
 const router = Router();
 
-function getAIClient(): { client: OpenAI; model: string } {
-  if (process.env.OPENCLAW_BASE_URL) {
-    return {
-      client: new OpenAI({
-        baseURL: process.env.OPENCLAW_BASE_URL,
-        apiKey: process.env.OPENCLAW_API_KEY ?? "no-key",
-      }),
-      model: process.env.OPENCLAW_MODEL ?? "openclaw/default",
-    };
-  }
-
+// ─── Replit dev: OpenAI integration ────────────────────────────────────────
+function getOpenAIClient(): { client: OpenAI; model: string } {
   if (!process.env.AI_INTEGRATIONS_OPENAI_BASE_URL || !process.env.AI_INTEGRATIONS_OPENAI_API_KEY) {
-    throw new Error("No AI backend configured. Set OPENCLAW_BASE_URL or the OpenAI AI integration env vars.");
+    throw new Error("No AI backend configured.");
   }
-
   return {
     client: new OpenAI({
       baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
@@ -29,6 +20,34 @@ function getAIClient(): { client: OpenAI; model: string } {
     }),
     model: "gpt-4o",
   };
+}
+
+// ─── Production: stream via `openclaw agent` CLI ───────────────────────────
+function streamViaOpenClaw(
+  prompt: string,
+  onChunk: (text: string) => void,
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const args = ["agent", "--output", "stream-text", prompt];
+    const proc = spawn("openclaw", args, {
+      env: { ...process.env },
+    });
+
+    proc.stdout.on("data", (chunk: Buffer) => {
+      onChunk(chunk.toString());
+    });
+
+    proc.stderr.on("data", (chunk: Buffer) => {
+      logger.warn({ stderr: chunk.toString() }, "openclaw agent stderr");
+    });
+
+    proc.on("close", (code) => {
+      if (code === 0) resolve();
+      else reject(new Error(`openclaw agent exited with code ${code}`));
+    });
+
+    proc.on("error", reject);
+  });
 }
 
 const SYSTEM_PROMPT = `You are the friendly customer service assistant for Hatteras Community Sailing (HCS), a 501(c)3 nonprofit sailing organization on the Outer Banks of North Carolina. Your name is "SailHatteras Guide".
@@ -116,25 +135,42 @@ router.post("/sh/chat", async (req, res) => {
   res.setHeader("Connection", "keep-alive");
   res.setHeader("X-Accel-Buffering", "no");
 
+  const useOpenClaw = !!process.env.OPENCLAW_AGENT;
+
   try {
-    const { client, model } = getAIClient();
+    if (useOpenClaw) {
+      // Build a single prompt combining system context + conversation history
+      const history = messages
+        .slice(-10)
+        .map((m: { role: string; content: string }) =>
+          `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`,
+        )
+        .join("\n");
 
-    const stream = await client.chat.completions.create({
-      model,
-      messages: [
-        { role: "system", content: systemPrompt },
-        ...messages.slice(-20).map((m: { role: string; content: string }) => ({
-          role: m.role as "user" | "assistant",
-          content: m.content,
-        })),
-      ],
-      stream: true,
-    });
+      const fullPrompt = `${systemPrompt}\n\n--- Conversation ---\n${history}\n\nAssistant:`;
 
-    for await (const chunk of stream) {
-      const content = chunk.choices[0]?.delta?.content;
-      if (content) {
-        res.write(`data: ${JSON.stringify({ content })}\n\n`);
+      await streamViaOpenClaw(fullPrompt, (text) => {
+        res.write(`data: ${JSON.stringify({ content: text })}\n\n`);
+      });
+    } else {
+      const { client, model } = getOpenAIClient();
+      const stream = await client.chat.completions.create({
+        model,
+        messages: [
+          { role: "system", content: systemPrompt },
+          ...messages.slice(-20).map((m: { role: string; content: string }) => ({
+            role: m.role as "user" | "assistant",
+            content: m.content,
+          })),
+        ],
+        stream: true,
+      });
+
+      for await (const chunk of stream) {
+        const content = chunk.choices[0]?.delta?.content;
+        if (content) {
+          res.write(`data: ${JSON.stringify({ content })}\n\n`);
+        }
       }
     }
 
