@@ -1,0 +1,61 @@
+[root@ded4680 sailhatteras_site]# # Check the /docs page content
+[root@ded4680 sailhatteras_site]# curl -sS http://127.0.0.1:18789/docs | grep -i "api\|route\|chat\|complet\|endpoint" | head -20
+[root@ded4680 sailhatteras_site]#
+[root@ded4680 sailhatteras_site]# # OpenClaw's own help
+[root@ded4680 sailhatteras_site]# openclaw --help 2>&1 | head -30
+
+🦞 OpenClaw 2026.5.2 (8b2a6e5) — Runs on a Raspberry Pi. Dreams of a rack in Iceland.
+
+Usage: openclaw [options] [command]
+
+Options:
+  --container <name>   Run the CLI inside a running Podman/Docker container
+                       named <name> (default: env OPENCLAW_CONTAINER)
+  --dev                Dev profile: isolate state under ~/.openclaw-dev, default
+                       gateway port 19001, and shift derived ports
+                       (browser/canvas)
+  -h, --help           Display help for command
+  --log-level <level>  Global log level override for file + console
+                       (silent|fatal|error|warn|info|debug|trace)
+  --no-color           Disable ANSI colors
+  --profile <name>     Use a named profile (isolates
+                       OPENCLAW_STATE_DIR/OPENCLAW_CONFIG_PATH under
+                       ~/.openclaw-<name>)
+  -V, --version        output the version number
+
+Commands:
+  Hint: commands suffixed with * have subcommands. Run <command> --help for details.
+  acp *                Agent Control Protocol tools
+  agent                Run one agent turn via the Gateway
+  agents *             Manage isolated agents (workspaces, auth, routing)
+  approvals *          Manage exec approvals (gateway or node host)
+  backup *             Create and verify local backup archives for OpenClaw
+                       state
+  capability *         Run provider-backed inference commands (fallback alias:
+                       infer)
+[root@ded4680 sailhatteras_site]# openclaw gateway --help 2>&1 | head-20
+Config warnings:
+- plugins.entries.discord: plugin discord: channel plugin manifest declares discord without channelConfigs metadata; add openclaw.plugin.json#channelConfigs so config schema and setup surfaces work before runtime loads
+- plugins.entries.lossless-claw: plugin lossless-claw: duplicate plugin id detected; global plugin will be overridden by global plugin (/root/.openclaw/npm/node_modules/@martian-engineering/lossless-claw/dist/index.js)
+- plugins.entries.discord: plugin discord: channel plugin manifest declares discord without channelConfigs metadata; add openclaw.plugin.json#channelConfigs so config schema and setup surfaces work before runtime loads
+
+🦞 OpenClaw 2026.5.2 (8b2a6e5) — Open source means you can see exactlyhow I judge your config.
+
+Usage: openclaw gateway [options] [command]
+
+Run, inspect, and query the WebSocket Gateway
+
+Options:
+  --allow-unconfigured       Allow gateway start without enforcing
+                             gateway.mode=local in config (does not repair
+                             config) (default: false)
+  --auth <mode>              Gateway auth mode
+                             ("none"|"token"|"password"|"trusted-proxy")
+  --bind <mode>              Bind mode
+                             ("loopback"|"lan"|"tailnet"|"auto"|"custom").
+                             Defaults to config gateway.bind (or loopback).
+[root@ded4680 sailhatteras_site]#
+[root@ded4680 sailhatteras_site]# # Look at the npm package for routedefinitions
+[root@ded4680 sailhatteras_site]# ls /root/.openclaw/npm/
+node_modules
+[root@ded4680 sailhatteras_site]#
