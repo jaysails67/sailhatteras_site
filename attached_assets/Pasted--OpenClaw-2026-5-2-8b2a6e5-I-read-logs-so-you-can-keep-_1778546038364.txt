@@ -1,0 +1,36 @@
+🦞 OpenClaw 2026.5.2 (8b2a6e5) — I read logs so you can keep pretending you don't have to.
+
+Usage: openclaw agent [options]
+
+Run an agent turn via the Gateway (use --local for embedded)
+
+Options:
+  --agent <id>               Agent id (overrides routing bindings)
+  --channel <channel>        Delivery channel:
+                             last|telegram|whatsapp|discord|irc|googlechat|slack|signal|imessage|feishu|nostr|msteams|mattermost|nextcloud-talk|matrix|bluebubbles|line|zalo|zalouser|synology-chat|tlon|qa-channel|qqbot|twitch
+                             (omit to use the main session channel)
+  --deliver                  Send the agent's reply back to the selected channel
+                             (default: false)
+  -h, --help                 Display help for command
+  --json                     Output result as JSON (default: false)
+  --local                    Run the embedded agent locally (requiresmodel
+                             provider API keys in your shell) (default: false)
+  -m, --message <text>       Message body for the agent
+  --model <id>               Model override for this run (provider/model or
+                             model id)
+  --reply-account <id>       Delivery account id override
+  --reply-channel <channel>  Delivery channel override (separate fromrouting)
+  --reply-to <target>        Delivery target override (separate from session
+                             routing)
+  --session-id <id>          Use an explicit session id
+  -t, --to <number>          Recipient number in E.164 used to derivethe
+                             session key
+  --thinking <level>         Thinking level: off | minimal | low | medium | high
+                             | xhigh | adaptive | max where supported
+  --timeout <seconds>        Override agent command timeout (seconds,default
+                             600 or config value)
+  --verbose <on|off>         Persist agent verbose level for the session
+
+Examples:
+  openclaw agent --to +15555550123 --message "status update"
+[root@ded4680 sailhatteras_site]#
