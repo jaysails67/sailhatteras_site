@@ -924,78 +924,113 @@ router.post("/sh/enroll", async (req, res) => {
 
 const DEPLOY_KEY = "hcs-admin-2026";
 
-// POST /sh/admin/deploy
-router.post("/sh/admin/deploy", async (req, res) => {
+// ── Deploy state (in-memory — single process) ────────────────────────────────
+const deployState = {
+  running: false,
+  success: false as boolean | null,
+  startedAt: null as string | null,
+  log: [] as string[],
+};
+
+function appendLog(line: string) {
+  deployState.log.push(line);
+  logger.info({ deploy: true }, line);
+}
+
+async function runDeploy(cwd: string) {
+  deployState.running = true;
+  deployState.success = null;
+  deployState.log = [];
+  deployState.startedAt = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
+
+  appendLog(`=== Deploy started at ${deployState.startedAt} ET ===\n`);
+
+  try {
+    const pull = await execAsync("git pull origin main 2>&1", { cwd });
+    appendLog("=== git pull ===");
+    appendLog(pull.stdout.trim() || "(no output)");
+
+    const install = await execAsync("pnpm install --frozen-lockfile 2>&1", { cwd });
+    appendLog("\n=== pnpm install ===");
+    appendLog(install.stdout.trim() || "(no output)");
+
+    const buildFrontend = await execAsync("pnpm --filter @workspace/sail-hatteras build 2>&1", { cwd });
+    appendLog("\n=== build frontend ===");
+    appendLog(buildFrontend.stdout.trim() || "(no output)");
+
+    await execAsync("rm -rf artifacts/api-server/dist", { cwd }).catch(() => {});
+    appendLog("\n=== cleared api dist ===");
+
+    const buildApi = await execAsync("pnpm --filter @workspace/api-server build 2>&1", { cwd });
+    appendLog("\n=== build api ===");
+    appendLog(buildApi.stdout.trim() || "(no output)");
+
+    appendLog("\n=== restarting via PM2 ===");
+    const pm2Result = await execAsync("pm2 restart sailhatteras-api 2>&1", { cwd })
+      .catch((e: any) => ({ stdout: "", stderr: e.message }));
+    appendLog(pm2Result.stdout?.trim() || pm2Result.stderr?.trim() || "pm2 restart issued");
+
+    // Poll health for up to 60 s
+    const apiPort = process.env.PORT ?? "3001";
+    const healthUrl = `http://localhost:${apiPort}/api/healthz`;
+    let healthy = false;
+    const deadline = Date.now() + 60_000;
+    appendLog("\n=== waiting for API to come back up ===");
+
+    while (Date.now() < deadline) {
+      await new Promise((r) => setTimeout(r, 3000));
+      try {
+        const resp = await fetch(healthUrl, { signal: AbortSignal.timeout(4000) });
+        if (resp.ok) { healthy = true; break; }
+      } catch { /* still restarting */ }
+    }
+
+    if (healthy) {
+      appendLog("✓ API healthy — deploy complete");
+      deployState.success = true;
+    } else {
+      appendLog("⚠️  API did not respond within 60 s — check PM2 logs");
+      deployState.success = false;
+    }
+  } catch (err: any) {
+    appendLog(`\n✗ Error: ${err.message}`);
+    if (err.stdout?.trim()) appendLog(err.stdout.trim());
+    if (err.stderr?.trim()) appendLog(err.stderr.trim());
+    deployState.success = false;
+  } finally {
+    deployState.running = false;
+  }
+}
+
+// POST /sh/admin/deploy — responds immediately, runs build in background
+router.post("/sh/admin/deploy", (req, res) => {
   if (req.headers["x-admin-key"] !== DEPLOY_KEY) {
     res.status(403).json({ error: "Unauthorized" });
     return;
   }
-
-  const cwd = process.cwd();
-  const log: string[] = [];
-
-  try {
-    log.push(`=== Deploy started at ${new Date().toLocaleString("en-US", { timeZone: "America/New_York" })} ET ===\n`);
-
-    const pull = await execAsync("git pull origin main", { cwd });
-    log.push("=== git pull ===");
-    log.push(pull.stdout.trim());
-    if (pull.stderr?.trim()) log.push(pull.stderr.trim());
-
-    const install = await execAsync("pnpm install --frozen-lockfile 2>&1", { cwd });
-    log.push("\n=== pnpm install ===");
-    log.push(install.stdout.trim());
-
-    const buildFrontend = await execAsync("pnpm --filter @workspace/sail-hatteras build 2>&1", { cwd });
-    log.push("\n=== build frontend ===");
-    log.push(buildFrontend.stdout.trim());
-
-    // Remove old dist before API build to avoid EACCES if dist was created by a different user/process
-    await execAsync("rm -rf artifacts/api-server/dist", { cwd }).catch(() => {});
-    log.push("\n=== cleared api dist ===");
-
-    const buildApi = await execAsync("pnpm --filter @workspace/api-server build 2>&1", { cwd });
-    log.push("\n=== build api ===");
-    log.push(buildApi.stdout.trim());
-
-    log.push("\n=== build complete — restarting via PM2 ===");
-
-    // Use PM2 to restart cleanly. Spawn detached so the shell outlives
-    // this node process being killed/restarted by PM2 itself.
-    const restartCmd = `pm2 restart sailhatteras-api 2>&1`;
-    const pm2Result = await execAsync(restartCmd, { cwd }).catch((e: any) => ({ stdout: "", stderr: e.message }));
-    log.push(pm2Result.stdout?.trim() || pm2Result.stderr?.trim() || "pm2 restart issued");
-
-    // Poll the health endpoint (localhost) for up to 40 seconds to confirm
-    // the new process is serving requests before we report success.
-    const apiPort = process.env.PORT ?? "3001";
-    const healthUrl = `http://localhost:${apiPort}/api/healthz`;
-    let healthy = false;
-    const deadline = Date.now() + 40_000;
-
-    while (Date.now() < deadline) {
-      await new Promise((r) => setTimeout(r, 2000));
-      try {
-        const resp = await fetch(healthUrl, { signal: AbortSignal.timeout(3000) });
-        if (resp.ok) { healthy = true; break; }
-      } catch {
-        // still restarting — keep polling
-      }
-    }
-
-    if (healthy) {
-      log.push("✓ API is healthy — deploy complete");
-      res.json({ success: true, output: log.join("\n") });
-    } else {
-      log.push("⚠️  API did not respond within 40 s after restart — check PM2 logs");
-      res.json({ success: false, output: log.join("\n") });
-    }
-  } catch (err: any) {
-    log.push(`\n✗ Error: ${err.message}`);
-    if (err.stdout?.trim()) log.push(err.stdout.trim());
-    if (err.stderr?.trim()) log.push(err.stderr.trim());
-    res.json({ success: false, output: log.join("\n") });
+  if (deployState.running) {
+    res.status(409).json({ error: "A deploy is already in progress." });
+    return;
   }
+
+  // Fire and forget — do NOT await
+  runDeploy(process.cwd());
+
+  res.status(202).json({ queued: true, message: "Deploy started. Poll /api/sh/admin/deploy/status for progress." });
+});
+
+// GET /sh/admin/deploy/status — poll this to track progress
+router.get("/sh/admin/deploy/status", (req, res) => {
+  if (req.headers["x-admin-key"] !== DEPLOY_KEY) {
+    res.status(403).json({ error: "Unauthorized" });
+    return;
+  }
+  res.json({
+    running: deployState.running,
+    success: deployState.success,
+    startedAt: deployState.startedAt,
+    output: deployState.log.join("\n"),
+  });
 });
 
 // ─── Dev Roadmap ───────────────────────────────────────────

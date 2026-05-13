@@ -16,16 +16,46 @@ function DeployPanel() {
   const [output, setOutput] = useState("");
   const [confirm, setConfirm] = useState(false);
 
+  const pollStatus = () => {
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch("/api/sh/admin/deploy/status", {
+          headers: { "X-Admin-Key": ADMIN_KEY },
+        });
+        const data = await res.json() as { running: boolean; success: boolean | null; output: string };
+        setOutput(data.output ?? "");
+        if (!data.running) {
+          clearInterval(interval);
+          setState(data.success ? "success" : "error");
+        }
+      } catch {
+        // network blip — keep polling
+      }
+    }, 3000);
+  };
+
   const handleDeploy = async () => {
     setConfirm(false);
     setState("running");
-    setOutput("");
+    setOutput("Starting deploy…");
     try {
-      const res = await fetch(`/api/sh/admin/deploy`, {
+      const res = await fetch("/api/sh/admin/deploy", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "X-Admin-Key": ADMIN_KEY },
+        headers: { "X-Admin-Key": ADMIN_KEY },
       });
-      const data = await res.json();
+      if (res.status === 409) {
+        const data = await res.json() as { error: string };
+        setOutput(data.error);
+        setState("error");
+        return;
+      }
+      if (res.status === 202) {
+        // Accepted — start polling
+        pollStatus();
+        return;
+      }
+      // Fallback: legacy sync response
+      const data = await res.json() as { success?: boolean; output?: string };
       setOutput(data.output ?? "");
       setState(data.success ? "success" : "error");
     } catch (err: any) {
