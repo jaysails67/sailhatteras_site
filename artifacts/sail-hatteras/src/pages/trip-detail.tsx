@@ -483,12 +483,42 @@ export default function TripDetail() {
                       We will check that there is a spot for you and send you an email with payment instructions. Welcome aboard!
                     </div>
                   </div>
+
+                  {/* Deposit breakdown — charter trips only */}
+                  {!isLearnTrip && isFlat && (() => {
+                    const depositDollars = Math.round(totalCents * 0.15 / 100);
+                    const confirmationDollars = Math.round(totalCents / 100) - depositDollars;
+                    return (
+                      <div className="rounded-lg border border-primary/25 bg-primary/5 px-4 py-3 text-xs text-left space-y-2">
+                        <div className="font-semibold text-foreground">Your payment schedule:</div>
+                        <div className="space-y-1.5">
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Reservation Deposit (15%) — due now</span>
+                            <span className="font-semibold text-foreground">${depositDollars}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Charter Confirmation — due 4 days prior</span>
+                            <span className="font-semibold text-foreground">${confirmationDollars}</span>
+                          </div>
+                          <div className="flex justify-between border-t border-border pt-1.5 mt-1">
+                            <span className="text-muted-foreground font-medium">Total</span>
+                            <span className="font-bold text-foreground">${Math.round(totalCents / 100)}</span>
+                          </div>
+                        </div>
+                        <p className="text-muted-foreground/80 pt-0.5">
+                          Deposit is non-refundable · reservation date not held until deposit is received.
+                        </p>
+                      </div>
+                    );
+                  })()}
+
                   <div className="rounded-lg border bg-muted/50 px-4 py-3 text-xs text-left space-y-2">
                     <div className="font-semibold text-foreground">We'll send payment options:</div>
                     <div className="text-muted-foreground space-y-1">
                       <div>· Cash or Check (payable to Hatteras Community Sailing)</div>
                       <div>· Zelle</div>
                       <div>· Venmo</div>
+                      <div>· Cash App</div>
                     </div>
                   </div>
                   <Link href="/payments" className="block text-xs text-primary hover:underline">
