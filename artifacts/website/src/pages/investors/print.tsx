@@ -7,19 +7,28 @@ import { Printer } from "lucide-react";
 // ─── DB section order ────────────────────────────────────────────────────────
 
 const DB_SECTIONS = [
-  { slug: "exec-summary",     label: "Executive Summary" },
-  { slug: "company-overview", label: "Company Overview" },
-  { slug: "market-analysis",  label: "Market Analysis" },
-  { slug: "services",         label: "Service Model" },
-  { slug: "products",         label: "Vessel & Technology" },
-  { slug: "marketing-plan",   label: "P3 Partnership" },
-  { slug: "operations",       label: "Operations Plan" },
-  { slug: "financial-plan",   label: "Financial Plan" },
-  { slug: "economic-impact",  label: "Economic Impact" },
-  { slug: "risk-analysis",    label: "Risk Analysis" },
-  { slug: "timeline",         label: "Implementation Timeline" },
-  { slug: "conclusion",       label: "Investors & Funding" },
-  { slug: "grants",           label: "Grant Opportunities" },
+  { slug: "exec-summary",        label: "Executive Summary" },
+  { slug: "company-overview",    label: "Company Overview" },
+  { slug: "market-analysis",     label: "Market Analysis" },
+  { slug: "services",            label: "Service Model" },
+  { slug: "products",            label: "Vessel & Technology" },
+  { slug: "vessel-platform",     label: "Vessel Platform" },
+  { slug: "jones-act-strategy",  label: "Jones Act Strategy" },
+  { slug: "regulatory-pathway",  label: "Regulatory Pathway" },
+  { slug: "marketing-plan",      label: "P3 Partnership" },
+  { slug: "operations",          label: "Operations Plan" },
+  { slug: "financial-plan",      label: "Financial Plan" },
+  { slug: "capital-structure",   label: "Investment Structure" },
+  { slug: "five-year-proforma",  label: "5-Year Proforma" },
+  { slug: "corporate-structure", label: "Corporate Structure" },
+  { slug: "governance-philosophy", label: "Governance Philosophy" },
+  { slug: "economic-impact",     label: "Economic Impact" },
+  { slug: "risk-analysis",       label: "Risk Analysis" },
+  { slug: "timeline",            label: "Implementation Timeline" },
+  { slug: "conclusion",          label: "Investors & Funding" },
+  { slug: "grants",              label: "Grant Opportunities" },
+  { slug: "disclaimer",          label: "Disclaimer & Disclosures" },
+  { slug: "disclaimer-about",    label: "Disclaimer About Disclaimer" },
 ];
 
 // ─── Static: Management Team prose ───────────────────────────────────────────
@@ -33,18 +42,18 @@ const CORE_TEAM = [
   {
     name: "John Edward Elion",
     title: "Chief Financial Officer",
-    bio: "Responsible for capital strategy, financial planning & analysis, investor relations, and oversight of grant/loan structures. John has served as Chair of the Waterworks Foundation, a Chesapeake Bay environmental organization. He has owned and built several multihull brands across the United States and Canada, combining deep financial acumen with a lifelong commitment to environmental stewardship.",
+    bio: "John Edward Elion serves as Chief Financial Officer of PamliEcoConnect. He is responsible for capital strategy, financial planning and analysis, investor relations, and oversight of grant and loan structures. John is the Director of the Waterworks Foundation, an Annapolis-based environmental nonprofit with over 30 years of active work on Chesapeake Bay ecological and maritime conservation. In that capacity, he has been a central figure in the region's clean maritime and environmental community, and was instrumental in stimulating the discussions that led to the formation of the five-county Chesapeake Bay Passenger Ferry Consortium — the federally funded initiative that has validated demand for exactly the vessel class PamliEcoConnect is developing. John has owned and built several multimaran brands across the United States and Canada, combining deep financial acumen with a lifelong commitment to environmental stewardship and coastal community development.",
   },
 ];
 
 const ADVISORY_CANDIDATES = [
-  { name: "Alan Stewart",          area: "Design & Naval Architecture",      role: "Design Team Leader",               description: "Holds a degree in Aerospace Engineering and brings over a decade of partnership at B&B Boat Designs in Eastern North Carolina. His background in aerodynamics and structural efficiency is directly applicable to foiling vessel design." },
-  { name: "Larry Ward",            area: "Mechanical & Electrical Engineering", role: "M/E Engineering Lead",            description: "Has deep experience in propulsion systems, systems integration, and control architectures for high-performance marine platforms." },
-  { name: "Role to be filled",     area: "Battery & Powerplant Technology",  role: "Battery/Powerplant Technology Lead", description: "Seeking an expert in energy storage, powertrain architecture, and marine charging systems." },
-  { name: "Robert Norton",         area: "Investment & Grant Strategy",       role: "Investment & Grant Acquisition Lead", description: "Has a strong track record in capital raising, investor outreach, and navigating public grant programs." },
-  { name: "Jim Gardiner / Compmillenia", area: "Advanced Boatbuilding Technology", role: "Strategic Technology Partner", description: "A recognized authority in advanced composite construction and high-performance hull manufacturing." },
-  { name: "Role to be filled",     area: "USCG & Insurance Compliance",      role: "Compliance Lead",                  description: "Seeking an experienced maritime regulatory specialist to guide USCG approval processes and insurer expectations." },
-  { name: "Role to be filled",     area: "Production Management",            role: "Production Management Lead",       description: "Seeking an experienced production leader to guide tooling, supply chain management, quality systems, and manufacturing scale-up." },
+  { name: "Alan Stewart",          area: "Design & Naval Architecture",         role: "Design Team Leader",                description: "Holds a degree in Aerospace Engineering and brings over a decade of partnership at B&B Boat Designs in Eastern North Carolina. His background in aerodynamics and structural efficiency is directly applicable to foiling vessel design — making him an ideal candidate to guide concept development, foiling integration, and hull optimization." },
+  { name: "Larry Ward",            area: "Mechanical & Electrical Engineering", role: "M/E Engineering Lead",              description: "Has deep experience in propulsion systems, systems integration, and control architectures for high-performance marine platforms. His background positions him well to contribute to the technical development of PamliEcoConnect's electric drivetrain and foil control systems." },
+  { name: "Role to be filled",     area: "Battery & Powerplant Technology",     role: "Battery/Powerplant Technology Lead", description: "Seeking an expert in energy storage, powertrain architecture, and marine charging systems to guide battery management and electric propulsion as vessel development progresses." },
+  { name: "Robert Norton",         area: "Investment & Grant Strategy",          role: "Investment & Grant Acquisition Lead", description: "Has a strong track record in capital raising, investor outreach, and navigating public grant programs. His strategic perspective on financing structures and institutional relationships would be invaluable as PamliEcoConnect moves toward securing its initial funding round." },
+  { name: "Jim Gardiner / Compmillenia", area: "Advanced Boatbuilding Technology", role: "Strategic Technology Partner",   description: "A recognized authority in advanced composite construction and high-performance hull manufacturing. Compmillenia's capabilities in precision composite fabrication represent a potential strategic fit for PamliEcoConnect's vessel production goals." },
+  { name: "Role to be filled",     area: "USCG & Insurance Compliance",          role: "Compliance Lead",                   description: "We are seeking an experienced maritime regulatory specialist to guide USCG approval processes and insurer expectations — from 20-passenger R&D vessels through to 50-passenger commercial certification. This is a critical role for the company's path to commercialization." },
+  { name: "Role to be filled",     area: "Production Management",               role: "Production Management Lead",        description: "We are seeking an experienced production leader to guide tooling, supply chain management, quality systems, and manufacturing scale-up across multiple hull programs. This role becomes increasingly critical as vessel production ramps." },
 ];
 
 function ManagementTeamContent() {
@@ -139,25 +148,41 @@ function TheOfferingContent() {
         <li>Build-out of charging and support infrastructure in key ports.</li>
         <li>Expansion of the operations and maintenance organization to support a national fleet.</li>
       </ul>
+      <p style={{ lineHeight: "1.7", fontSize: "0.95rem", marginBottom: "1rem" }}>
+        The Series A / expansion round is designed for institutional and strategic investors who wish to participate in the
+        growth phase of a proven platform: a Jones Act–compliant, high-speed, low-emission vessel fleet with demonstrated
+        route economics and regulatory approval. Early seed investors are expected to benefit from any valuation step-up
+        between the initial R&D phase and this fleet expansion phase.
+      </p>
 
       <h3 style={{ fontSize: "1.05rem", fontWeight: 700, margin: "1.5rem 0 0.6rem" }}>Early Investor Opportunity</h3>
+      <p style={{ lineHeight: "1.7", fontSize: "0.95rem", marginBottom: "0.8rem" }}>
+        The combination of proven route demand, strong unit economics, and strategic positioning in the decarbonization
+        and modernization of domestic maritime transport creates a compelling opportunity for early investors:
+      </p>
       <ul style={{ paddingLeft: "1.5rem", lineHeight: "1.8", fontSize: "0.95rem", marginBottom: "1rem" }}>
         <li><strong>Favorable entry timing:</strong> The $1M R&D round values the company prior to full commercialization of the 20-passenger platform and prior to any contracted 50-passenger fleet deployments.</li>
-        <li><strong>Attractive unit economics:</strong> Pro forma Year 1 operations for the 20-passenger vessels in a single region indicate multi-million-dollar annual ticket revenue and strong operating margins.</li>
-        <li><strong>Scalable platform:</strong> Once proven in one region, the same vessel and route model can be replicated across multiple U.S. coastal and inland waterways.</li>
-        <li><strong>Multiple value-creation pathways:</strong> Upside from ferry operations, vessel sales, institutional contracts, and corporate Title Sponsorships.</li>
-        <li><strong>Strategic exit potential:</strong> The company is being structured to be attractive to large strategic acquirers in transportation, energy, and defense.</li>
+        <li><strong>Attractive unit economics:</strong> Pro forma Year 1 operations for the 20-passenger vessels in a single region indicate multi-million-dollar annual ticket revenue and strong operating margins, even before additional upside from boat sales, institutional contracts, and corporate sponsorships.</li>
+        <li><strong>Scalable platform:</strong> Once proven in one region, the same vessel and route model can be replicated across multiple U.S. coastal and inland waterways, creating a pipeline of deployment opportunities.</li>
+        <li><strong>Multiple value-creation pathways:</strong> Potential upside not only from ferry operations but also from vessel sales into commercial, defense, and recreational markets, and from corporate Title Sponsorships.</li>
+        <li><strong>Strategic exit potential:</strong> The company is being structured to be attractive to large strategic acquirers in transportation, energy, and defense, as well as to later-stage venture and infrastructure investors.</li>
       </ul>
 
       <h3 style={{ fontSize: "1.05rem", fontWeight: 700, margin: "1.5rem 0 0.6rem" }}>Investment Process &amp; Subscription</h3>
       <p style={{ lineHeight: "1.7", fontSize: "0.95rem", marginBottom: "0.8rem" }}>
         Participation in the Seed / Series Seed round will be governed by a standard Subscription Agreement and Series Seed
-        Preferred Stock financing documents. The Company anticipates setting a minimum individual investment amount of
-        approximately $25,000–$50,000, with larger tickets for institutional or lead investors.
+        Preferred Stock financing documents, tailored to the company's jurisdiction and applicable securities regulations.
+        The Company anticipates setting a minimum individual investment amount (for example, $25,000–$50,000), with larger
+        tickets for institutional or lead investors.
       </p>
-      <p style={{ lineHeight: "1.7", fontSize: "0.95rem" }}>
+      <p style={{ lineHeight: "1.7", fontSize: "0.95rem", marginBottom: "0.8rem" }}>
         All investors in the round will receive the same class of Series Seed Preferred shares on the same economic terms,
         with any differences limited to board representation or information rights for lead or anchor investors.
+      </p>
+      <p style={{ lineHeight: "1.7", fontSize: "0.95rem" }}>
+        Interested parties may request access to the detailed business plan, financial model, and draft subscription
+        documents through the secure section of the PamliEcoConnect website, subject to NDA and accreditation requirements
+        under applicable securities laws.
       </p>
 
       <div style={{ marginTop: "1.5rem", padding: "0.75rem 1rem", border: "1px solid #ccc", fontSize: "0.8rem", color: "#666", fontStyle: "italic" }}>
@@ -176,43 +201,43 @@ function SubscriptionAgreementContent() {
     { n: "1. Subscription", items: [
       { t: "1.1 Subscription for Shares.", b: 'Subject to the terms and conditions of this Agreement, each Investor hereby subscribes for and agrees to purchase, and the Company agrees to issue and sell to such Investor, that number of Shares set forth on the Investor\'s signature page hereto (the "Subscribed Shares") at a purchase price of $[PRICE] per Share (the "Purchase Price").' },
       { t: "1.2 Purchase Amount.", b: 'The aggregate purchase price for the Subscribed Shares (the "Purchase Amount") is set forth on the Investor\'s signature page and shall be paid in cash by wire transfer of immediately available funds to the account designated by the Company on or before the closing of the Offering applicable to such Investor.' },
-      { t: "1.3 Acceptance of Subscription.", b: "The Company reserves the right to accept or reject any subscription, in whole or in part, in its sole discretion." },
+      { t: "1.3 Acceptance of Subscription.", b: "The Company reserves the right to accept or reject any subscription, in whole or in part, in its sole discretion. The subscription shall be deemed accepted by the Company only when this Agreement is countersigned by an authorized officer of the Company or when the Company records the issuance of the Subscribed Shares to the Investor." },
     ]},
     { n: "2. The Offering", items: [
       { t: "2.1 Offering Size.", b: 'The Company is seeking to raise an aggregate of approximately $1,000,000 (the "Target Raise") in this Offering, but may increase or decrease the Target Raise in its sole discretion.' },
-      { t: "2.2 Use of Proceeds.", b: "The Company intends to use the net proceeds of the Offering substantially as described in the Company's business plan and offering materials, including research and development of 20-passenger R&D vessels, U.S. Coast Guard approval processes, initial route deployment, and preparatory work for 50-passenger vessel design and regulatory approval." },
-      { t: "2.3 Private Offering.", b: "The Offering is being made in reliance upon exemptions from registration under applicable securities laws." },
+      { t: "2.2 Use of Proceeds.", b: "The Company intends to use the net proceeds of the Offering substantially as described in the Company's business plan and offering materials, including, without limitation, research and development of 20-passenger R&D vessels, U.S. Coast Guard approval processes, initial route deployment, and preparatory work for 50-passenger vessel design and regulatory approval." },
+      { t: "2.3 Private Offering.", b: "The Offering is being made in reliance upon exemptions from registration under applicable securities laws. The Company is offering the Shares only to investors who qualify under such exemptions and who make the representations and warranties set forth herein." },
     ]},
     { n: "3. Closing", items: [
-      { t: "3.1 Closing.", b: "The closing or closings of the purchase and sale of the Shares shall occur on such date or dates as determined by the Company." },
-      { t: "3.2 Deliveries at Closing.", b: "The Company shall deliver evidence of issuance of the Subscribed Shares; the Investor shall have previously paid the Purchase Amount in full by wire transfer." },
+      { t: "3.1 Closing.", b: 'The closing or closings of the purchase and sale of the Shares (each, a "Closing") shall occur on such date or dates as determined by the Company. At each Closing, the Company shall issue the Subscribed Shares to each Investor whose subscription has been accepted and whose Purchase Amount has been received by the Company.' },
+      { t: "3.2 Deliveries at Closing.", b: "At each applicable Closing: (a) the Company shall deliver to the Investor evidence of the issuance of the Subscribed Shares (which may be in the form of book-entry, electronic record, or physical certificate, as determined by the Company); and (b) the Investor shall have previously paid the Purchase Amount in full by wire transfer, subject to any arrangements agreed with the Company in advance." },
     ]},
     { n: "4. Investor Representations and Warranties", items: [
-      { t: "4.1 Authority.", b: "The Investor has full legal capacity (or corporate authority, if an entity) to execute and perform this Agreement." },
-      { t: "4.2 Investment Intent.", b: "The Investor is acquiring the Subscribed Shares for its own account, for investment purposes only, and not with a view to distribution in violation of applicable securities laws." },
-      { t: "4.3 Sophistication; Investigation.", b: "The Investor has such knowledge and experience in financial and business matters that the Investor is capable of evaluating the merits and risks of an investment in the Shares." },
-      { t: "4.4 Accredited Investor Status.", b: 'The Investor is an "accredited investor" as defined in Rule 501(a) of Regulation D, or otherwise meets the eligibility requirements under applicable securities laws.' },
-      { t: "4.5 No General Solicitation.", b: "The Investor acknowledges that the Offering has not been made by means of any general solicitation or general advertising." },
-      { t: "4.6 Restricted Securities.", b: "The Investor understands that the Shares are restricted securities that may not be sold or transferred without registration or an available exemption." },
-      { t: "4.7 Ability to Bear Risk.", b: "The Investor is able to bear the economic risk of this investment for an indefinite period and can afford a complete loss." },
-      { t: "4.8 No Reliance on Unwritten Representations.", b: "The Investor has not relied on any representation of the Company except as expressly set forth in this Agreement and any written offering documents." },
+      { t: "4.1 Authority.", b: "If the Investor is an individual, the Investor has full legal capacity to execute and deliver this Agreement and to perform the Investor's obligations hereunder. If the Investor is an entity, it is duly organized, validly existing, and in good standing under the laws of its jurisdiction of organization and has full corporate, partnership, or other power and authority to execute, deliver, and perform this Agreement." },
+      { t: "4.2 Investment Intent.", b: "The Investor is acquiring the Subscribed Shares for its own account, for investment purposes only, and not with a view to or for resale in connection with any distribution thereof in violation of applicable securities laws." },
+      { t: "4.3 Sophistication; Investigation.", b: "The Investor has such knowledge and experience in financial and business matters that the Investor is capable of evaluating the merits and risks of an investment in the Shares. The Investor has been given the opportunity to ask questions of, and receive answers from, the Company regarding its business, operations, financial condition, and the terms and conditions of the Offering, and to obtain any additional information the Investor deems necessary to evaluate the investment." },
+      { t: "4.4 Accredited Investor Status.", b: 'The Investor is an "accredited investor" as that term is defined in Rule 501(a) of Regulation D under the U.S. Securities Act of 1933, as amended, or otherwise meets the eligibility requirements for participation in the Offering under applicable securities laws, as represented to the Company in a separate investor questionnaire.' },
+      { t: "4.5 No General Solicitation Reliance.", b: "The Investor acknowledges that the Offering has not been made by means of any general solicitation or general advertising (except as permitted by applicable law where specifically disclosed), including any advertisement, article, notice, or other communication published in any newspaper, magazine, or similar media or broadcast over television, radio, or the internet, or any seminar or meeting whose attendees have been invited by general solicitation or general advertising." },
+      { t: "4.6 Restricted Securities.", b: 'The Investor understands that the Shares have not been registered under the Securities Act or under the securities laws of any state or other jurisdiction, and that the Shares constitute "restricted securities" under the Securities Act and applicable state securities laws. The Investor understands that the Shares may not be sold, transferred, or otherwise disposed of without registration or an available exemption.' },
+      { t: "4.7 Ability to Bear Risk.", b: "The Investor is able to bear the economic risk of this investment for an indefinite period of time and is able to afford a complete loss of this investment." },
+      { t: "4.8 No Reliance on Unwritten Representations.", b: "The Investor has not relied on any representation or warranty of the Company or any of its officers, directors, employees, agents, or representatives except as expressly set forth in this Agreement and in any separate written offering documents provided by the Company." },
     ]},
     { n: "5. Company Representations and Warranties", items: [
-      { t: "5.1 Organization and Good Standing.", b: "The Company is duly organized, validly existing, and in good standing under the laws of its jurisdiction of incorporation." },
-      { t: "5.2 Authority.", b: "The Company has full corporate power and authority to execute and deliver this Agreement, which constitutes a valid and binding obligation of the Company." },
-      { t: "5.3 Valid Issuance of Shares.", b: "The Shares, when issued and delivered against payment, will be duly authorized, validly issued, fully paid, and non-assessable." },
+      { t: "5.1 Organization and Good Standing.", b: "The Company is duly organized, validly existing, and in good standing under the laws of its jurisdiction of incorporation, with all requisite corporate power and authority to own, lease, and operate its properties and to carry on its business." },
+      { t: "5.2 Authority.", b: "The Company has full corporate power and authority to execute and deliver this Agreement and to perform its obligations hereunder. This Agreement constitutes a valid and binding obligation of the Company, enforceable against the Company in accordance with its terms, subject to applicable bankruptcy, insolvency, and similar laws and general principles of equity." },
+      { t: "5.3 Valid Issuance of Shares.", b: "The Shares, when issued and delivered against payment therefor as provided in this Agreement, will be duly authorized, validly issued, fully paid, and non-assessable, and will be free of any liens or encumbrances created by the Company, except as set forth in the Company's charter documents and any investor rights agreements." },
     ]},
     { n: "6. Restrictions on Transfer", items: [
-      { t: "6.1 No Public Market.", b: "No public market for the Shares currently exists and there is no assurance that one will develop." },
-      { t: "6.2 Transfer Restrictions.", b: "The Investor shall not transfer any Shares except in compliance with this Agreement, applicable securities laws, and any other applicable agreements." },
+      { t: "6.1 No Public Market.", b: "The Investor understands that no public market for the Shares currently exists and that there is no assurance that a public market will develop." },
+      { t: "6.2 Transfer Restrictions.", b: "The Investor shall not sell, assign, transfer, pledge, or otherwise dispose of any of the Shares except in compliance with (a) this Agreement, (b) applicable securities laws, and (c) any other applicable agreements between the Investor and the Company, including any shareholder or investor rights agreements." },
     ]},
     { n: "7. Miscellaneous", items: [
-      { t: "7.1 Governing Law.", b: "This Agreement shall be governed by the laws of the State of [GOVERNING LAW STATE], without regard to conflict of laws principles." },
-      { t: "7.2 Entire Agreement.", b: "This Agreement constitutes the entire agreement between the parties with respect to the subject matter hereof." },
-      { t: "7.3 Amendments.", b: "This Agreement may be amended only by a written instrument executed by the Company and the Investor (or a requisite majority of Investors)." },
-      { t: "7.4 Counterparts.", b: "This Agreement may be executed in counterparts, including via electronic signatures." },
-      { t: "7.5 Severability.", b: "If any provision is held invalid or unenforceable, the remaining provisions shall remain in full force and effect." },
-      { t: "7.6 No Tax or Legal Advice.", b: "The Company has not provided, and does not provide, tax, legal, or investment advice. Each Investor has been advised to consult its own advisors." },
+      { t: "7.1 Governing Law.", b: "This Agreement shall be governed by and construed in accordance with the laws of the State of [GOVERNING LAW STATE], without regard to its conflict of laws principles." },
+      { t: "7.2 Entire Agreement.", b: "This Agreement, together with any related subscription documents, exhibits, and schedules, constitutes the entire agreement between the parties with respect to the subject matter hereof and supersedes all prior agreements and understandings, whether written or oral." },
+      { t: "7.3 Amendments.", b: "This Agreement may be amended, modified, or supplemented only by a written instrument executed by the Company and the Investor (or by the Company and a requisite majority of Investors, if structured that way)." },
+      { t: "7.4 Counterparts.", b: "This Agreement may be executed in counterparts (including via electronic signatures or scanned copies), each of which shall be deemed an original and all of which together shall constitute one and the same instrument." },
+      { t: "7.5 Severability.", b: "If any provision of this Agreement is held to be invalid or unenforceable, such provision shall be enforced to the maximum extent permissible, and the remaining provisions shall remain in full force and effect." },
+      { t: "7.6 No Tax or Legal Advice.", b: "Each Investor acknowledges that the Company has not provided, and does not provide, tax, legal, or investment advice to the Investor. The Investor has been advised to consult its own legal, tax, and financial advisors regarding this investment." },
     ]},
   ];
 
