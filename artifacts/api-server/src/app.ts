@@ -6,6 +6,7 @@ import router from "./routes";
 import { logger } from "./lib/logger";
 import { WebhookHandlers } from "./webhookHandlers";
 
+
 const app: Express = express();
 
 app.set("trust proxy", 1);
@@ -95,8 +96,8 @@ app.post(
   },
 );
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '500mb' }));
+app.use(express.urlencoded({ extended: true, limit: '500mb' }));
 
 const sessionSecret = process.env.SESSION_SECRET;
 if (!sessionSecret && isProd) {
@@ -114,6 +115,15 @@ app.use(session({
     sameSite: "lax",
   },
 }));
+
+// Add request timeout for large file uploads
+app.use((req, res, next) => {
+  if (req.path.includes('/storage/uploads/')) {
+    req.setTimeout(600000); // 10 minutes for upload
+    res.setTimeout(600000);
+  }
+  next();
+});
 
 // Prevent nginx, Apache, and any other proxy from caching API responses
 app.use("/api", (_req, res, next) => {

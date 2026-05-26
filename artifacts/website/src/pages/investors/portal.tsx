@@ -5,7 +5,7 @@ import { useLocation } from "wouter";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useListContentPages, getListContentPagesQueryKey } from "@workspace/api-client-react";
 import {
-  Phone, Lock, ChevronRight, Ship, Wrench, Zap, TrendingUp, Shield, Factory, Briefcase, FileDown,
+  Phone, Lock, ChevronRight, Ship, Wrench, Zap, TrendingUp, Shield, Factory, Briefcase, FileDown, FileSpreadsheet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
@@ -208,6 +208,18 @@ function TheOfferingSection() {
           scaling to 50-passenger foiling vessels across the U.S. coastal and inland maritime
           transportation network.
         </p>
+        <div className="mt-4 flex flex-col gap-2">
+          <a href="/uploads/uploads/PamliEcoConnect_Business_Plan_Full.pdf" target="_blank" rel="noopener noreferrer" className="inline-block">
+            <Button size="sm" variant="outline" className="text-xs gap-1.5">
+              <FileDown className="h-3 w-3" /> Download Full Business Plan (PDF)
+            </Button>
+          </a>
+          <a href="/uploads/uploads/PamliEcoConnect_3Scenario_Proforma.xlsx" target="_blank" rel="noopener noreferrer" className="inline-block">
+            <Button size="sm" variant="outline" className="text-xs gap-1.5">
+              <FileSpreadsheet className="h-3 w-3" /> Download 3-Scenario Financial Proforma
+            </Button>
+          </a>
+        </div>
       </div>
 
       {/* Stage 1 */}
@@ -720,6 +732,12 @@ export default function Portal() {
             Investor Business Plan
           </div>
 
+          <Link href="/investors/print" className="mb-4">
+            <Button size="sm" variant="outline" className="w-full text-xs gap-1.5">
+              <FileDown className="h-3 w-3" /> Print / Save as PDF
+            </Button>
+          </Link>
+
           <nav className="flex flex-col gap-1 flex-1 overflow-y-auto">
             {PLAN_SECTIONS.map(({ slug, label }) => {
               const page = pageMap[slug];
@@ -759,12 +777,7 @@ export default function Portal() {
           </nav>
 
           <div className="mt-6 pt-4 border-t border-border space-y-2">
-            <Link href="/investors/print">
-              <Button size="sm" variant="outline" className="w-full text-xs gap-1.5">
-                <FileDown className="h-3 w-3" /> Print / Save as PDF
-              </Button>
-            </Link>
-            <p className="text-xs text-muted-foreground mt-2 mb-1">Questions about investing?</p>
+            <p className="text-xs text-muted-foreground mb-1">Questions about investing?</p>
             <Link href="/contact">
               <Button size="sm" className="w-full text-xs gap-1.5">
                 <Phone className="h-3 w-3" /> Schedule a Call

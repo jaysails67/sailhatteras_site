@@ -1,5 +1,6 @@
-import { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode, useEffect } from "react";
 import { useGetMe, useLogoutUser, User, getGetMeQueryKey } from "@workspace/api-client-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface AuthContextType {
   user: User | null;
@@ -10,9 +11,13 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const { data: user, isLoading, isError } = useGetMe({
+  const queryClient = useQueryClient();
+  const { data: user, isLoading, isError, error } = useGetMe({
     query: {
       queryKey: getGetMeQueryKey(),
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+      refetchOnMount: 'stale',
       retry: (failureCount, error) => {
         if ((error as { status?: number })?.status === 401) return false;
         return failureCount < 2;
@@ -21,7 +26,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
   const logoutMutation = useLogoutUser();
 
+  // Only invalidate cache on 401 once, not on every render
+  useEffect(() => {
+    if ((error as { status?: number })?.status === 401) {
+      queryClient.setQueryData(getGetMeQueryKey(), null);
+    }
+  }, [error?.status, queryClient]);
+
   const handleLogout = () => {
+    // Clear localStorage on logout
+    localStorage.clear();
+    
     logoutMutation.mutate(undefined, {
       onSuccess: () => {
         window.location.href = "/login";

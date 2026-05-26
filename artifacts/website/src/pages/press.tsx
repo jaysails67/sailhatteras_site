@@ -57,13 +57,13 @@ export default function Press() {
   const { data: allPosts, isLoading: allLoading } = useListPosts();
 
   const isStoredAudio = (url: string) =>
-    url.startsWith("/api/storage") || /\.(mp3|m4a|wav|ogg|aac)$/i.test(url);
+    url.startsWith("/media/") || url.startsWith("/api/storage") || /\.(mp3|m4a|wav|ogg|aac)$/i.test(url);
 
   const isStoredVideo = (url: string) =>
-    url.startsWith("/api/storage") || /\.(mp4|webm|mov)$/i.test(url);
+    url.startsWith("/media/") || url.startsWith("/api/storage") || /\.(mp4|webm|mov)$/i.test(url);
 
   const isPdf = (url: string) =>
-    url.startsWith("/api/storage") || /\.pdf$/i.test(url);
+    url.startsWith("/media/") || url.startsWith("/api/storage") || /\.pdf$/i.test(url);
 
   const renderAudioCard = (post: Post) => (
     <Card key={post.id} className="overflow-hidden border-border bg-card/50 hover:bg-card transition-colors flex flex-col">
@@ -158,20 +158,9 @@ export default function Press() {
         <CardContent>
           <CardDescription className="text-sm line-clamp-2">{post.excerpt}</CardDescription>
           <div className="mt-3 flex items-center">
-            {post.mediaUrl ? (
-              <a
-                href={post.mediaUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm font-semibold text-primary hover:underline inline-flex items-center gap-1"
-              >
-                <PlayCircle className="h-3.5 w-3.5" /> Watch now →
-              </a>
-            ) : (
-              <Link href={`/press/${post.id}`} className="text-sm font-semibold text-primary hover:underline">
-                View details →
-              </Link>
-            )}
+            <Link href={`/press/${post.id}`} className="text-sm font-semibold text-primary hover:underline inline-flex items-center gap-1">
+              <PlayCircle className="h-3.5 w-3.5" /> Watch now →
+            </Link>
             <CopyLinkButton postId={post.id} />
           </div>
         </CardContent>

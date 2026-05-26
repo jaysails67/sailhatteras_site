@@ -60,6 +60,16 @@ router.post("/auth/register", async (req, res): Promise<void> => {
     status: "pending",
   });
 
+  // Send Telegram notification about new user signup
+  await sendTelegramMessage(
+    `🆕 <b>New User Registration</b>\n` +
+    `<b>ID:</b> ${user.id}\n` +
+    `<b>Name:</b> ${user.name}\n` +
+    `<b>Email:</b> ${user.email}\n` +
+    `<b>Phone:</b> ${user.phone}\n` +
+    `User has registered and needs to accept the NDA.`,
+  );
+
   req.session.userId = user.id;
 
   res.status(201).json({
@@ -90,16 +100,20 @@ router.post("/auth/accept-nda", async (req, res): Promise<void> => {
     .set({ ndaAcceptedAt: new Date(), status: "pending" })
     .where(eq(investorApplicationsTable.userId, user.id));
 
-  sendTelegramMessage(
-    `🚀 <b>New Investor Application</b>\n` +
-    `<b>ID:</b> ${user.id}\n` +
-    `<b>Name:</b> ${user.name}\n` +
-    `<b>Email:</b> ${user.email}\n` +
-    `<b>Phone:</b> ${user.phone}\n` +
-    `NDA accepted — pending your approval.\n\n` +
-    `Reply <code>/approve ${user.id}</code> to grant access\n` +
-    `Reply <code>/deny ${user.id} &lt;reason&gt;</code> to deny`,
-  );
+  try {
+    await sendTelegramMessage(
+      `🚀 <b>New Investor Application</b>\n` +
+      `<b>ID:</b> ${user.id}\n` +
+      `<b>Name:</b> ${user.name}\n` +
+      `<b>Email:</b> ${user.email}\n` +
+      `<b>Phone:</b> ${user.phone}\n` +
+      `NDA accepted — pending your approval.\n\n` +
+      `Reply <code>/approve ${user.id}</code> to grant access\n` +
+      `Reply <code>/deny ${user.id} &lt;reason&gt;</code> to deny`,
+    );
+  } catch (err) {
+    logger.warn({ err, userId: user.id }, "Failed to send Telegram notification for NDA acceptance");
+  }
 
   const adminEmail = process.env.ADMIN_EMAIL;
   const smtpConfigured =

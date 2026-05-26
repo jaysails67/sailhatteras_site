@@ -12,18 +12,40 @@ export function getWebhookSecret(): string | null {
   return deriveWebhookSecret(BOT_TOKEN);
 }
 
-export function sendTelegramMessage(text: string): void {
-  if (!BOT_TOKEN || !CHAT_ID) return;
-  sendTelegramToChat(CHAT_ID, text);
+export async function sendTelegramMessage(text: string): Promise<void> {
+  if (!BOT_TOKEN) {
+    logger.warn("TELEGRAM_BOT_TOKEN not configured — Telegram message not sent");
+    return;
+  }
+  if (!CHAT_ID) {
+    logger.warn("TELEGRAM_CHAT_ID not configured — Telegram message not sent");
+    return;
+  }
+  return sendTelegramToChat(CHAT_ID, text);
 }
 
-export function sendTelegramToChat(chatId: string | number, text: string): void {
-  if (!BOT_TOKEN) return;
-  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: chatId, text, parse_mode: "HTML" }),
-  }).catch((err) => logger.warn({ err }, "Telegram notification failed"));
+export async function sendTelegramToChat(chatId: string | number, text: string): Promise<void> {
+  if (!BOT_TOKEN) {
+    logger.warn("BOT_TOKEN is empty — skipping Telegram notification");
+    return;
+  }
+  try {
+    logger.info({ chatId, botTokenPrefix: BOT_TOKEN.substring(0, 10) + "..." }, "Sending Telegram message");
+    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text, parse_mode: "HTML" }),
+    });
+    if (!res.ok) {
+      const responseText = await res.text();
+      logger.warn({ status: res.status, statusText: res.statusText, responseBody: responseText }, "Telegram API returned error");
+    } else {
+      const responseData = await res.json();
+      logger.info({ responseData }, "Telegram message sent successfully");
+    }
+  } catch (err) {
+    logger.error({ err, chatId }, "Telegram notification failed with exception");
+  }
 }
 
 export function buildWebhookUrl(siteOrigin?: string): string | null {

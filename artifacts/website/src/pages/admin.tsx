@@ -281,9 +281,10 @@ export default function Admin() {
     if (!file) return;
     const result = await uploadFile(file);
     if (result) {
-      const servingUrl = `/api/storage${result.objectPath}`;
+      const filename = result.objectPath.split('/').pop() || 'file';
+      const servingUrl = `/media/${filename}`;
       setPressForm(f => ({ ...f, mediaUrl: servingUrl }));
-      toast({ title: "File uploaded", description: `Stored at ${servingUrl}` });
+      toast({ title: "File uploaded", description: `Ready to use at ${servingUrl}` });
     }
     e.target.value = "";
   };

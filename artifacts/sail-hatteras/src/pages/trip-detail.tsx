@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link, useParams, useLocation } from "wouter";
 import { useSeo } from "@/hooks/use-seo";
 import {
@@ -140,18 +140,23 @@ export default function TripDetail() {
   const isLearnTrip = trip?.category === "learn";
   const skipSessionStep = trip?.slug === "adult-fun-sail";
   const useSessionStep = isLearnTrip && hasVessels && !skipSessionStep;
-  const isSAISA = selectedVessel?.name.toLowerCase().includes("saisa");
+  const isSAISA = selectedVessel?.name?.toLowerCase().includes("saisa") ?? false;
 
-  // Session options differ by class
-  const sessionOptions = isSAISA
-    ? [
+  // Session options differ by class - memoized to prevent stale closure
+  // When vessel changes, sessionOptions updates and selectedSession is cleared (line 570)
+  const sessionOptions = useMemo(() => {
+    if (isSAISA) {
+      return [
         { label: "Fall 2026",   sub: "Sept – Nov 2026",      value: "fall2026",   date: "2026-09-01" },
         { label: "Spring 2027", sub: "Jan – Mar 2027",        value: "spring2027", date: "2027-01-15" },
-      ]
-    : [
+      ];
+    } else {
+      return [
         { label: "Summer Session 1", sub: "June 6 – July 11",  value: "summer1", date: "2026-06-06" },
         { label: "Summer Session 2", sub: "July 18 – Sept 5",  value: "summer2", date: "2026-07-18" },
       ];
+    }
+  }, [isSAISA]);
 
   const sessionLabel = sessionOptions.find(o => o.value === selectedSession)?.label ?? "";
   const learnDate    = sessionOptions.find(o => o.value === selectedSession)?.date ?? "";
