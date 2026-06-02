@@ -118,7 +118,7 @@ export default function Membership() {
                 {
                   icon: <Lock className="h-5 w-5 text-amber-700" />,
                   title: "Rate Locked 10 Years",
-                  body: "Local & NRPO members who join as Charter Members pay today's rate for a full decade. Cape Select properties: 3-year rate lock.",
+                  body: "Local Resident and NRPO members who join as Charter Members pay today's rate for a full decade — as long as membership stays continuous.",
                 },
                 {
                   icon: <CreditCard className="h-5 w-5 text-amber-700" />,
@@ -359,10 +359,7 @@ export default function Membership() {
                 <Star className="h-4 w-4 fill-secondary" /> Cape Select Membership
               </div>
               <h2 className="font-serif text-3xl font-bold mb-2 text-primary-foreground">For Rental Property Owners &amp; Managers</h2>
-              <p className="text-primary-foreground/70 text-sm mb-2">Priced by property size — from $695/year</p>
-              <div className="inline-flex items-center gap-1.5 text-xs text-amber-300 bg-amber-900/30 border border-amber-400/30 rounded-full px-3 py-1 mb-6">
-                <Lock className="h-3 w-3" /> Charter Members lock their rate for 3 years
-              </div>
+              <p className="text-primary-foreground/70 text-sm mb-6">Priced by property size — from $695/year</p>
               <div className="space-y-3 text-primary-foreground/80 leading-relaxed text-sm">
                 <p>
                   Cape Select is a hospitality membership for vacation rental property owners and managers on Hatteras Island. It lets you extend full HCS member privileges directly to your guests — turning a sailing club membership into a premium rental amenity.
