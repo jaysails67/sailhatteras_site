@@ -1,5 +1,9 @@
 import { Link } from "wouter";
-import { Heart, Users, Anchor, Star, CheckCircle2, ArrowRight, Waves, Shield, Home, Trophy, BookOpen, PartyPopper, LifeBuoy } from "lucide-react";
+import {
+  Heart, Users, Anchor, Star, CheckCircle2, ArrowRight, Waves,
+  Shield, Home, Trophy, BookOpen, PartyPopper, LifeBuoy,
+  Lock, CreditCard, Award, Gavel,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSeo } from "@/hooks/use-seo";
 
@@ -47,14 +51,14 @@ const capeSelectPricing = [
 export default function Membership() {
   useSeo({
     title: "Membership — Hatteras Community Sailing",
-    description: "Join Hatteras Community Sailing. Local residents, non-resident property owners, and vacation rental managers each have a membership tailored to their needs.",
+    description: "Join Hatteras Community Sailing as a Charter Member and lock in your rate for up to 10 years. Three tiers for locals, non-resident property owners, and vacation rental managers.",
     canonical: "/membership",
     jsonLd: {
       "@context": "https://schema.org",
       "@type": "WebPage",
       "url": "https://sailhatteras.org/membership",
       "name": "Membership — Hatteras Community Sailing",
-      "description": "Three membership tiers for Hatteras Island locals, non-resident property owners, and vacation rental managers. Member discounts on sailing programs, events, and rentals.",
+      "description": "Charter Member founding rates locked for 10 years. Local resident, NRPO, and Cape Select tiers. Flexible auto-billing payment plans available.",
       "publisher": { "@id": "https://sailhatteras.org/#organization" }
     },
   });
@@ -86,8 +90,117 @@ export default function Membership() {
         </div>
       </section>
 
-      {/* Why Join */}
-      <section className="py-20 px-6">
+      {/* Charter Member Callout */}
+      <section className="py-16 px-6 bg-amber-50 border-y border-amber-200">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex flex-col md:flex-row gap-10 items-start">
+            <div className="flex-1">
+              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-700 mb-4">
+                <Award className="h-4 w-4" /> Charter Member Status — Now Open
+              </div>
+              <h2 className="font-serif text-3xl font-bold text-amber-900 mb-4">
+                Be a Founding Voice.<br />Lock In Your Rate.
+              </h2>
+              <p className="text-amber-800 leading-relaxed mb-4">
+                Charter Members are the founding backbone of Hatteras Community Sailing. Join now and your membership rate is <strong>locked for 10 years</strong> — as long as you maintain continuous membership. No rate increases, no surprises. Just the same price you joined at, year after year.
+              </p>
+              <p className="text-amber-800 leading-relaxed mb-6">
+                Charter Member status is open now and will remain available until the Board of Directors votes to close it. Once it closes, it's gone — there's no path back to founding rates.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button asChild size="lg" className="bg-amber-700 hover:bg-amber-800 text-white border-0">
+                  <Link href="/contact">Claim Charter Member Status <ArrowRight className="h-4 w-4 ml-2" /></Link>
+                </Button>
+              </div>
+            </div>
+            <div className="md:w-80 space-y-4 shrink-0">
+              {[
+                {
+                  icon: <Lock className="h-5 w-5 text-amber-700" />,
+                  title: "Rate Locked 10 Years",
+                  body: "Local & NRPO members who join as Charter Members pay today's rate for a full decade. Cape Select properties: 3-year rate lock.",
+                },
+                {
+                  icon: <CreditCard className="h-5 w-5 text-amber-700" />,
+                  title: "Flexible Payment Plans",
+                  body: "Pay on a schedule that works for your budget. Automatic billing only — set it up once and forget it.",
+                },
+                {
+                  icon: <Star className="h-5 w-5 text-amber-700 fill-amber-700" />,
+                  title: "Charter Member Recognition",
+                  body: "Your name recognized as a founding member of Hatteras Community Sailing — part of the organization's permanent history.",
+                },
+              ].map((item) => (
+                <div key={item.title} className="bg-white border border-amber-200 rounded-xl p-5 flex gap-4">
+                  <div className="shrink-0 mt-0.5">{item.icon}</div>
+                  <div>
+                    <div className="font-semibold text-amber-900 text-sm mb-1">{item.title}</div>
+                    <div className="text-amber-700 text-xs leading-relaxed">{item.body}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Board / Committee / Volunteer Incentives */}
+      <section className="py-16 px-6 border-b border-border bg-muted/20">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary mb-4">
+                <Gavel className="h-4 w-4" /> Service Positions
+              </div>
+              <h2 className="font-serif text-3xl font-bold mb-4">Lead. Serve. Save.</h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Members who step up to serve in Board, Committee, or key volunteer positions receive <strong className="text-foreground">50% off their membership</strong> for the duration of their service — plus a rate lock for as long as they hold the position.
+              </p>
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                When a position is vacated, membership reverts to the standard rate. Service incentives apply to Board members, Committee chairs and members, and key volunteer roles as designated by the Board.
+              </p>
+              <Button asChild variant="outline">
+                <Link href="/contact">Ask About Service Positions <ArrowRight className="h-4 w-4 ml-2" /></Link>
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 gap-4">
+              {[
+                {
+                  icon: <Gavel className="h-5 w-5 text-primary" />,
+                  title: "Board of Directors",
+                  body: "Elected leadership positions guiding the organization's mission, finances, and strategy.",
+                },
+                {
+                  icon: <Users className="h-5 w-5 text-primary" />,
+                  title: "Committee Members",
+                  body: "Appointed roles on program, fundraising, youth, events, and other standing committees.",
+                },
+                {
+                  icon: <Heart className="h-5 w-5 text-primary" />,
+                  title: "Key Volunteers",
+                  body: "Designated volunteer positions critical to program delivery, fleet maintenance, and community events.",
+                },
+              ].map((item) => (
+                <div key={item.title} className="bg-card border border-border rounded-xl p-5 flex gap-4">
+                  <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                    {item.icon}
+                  </div>
+                  <div>
+                    <div className="font-semibold text-foreground text-sm mb-1">{item.title}</div>
+                    <div className="text-muted-foreground text-xs leading-relaxed">{item.body}</div>
+                  </div>
+                </div>
+              ))}
+              <div className="bg-primary/5 border border-primary/20 rounded-xl px-5 py-4 text-xs text-muted-foreground">
+                <span className="font-semibold text-foreground">Rate reverts on vacating a position.</span> Service incentives are tied to active service only and do not carry forward after a position ends.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Membership Overview */}
+      <section className="py-16 px-6">
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
             <div>
@@ -134,11 +247,15 @@ export default function Membership() {
                   </div>
                   <div>
                     <div className="font-semibold text-foreground text-sm">Cape Select</div>
-                    <div className="text-xs text-muted-foreground mt-0.5">Rental property owners & managers — extend full privileges to guests · from $695/year</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">Rental property owners & managers — guests receive full privileges · from $695/year</div>
                   </div>
                 </div>
               </div>
-              <div className="pt-5 mt-5 border-t border-border">
+              <div className="pt-5 mt-5 border-t border-border space-y-2">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CreditCard className="h-4 w-4" />
+                  <span>Flexible auto-billing payment plans available for all tiers</span>
+                </div>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Shield className="h-4 w-4" />
                   <span>EIN: 85-2684924 · 501(c)3 Nonprofit · Donations tax-deductible</span>
@@ -158,18 +275,23 @@ export default function Membership() {
                 <Users className="h-4 w-4" /> Local Resident Membership
               </div>
               <h2 className="font-serif text-3xl font-bold mb-2">For Year-Round Islanders</h2>
-              <div className="text-4xl font-bold text-primary mb-6">$150 <span className="text-lg font-normal text-muted-foreground">/ year</span></div>
+              <div className="text-4xl font-bold text-primary mb-2">$150 <span className="text-lg font-normal text-muted-foreground">/ year</span></div>
+              <div className="inline-flex items-center gap-1.5 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-3 py-1 mb-6">
+                <Lock className="h-3 w-3" /> Charter Members lock this rate for 10 years
+              </div>
               <div className="space-y-3 text-muted-foreground leading-relaxed text-sm">
                 <p>
-                  Designed for Hatteras Island year-round residents and their families. Full access to all member benefits, programs, social events, and regattas — at the rates that reflect your role in keeping this community's sailing heritage alive.
+                  Designed for Hatteras Island year-round residents and their families. Full access to all member benefits, programs, social events, and regattas — at rates that reflect your role as the backbone of this community's sailing heritage.
                 </p>
                 <p>
-                  Hatteras Island locals are the backbone of this organization. This membership is our way of making sure cost is never a barrier to getting on the water.
+                  Hatteras Island locals are the foundation of this organization. This membership is our way of making sure cost is never a barrier to getting on the water.
                 </p>
               </div>
-              <Button asChild size="lg" className="mt-8">
-                <Link href="/contact">Join as a Local Member <ArrowRight className="h-4 w-4 ml-2" /></Link>
-              </Button>
+              <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                <Button asChild size="lg">
+                  <Link href="/contact">Join as a Local Member <ArrowRight className="h-4 w-4 ml-2" /></Link>
+                </Button>
+              </div>
             </div>
             <div className="bg-card border border-border rounded-2xl p-8">
               <h3 className="font-semibold text-foreground mb-5">What's Included</h3>
@@ -206,7 +328,10 @@ export default function Membership() {
                 <Home className="h-4 w-4" /> Non-Resident Property Owner
               </div>
               <h2 className="font-serif text-3xl font-bold mb-2">For NRPO Families</h2>
-              <div className="text-4xl font-bold text-primary mb-6">$500 <span className="text-lg font-normal text-muted-foreground">/ year</span></div>
+              <div className="text-4xl font-bold text-primary mb-2">$500 <span className="text-lg font-normal text-muted-foreground">/ year</span></div>
+              <div className="inline-flex items-center gap-1.5 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-3 py-1 mb-6">
+                <Lock className="h-3 w-3" /> Charter Members lock this rate for 10 years
+              </div>
               <div className="space-y-3 text-muted-foreground leading-relaxed text-sm">
                 <p>
                   You own property on Hatteras Island but don't live here year-round. When you're here — whether for a long weekend or the whole summer — you deserve full access to what the island has to offer on the water.
@@ -215,9 +340,11 @@ export default function Membership() {
                   NRPO membership gives you and your family full member privileges every time you're on-island: member rates on programs, boat rentals, social events, and regatta eligibility.
                 </p>
               </div>
-              <Button asChild size="lg" className="mt-8">
-                <Link href="/contact">Join as an NRPO Member <ArrowRight className="h-4 w-4 ml-2" /></Link>
-              </Button>
+              <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                <Button asChild size="lg">
+                  <Link href="/contact">Join as an NRPO Member <ArrowRight className="h-4 w-4 ml-2" /></Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -231,11 +358,14 @@ export default function Membership() {
               <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-secondary mb-4">
                 <Star className="h-4 w-4 fill-secondary" /> Cape Select Membership
               </div>
-              <h2 className="font-serif text-3xl font-bold mb-2 text-primary-foreground">For Rental Property Owners & Managers</h2>
-              <p className="text-primary-foreground/70 text-sm mb-6">Priced by property size — from $695/year</p>
+              <h2 className="font-serif text-3xl font-bold mb-2 text-primary-foreground">For Rental Property Owners &amp; Managers</h2>
+              <p className="text-primary-foreground/70 text-sm mb-2">Priced by property size — from $695/year</p>
+              <div className="inline-flex items-center gap-1.5 text-xs text-amber-300 bg-amber-900/30 border border-amber-400/30 rounded-full px-3 py-1 mb-6">
+                <Lock className="h-3 w-3" /> Charter Members lock their rate for 3 years
+              </div>
               <div className="space-y-3 text-primary-foreground/80 leading-relaxed text-sm">
                 <p>
-                  Cape Select is a hospitality membership designed for vacation rental property owners and managers on Hatteras Island. It lets you extend full HCS member privileges directly to your guests — turning a sailing club membership into a premium rental amenity.
+                  Cape Select is a hospitality membership for vacation rental property owners and managers on Hatteras Island. It lets you extend full HCS member privileges directly to your guests — turning a sailing club membership into a premium rental amenity.
                 </p>
                 <p>
                   Your guests arrive and immediately have access to everything we offer: sailing lessons, boat rentals, kids programs, on-water social events, birthday parties, weddings, towing, and the kind of local knowledge that turns a good vacation into an unforgettable one.
@@ -244,14 +374,13 @@ export default function Membership() {
                   <strong className="text-primary-foreground">You can't get much closer to the Cape by boat</strong> than where we are in Buxton — and your guests will know it.
                 </p>
               </div>
-              <div className="mt-8 flex flex-col sm:flex-row gap-3">
+              <div className="mt-8">
                 <Button asChild variant="secondary" size="lg">
                   <Link href="/contact">Get Cape Select Pricing <ArrowRight className="h-4 w-4 ml-2" /></Link>
                 </Button>
               </div>
             </div>
             <div className="space-y-6">
-              {/* Benefits */}
               <div className="bg-primary-foreground/10 rounded-2xl p-6">
                 <h3 className="font-semibold text-primary-foreground mb-4">Guest Privileges Include</h3>
                 <ul className="space-y-2.5">
@@ -263,7 +392,6 @@ export default function Membership() {
                   ))}
                 </ul>
               </div>
-              {/* Pricing table */}
               <div className="bg-primary-foreground/10 rounded-2xl overflow-hidden">
                 <div className="px-6 py-4 border-b border-primary-foreground/20">
                   <h3 className="font-semibold text-primary-foreground">Annual Pricing by Property Size</h3>
@@ -355,7 +483,7 @@ export default function Membership() {
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="font-serif text-3xl font-bold mb-4">Ready to Join?</h2>
           <p className="text-muted-foreground leading-relaxed mb-8">
-            Contact us to set up your membership, get a Cape Select quote for your rental property, or apply for a youth sailing scholarship.
+            Contact us to claim Charter Member status, set up your payment plan, get a Cape Select quote, or apply for a youth sailing scholarship.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg">
