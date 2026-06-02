@@ -171,13 +171,23 @@ export default function About() {
                 Our board of directors is composed of community members from Buxton, Avon, and the surrounding Hatteras Island area. All board positions are volunteer, with no compensation.
               </p>
               <div className="bg-muted/50 rounded-xl border border-border px-5 py-4">
-                <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">Board Leadership</div>
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-serif font-bold text-lg shrink-0">J</div>
-                  <div>
-                    <div className="font-semibold text-foreground">Jay Phillips</div>
-                    <div className="text-sm text-muted-foreground">Chairman of the Board of Directors</div>
-                  </div>
+                <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">Board of Directors</div>
+                <div className="space-y-3">
+                  {[
+                    { name: "Jay Phillips", role: "Chairman" },
+                    { name: "Jeff Waters", role: "Director" },
+                    { name: "Billy Moseley", role: "Director" },
+                    { name: "Brent Smith", role: "Director" },
+                    { name: "Tamir Ben Menachem", role: "Director" },
+                  ].map((m) => (
+                    <div key={m.name} className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-serif font-bold text-sm shrink-0">{m.name.charAt(0)}</div>
+                      <div>
+                        <div className="font-semibold text-foreground text-sm">{m.name}</div>
+                        <div className="text-xs text-muted-foreground">{m.role}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
               <p>

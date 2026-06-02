@@ -117,9 +117,9 @@ export default function Impact() {
             <div className="space-y-5">
               <div className="bg-primary/5 border border-primary/15 rounded-2xl p-6">
                 <blockquote className="font-serif text-lg text-foreground leading-relaxed italic">
-                  "We believe a life spent on the sea is a beautiful way to live — and we are committed to building the bridge to get local youth there."
+                  "Hatteras Island has one of the finest sailing environments on the East Coast. Our job is to make sure every kid here knows it — and has the skills to belong to it."
                 </blockquote>
-                <div className="mt-4 text-sm text-muted-foreground font-medium">— Meg Phillips, Program Director</div>
+                <div className="mt-4 text-sm text-muted-foreground font-medium">— Jay Phillips, Chairman of the Board of Directors</div>
               </div>
               <div className="bg-muted/50 rounded-xl p-5 text-sm text-muted-foreground space-y-2">
                 <div className="font-semibold text-foreground">Organizational Details</div>
@@ -127,12 +127,42 @@ export default function Impact() {
                 <div>Founded: 2020 · Buxton, NC (Outer Banks)</div>
                 <div>US Sailing Certified Organizational Member</div>
                 <div>
+                  <a href="https://www.youtube.com/watch?v=MIBwuwJyvuM" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    Who We Are — Introduction Video →
+                  </a>
+                </div>
+                <div>
                   <a href="https://www.youtube.com/watch?v=r6D-feGa2Mo" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                     Watch our 2024 Impact Video →
                   </a>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Board of Directors */}
+      <section className="py-16 px-6 border-b border-border">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-serif text-2xl font-bold mb-2">Board of Directors</h2>
+          <p className="text-muted-foreground text-sm mb-8">Hatteras Community Sailing is governed by a volunteer board of community members. All board positions are uncompensated.</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+            {[
+              { name: "Jay Phillips", role: "Chairman" },
+              { name: "Jeff Waters", role: "Director" },
+              { name: "Billy Moseley", role: "Director" },
+              { name: "Brent Smith", role: "Director" },
+              { name: "Tamir Ben Menachem", role: "Director" },
+            ].map((member) => (
+              <div key={member.name} className="bg-card border border-border rounded-xl p-4 text-center">
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-serif font-bold text-lg mx-auto mb-3">
+                  {member.name.charAt(0)}
+                </div>
+                <div className="font-semibold text-sm text-foreground leading-snug">{member.name}</div>
+                <div className="text-xs text-muted-foreground mt-1">{member.role}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -173,8 +203,8 @@ export default function Impact() {
             {[
               {
                 icon: <Trophy className="h-5 w-5 text-primary" />,
-                title: "Lighthouse Regatta — Sarah Grand Prix Nomination",
-                body: "Our 2024 fall Lighthouse Regatta was nominated as a Sarah Grand Prix event, drawing competitive sailors from North Carolina and Georgia — even as the region dealt with the impact of Hurricane Helene. A testament to the dedication of our sailing community.",
+                title: "Lighthouse Regatta — SAYRA Grand Prix Nomination",
+                body: "Our 2024 fall Lighthouse Regatta was nominated as a SAYRA (South Atlantic Yacht Racing Association) Grand Prix event, drawing competitive sailors from North Carolina and Georgia — even as the region dealt with the impact of Hurricane Helene. A testament to the dedication of our sailing community.",
               },
               {
                 icon: <GraduationCap className="h-5 w-5 text-primary" />,
@@ -220,7 +250,7 @@ export default function Impact() {
             </div>
             <div className="bg-primary-foreground/10 rounded-xl p-6 text-left">
               <div className="font-serif text-lg font-bold mb-2">Lighthouse Regatta</div>
-              <div className="text-primary-foreground/70 text-sm">Fall regatta · 2024 Sarah Grand Prix nominated</div>
+              <div className="text-primary-foreground/70 text-sm">Fall regatta · 2024 SAYRA Grand Prix nominated</div>
             </div>
           </div>
         </div>
