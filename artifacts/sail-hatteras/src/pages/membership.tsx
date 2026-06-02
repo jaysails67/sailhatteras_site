@@ -16,9 +16,9 @@ const memberBenefits = [
 
 const tiers = [
   {
-    name: "Locals Only Family",
+    name: "Local Resident Membership",
     badge: "Year-Round Residents",
-    price: "Contact us",
+    price: "$150 / year",
     description: "For Hatteras Island year-round residents and their families. Full access to all member benefits, programs, social events, and regattas.",
     highlights: [
       "Adult Fun Sail: member rate ($95 vs $250)",
@@ -174,9 +174,12 @@ export default function Membership() {
                   {tier.featured && <Star className="h-3.5 w-3.5 fill-secondary" />}
                   {tier.badge}
                 </div>
-                <h3 className={`font-serif text-xl font-bold mb-4 ${tier.featured ? "text-primary-foreground" : "text-foreground"}`}>
+                <h3 className={`font-serif text-xl font-bold mb-1 ${tier.featured ? "text-primary-foreground" : "text-foreground"}`}>
                   {tier.name}
                 </h3>
+                <div className={`text-2xl font-bold mb-4 ${tier.featured ? "text-secondary" : "text-primary"}`}>
+                  {tier.price}
+                </div>
                 <p className={`text-sm leading-relaxed mb-6 ${tier.featured ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
                   {tier.description}
                 </p>
