@@ -139,7 +139,8 @@ export default function TripDetail() {
 
   const isLearnTrip = trip?.category === "learn";
   const skipSessionStep = trip?.slug === "adult-fun-sail";
-  const useSessionStep = isLearnTrip && hasVessels && !skipSessionStep;
+  const isAdultLearnSail = trip?.slug === "adult-sailing-program";
+  const useSessionStep = isLearnTrip && hasVessels && !skipSessionStep && !isAdultLearnSail;
   const isSAISA = selectedVessel?.name?.toLowerCase().includes("saisa") ?? false;
 
   // Session options differ by class - memoized to prevent stale closure
@@ -162,8 +163,10 @@ export default function TripDetail() {
   const learnDate    = sessionOptions.find(o => o.value === selectedSession)?.date ?? "";
 
   const vesselStepLabel = isLearnTrip ? "Choose Class" : "Choose Vessel";
-  const totalSteps = useSessionStep ? 4 : (skipSessionStep && hasVessels) ? 3 : hasVessels ? 4 : 3;
-  const stepLabels = useSessionStep
+  const totalSteps = isAdultLearnSail ? 3 : useSessionStep ? 4 : (skipSessionStep && hasVessels) ? 3 : hasVessels ? 4 : 3;
+  const stepLabels = isAdultLearnSail
+    ? ["Choose Month", "Your Details", "Review"]
+    : useSessionStep
     ? [vesselStepLabel, "Choose Session", "Your Details", "Review"]
     : (skipSessionStep && hasVessels)
     ? [vesselStepLabel, "Your Details", "Review"]
@@ -171,8 +174,8 @@ export default function TripDetail() {
     ? [vesselStepLabel, "Select Date", "Your Details", "Review"]
     : ["Select Date", "Your Details", "Review"];
   const sessionStep  = 2; // only used for non-skipped learn trips
-  const detailsStep  = useSessionStep ? 3 : (skipSessionStep && hasVessels) ? 2 : hasVessels ? 3 : 2;
-  const reviewStep   = useSessionStep ? 4 : (skipSessionStep && hasVessels) ? 3 : hasVessels ? 4 : 3;
+  const detailsStep  = isAdultLearnSail ? 2 : useSessionStep ? 3 : (skipSessionStep && hasVessels) ? 2 : hasVessels ? 3 : 2;
+  const reviewStep   = isAdultLearnSail ? 3 : useSessionStep ? 4 : (skipSessionStep && hasVessels) ? 3 : hasVessels ? 4 : 3;
 
   const isFlat = trip?.pricingModel === "flat";
 
@@ -196,8 +199,12 @@ export default function TripDetail() {
       toast({ title: "Please fill in your name and email", variant: "destructive" });
       return;
     }
-    if (!isLearnTrip && !selectedDate) {
+    if (!isLearnTrip && !isAdultLearnSail && !selectedDate) {
       toast({ title: "Please select a date", variant: "destructive" });
+      return;
+    }
+    if (isAdultLearnSail && !selectedSession) {
+      toast({ title: "Please select a month", variant: "destructive" });
       return;
     }
     // For adult-fun-sail the vessel name encodes the month (June/July/August Session)
@@ -207,7 +214,11 @@ export default function TripDetail() {
       : selectedVessel.name.toLowerCase().includes("august") ? "2026-08-01"
       : ""
       : "";
-    const bookingDateStr = skipSessionStep ? vesselMonthDate : isLearnTrip ? learnDate : selectedDate;
+    const adultLearnDate = selectedSession === "june2026" ? "2026-06-01"
+      : selectedSession === "july2026" ? "2026-07-01"
+      : selectedSession === "august2026" ? "2026-08-01"
+      : "";
+    const bookingDateStr = isAdultLearnSail ? adultLearnDate : skipSessionStep ? vesselMonthDate : isLearnTrip ? learnDate : selectedDate;
     enroll.mutate(
       {
         data: {
@@ -461,8 +472,16 @@ export default function TripDetail() {
                     )}
                   </div>
                   <div className="text-primary-foreground/70 text-sm mt-1">
-                    {selectedVessel ? `${selectedVessel.name}` : (trip.pricingNote ?? "per person")}
+                    {isAdultLearnSail
+                      ? "Non-member pricing. HCS members receive a discount — membership details coming soon."
+                      : selectedVessel ? `${selectedVessel.name}` : (trip.pricingNote ?? "per person")}
                   </div>
+                  {isAdultLearnSail && (
+                    <div className="mt-2 text-xs text-primary-foreground/60">
+                      Members pay <span className="font-semibold text-primary-foreground">$95 / session</span> — save $155.{" "}
+                      <Link href="/membership" className="underline text-primary-foreground/80 hover:text-primary-foreground">Learn about membership →</Link>
+                    </div>
+                  )}
                 </div>
                 {selectedVessel && (
                   <button
@@ -556,8 +575,54 @@ export default function TripDetail() {
                 <span className="ml-1">{stepLabels[step - 1]}</span>
               </div>}
 
+              {/* ── Step 1: Month Picker (adult-sailing-program only) ── */}
+              {!enrolled && isAdultLearnSail && step === 1 && (
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Select the month that works best for you. Sessions run weekly through the month.
+                  </p>
+                  <div className="space-y-2">
+                    {[
+                      { label: "June 2026", sub: "Sessions begin June 2", value: "june2026", date: "2026-06-01" },
+                      { label: "July 2026", sub: "Sessions begin July 7", value: "july2026", date: "2026-07-01" },
+                      { label: "August 2026", sub: "Sessions begin August 4", value: "august2026", date: "2026-08-01" },
+                    ].map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setSelectedSession(opt.value)}
+                        className={`w-full text-left rounded-lg border px-4 py-3 transition-colors ${
+                          selectedSession === opt.value
+                            ? "border-primary bg-primary/5 text-foreground"
+                            : "border-input bg-background hover:bg-muted/50"
+                        }`}
+                      >
+                        <div className="font-medium text-sm">{opt.label}</div>
+                        <div className="text-xs text-muted-foreground mt-0.5">{opt.sub}</div>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-xs text-muted-foreground space-y-1">
+                    <div className="font-semibold text-foreground">HCS Members pay $95 / session</div>
+                    <div>
+                      Not a member yet?{" "}
+                      <Link href="/membership" className="text-primary underline hover:no-underline">
+                        Learn about membership ($150/year) →
+                      </Link>
+                    </div>
+                  </div>
+                  <Button
+                    className="w-full"
+                    size="lg"
+                    disabled={!selectedSession}
+                    onClick={() => setStep(detailsStep)}
+                  >
+                    Continue
+                  </Button>
+                </div>
+              )}
+
               {/* ── Step 1: Vessel Picker (only if vessels available) ── */}
-              {!enrolled && hasVessels && step === 1 && (
+              {!enrolled && !isAdultLearnSail && hasVessels && step === 1 && (
                 <div className="space-y-3">
                   <p className="text-sm text-muted-foreground">
                     {isLearnTrip
@@ -824,7 +889,7 @@ export default function TripDetail() {
                     </div>
                   </div>
                   <div className="flex gap-3">
-                    <Button variant="outline" className="flex-1" onClick={() => setStep(useSessionStep ? sessionStep : (!isLearnTrip && hasVessels) ? 2 : 1)}>Back</Button>
+                    <Button variant="outline" className="flex-1" onClick={() => setStep(isAdultLearnSail ? 1 : useSessionStep ? sessionStep : (!isLearnTrip && hasVessels) ? 2 : 1)}>Back</Button>
                     <Button className="flex-1" onClick={() => setStep(reviewStep)} disabled={!form.name || !form.email} data-testid="button-review">Review</Button>
                   </div>
                 </div>
@@ -839,10 +904,13 @@ export default function TripDetail() {
                     {selectedVessel && (
                       <div className="flex justify-between"><span className="text-muted-foreground">Class</span><span className="font-medium">{selectedVessel.name}</span></div>
                     )}
-                    {isLearnTrip && sessionLabel && (
+                    {isAdultLearnSail && selectedSession && (
+                      <div className="flex justify-between"><span className="text-muted-foreground">Month</span><span className="font-medium">{selectedSession === "june2026" ? "June 2026" : selectedSession === "july2026" ? "July 2026" : "August 2026"}</span></div>
+                    )}
+                    {isLearnTrip && !isAdultLearnSail && sessionLabel && (
                       <div className="flex justify-between"><span className="text-muted-foreground">Session</span><span className="font-medium">{sessionLabel}</span></div>
                     )}
-                    {!isLearnTrip && <div className="flex justify-between"><span className="text-muted-foreground">Date</span><span className="font-medium">{selectedDate}</span></div>}
+                    {!isLearnTrip && !isAdultLearnSail && <div className="flex justify-between"><span className="text-muted-foreground">Date</span><span className="font-medium">{selectedDate}</span></div>}
                     {!isLearnTrip && <div className="flex justify-between"><span className="text-muted-foreground">Participants</span><span className="font-medium">{passengers}</span></div>}
                     <Separator className="my-2" />
                     <div className="flex justify-between"><span className="text-muted-foreground">Name</span><span className="font-medium">{form.name}</span></div>

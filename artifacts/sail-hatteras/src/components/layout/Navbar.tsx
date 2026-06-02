@@ -55,6 +55,15 @@ export function Navbar() {
             <Button
               asChild
               size="default"
+              variant="outline"
+              className="hidden md:inline-flex font-semibold tracking-wide border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+              data-testid="button-donate"
+            >
+              <Link href="/support">Donate</Link>
+            </Button>
+            <Button
+              asChild
+              size="default"
               className="hidden md:inline-flex bg-secondary text-secondary-foreground hover:bg-secondary/90 font-bold tracking-wide"
               data-testid="button-book-sail"
             >
@@ -107,7 +116,10 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
-          <Button asChild className="mt-3 w-full" onClick={() => setIsMobileMenuOpen(false)}>
+          <Button asChild variant="outline" className="mt-3 w-full border-primary text-primary" onClick={() => setIsMobileMenuOpen(false)}>
+            <Link href="/support">Donate</Link>
+          </Button>
+          <Button asChild className="mt-2 w-full" onClick={() => setIsMobileMenuOpen(false)}>
             <Link href="/trips">Book a Community Program</Link>
           </Button>
         </div>

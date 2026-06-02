@@ -38,6 +38,8 @@ export function Footer() {
             <h4 className="font-semibold mb-4 text-white">Organization</h4>
             <ul className="space-y-3 text-sm text-primary-foreground/70">
               <li><Link href="/about" className="hover:text-white transition-colors">Our Mission</Link></li>
+              <li><Link href="/impact" className="hover:text-white transition-colors">2024 Impact Report</Link></li>
+              <li><Link href="/volunteer" className="hover:text-white transition-colors">Volunteer</Link></li>
               <li><Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
               <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
               <li><Link href="/admin" className="hover:text-white transition-colors">Staff Login</Link></li>
@@ -63,18 +65,23 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-primary-foreground/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-primary-foreground/50">
-          <div className="flex flex-col md:flex-row gap-2 md:gap-6 items-center">
-            <p>© {new Date().getFullYear()} Hatteras Community Sailing. All rights reserved.</p>
-            <p className="flex items-center gap-1">
-              <Heart className="h-3 w-3 fill-current text-primary-foreground/40" />
-              501(c)3 Tax-Exempt Nonprofit — EIN: 85-2684924
-            </p>
-          </div>
-          <div className="flex gap-4">
-            <Link href="/privacy" className="hover:text-primary-foreground/80">Privacy Policy</Link>
-            <Link href="/sitemap" className="hover:text-primary-foreground/80">Sitemap</Link>
-            <Link href="/about" className="hover:text-primary-foreground/80">Our Mission</Link>
+        <div className="mt-16 pt-8 border-t border-primary-foreground/10 space-y-4 text-xs text-primary-foreground/50">
+          <p className="text-primary-foreground/40 leading-relaxed max-w-3xl">
+            <strong className="text-primary-foreground/60">Non-Discrimination Policy:</strong> Hatteras Community Sailing does not discriminate on the basis of race, color, religion, sex, national origin, age, disability, or any other characteristic protected by applicable law. All programs are open to every member of the community. No child is turned away for inability to pay.
+          </p>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-6 items-center">
+              <p>© {new Date().getFullYear()} Hatteras Community Sailing. All rights reserved.</p>
+              <p className="flex items-center gap-1">
+                <Heart className="h-3 w-3 fill-current text-primary-foreground/40" />
+                501(c)3 Tax-Exempt Nonprofit — EIN: 85-2684924
+              </p>
+            </div>
+            <div className="flex gap-4">
+              <Link href="/privacy" className="hover:text-primary-foreground/80">Privacy Policy</Link>
+              <Link href="/sitemap" className="hover:text-primary-foreground/80">Sitemap</Link>
+              <Link href="/about" className="hover:text-primary-foreground/80">Our Mission</Link>
+            </div>
           </div>
         </div>
       </div>

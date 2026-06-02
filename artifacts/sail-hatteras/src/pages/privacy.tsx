@@ -111,6 +111,19 @@ export default function Privacy() {
             </div>
 
             <div>
+              <h2 className="font-serif text-2xl font-bold text-foreground mb-3">Non-Discrimination Policy</h2>
+              <p>
+                Hatteras Community Sailing is committed to providing an inclusive, welcoming environment for all members of our community. <strong className="text-foreground">We do not discriminate on the basis of race, color, religion, sex, national origin, age, disability, sexual orientation, gender identity, or any other characteristic protected by applicable law.</strong>
+              </p>
+              <p className="mt-3">
+                All of our programs — youth sailing, adult instruction, regattas, and community events — are open to every member of the community regardless of background or identity. No child is turned away for inability to pay. Financial assistance is available; please contact us to learn more.
+              </p>
+              <p className="mt-3">
+                This non-discrimination commitment applies to program participation, volunteer opportunities, membership, employment, and all organizational activities.
+              </p>
+            </div>
+
+            <div>
               <h2 className="font-serif text-2xl font-bold text-foreground mb-3">Contact Us</h2>
               <p>
                 If you have questions about this Privacy Policy or your personal information, please contact us:
