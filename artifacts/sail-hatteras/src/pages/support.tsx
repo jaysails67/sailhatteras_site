@@ -153,6 +153,23 @@ export default function Support() {
         </div>
       </section>
 
+      {/* Donorbox Widget */}
+      <section id="donate" className="py-16 px-6 bg-muted/30 border-y border-border">
+        <div className="max-w-2xl mx-auto text-center">
+          <h2 className="font-serif text-3xl font-bold mb-3">Donate Now</h2>
+          <p className="text-muted-foreground mb-8 leading-relaxed">
+            One-time or recurring — every gift goes directly to youth programs and keeping our fleet on the water.
+            Donations are tax-deductible. EIN: 85-2684924.
+          </p>
+          {/* @ts-expect-error — Donorbox custom element */}
+          <dbox-widget
+            campaign="youth-maritime-scholarship-fund"
+            type="donation_form"
+            enable-auto-scroll="true"
+          />
+        </div>
+      </section>
+
       {/* Ways to Support */}
       <section className="py-20 px-6 bg-muted/30 border-y border-border">
         <div className="max-w-5xl mx-auto">
@@ -202,11 +219,18 @@ export default function Support() {
               <p className="text-primary-foreground/80 leading-relaxed mb-6">
                 We are at the foot of Hatteras Lighthouse and are committed to ensuring access to our waters is encouraged and inviting. Our current fleet can offer all of this — but needs your support to remain available to this special community and its visitors. Sponsors are acknowledged with a banner on our website, logo on event t-shirts, and recognition across our social channels. Contact us to discuss the right sponsorship level for your business or family.
               </p>
-              <Button asChild variant="secondary" size="lg">
-                <Link href="/contact">
-                  Sponsor Youth Sailing <ArrowRight className="h-4 w-4 ml-2" />
-                </Link>
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button asChild variant="secondary" size="lg">
+                  <a href="#donate">
+                    Donate Now <ArrowRight className="h-4 w-4 ml-2" />
+                  </a>
+                </Button>
+                <Button asChild variant="outline" size="lg" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+                  <Link href="/contact">
+                    Discuss Sponsorship
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
