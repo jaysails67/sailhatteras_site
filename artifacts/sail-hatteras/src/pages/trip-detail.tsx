@@ -147,7 +147,6 @@ export default function TripDetail() {
 
   const capeExplorerWeeks = [
     { label: "Week of June 8",  sub: "Mon June 8 – Fri June 12",   value: "week-jun-8",  date: "2026-06-08" },
-    { label: "Week of June 15", sub: "Mon June 15 – Fri June 19",  value: "week-jun-15", date: "2026-06-15" },
     { label: "Week of June 22", sub: "Mon June 22 – Fri June 26",  value: "week-jun-22", date: "2026-06-22" },
     { label: "Week of July 6",  sub: "Mon July 6 – Fri July 10",   value: "week-jul-6",  date: "2026-07-06" },
     { label: "Week of July 13", sub: "Mon July 13 – Fri July 17",  value: "week-jul-13", date: "2026-07-13" },
