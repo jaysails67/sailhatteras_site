@@ -191,13 +191,16 @@ export default function Support() {
                 Sponsor Youth Sailing
               </div>
               <h2 className="font-serif text-2xl md:text-3xl font-bold mb-4">
-                Help Build the Next Generation of Hatteras Sailors
+                Help Build the Next Generation of Island Watermen
               </h2>
               <p className="text-primary-foreground/80 leading-relaxed mb-4">
-                Hatteras Community Sailing offers a wide variety of youth sponsorship opportunities. We need support to establish a sustainable future for our US Sailing juniors program — from the youngest beach cat sailors to our SAISA high school team.
+                Hatteras Islanders of generations past were as resilient to their challenging environment as the windblown cedar and live oak canopies along our shores. Changing times and modern society have connected Hatteras with the mainland so seamlessly that this unique resiliency and character can seem like a bygone era. But Hatteras has always been defined by the sea — and always will be, long after we are gone.
+              </p>
+              <p className="text-primary-foreground/80 leading-relaxed mb-4">
+                Help us keep active pathways thriving for nurturing a lifelong passion for the sea in this unique and special community. Sailing is an excellent on-ramp for youth to discover one of nature's most exciting playgrounds. For our participants, this reaches from the western shores of the Pamlico to the Gulf Stream at Diamond Shoals — and from Southport to Cape Henry — where sailing is as inherent as surfing, kiting, fishing, wreck diving, commercial fishing, and exploring the National Seashore.
               </p>
               <p className="text-primary-foreground/80 leading-relaxed mb-6">
-                Sponsors are acknowledged with a banner on our website, logo on event t-shirts, and recognition across our social channels. Contact us to discuss the right sponsorship level for your business or family.
+                We are at the foot of Hatteras Lighthouse and are committed to ensuring access to our waters is encouraged and inviting. Our current fleet can offer all of this — but needs your support to remain available to this special community and its visitors. Sponsors are acknowledged with a banner on our website, logo on event t-shirts, and recognition across our social channels. Contact us to discuss the right sponsorship level for your business or family.
               </p>
               <Button asChild variant="secondary" size="lg">
                 <Link href="/contact">
