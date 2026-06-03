@@ -102,6 +102,7 @@ export default function TripDetail() {
   const [step, setStep] = useState(1);
   const [selectedVessel, setSelectedVessel] = useState<ShVessel | null>(null);
   const [selectedSession, setSelectedSession] = useState("");
+  const [selectedTrainingOption, setSelectedTrainingOption] = useState<{ label: string; price: string; priceCents: number; value: string } | null>(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [vacationStart, setVacationStart] = useState("");
@@ -140,7 +141,27 @@ export default function TripDetail() {
   const isLearnTrip = trip?.category === "learn";
   const skipSessionStep = trip?.slug === "adult-fun-sail";
   const isAdultLearnSail = trip?.slug === "adult-sailing-program";
-  const useSessionStep = isLearnTrip && hasVessels && !skipSessionStep && !isAdultLearnSail;
+  const isCapeExplorer = trip?.slug === "cape-explorer-camp";
+  const isAdultTraining = trip?.slug === "adult-training-programs";
+  const useSessionStep = isLearnTrip && hasVessels && !skipSessionStep && !isAdultLearnSail && !isCapeExplorer;
+
+  const capeExplorerWeeks = [
+    { label: "Week of June 8",  sub: "Mon June 8 – Fri June 12",   value: "week-jun-8",  date: "2026-06-08" },
+    { label: "Week of June 22", sub: "Mon June 22 – Fri June 26",  value: "week-jun-22", date: "2026-06-22" },
+    { label: "Week of July 6",  sub: "Mon July 6 – Fri July 10",   value: "week-jul-6",  date: "2026-07-06" },
+    { label: "Week of July 13", sub: "Mon July 13 – Fri July 17",  value: "week-jul-13", date: "2026-07-13" },
+    { label: "Week of July 20", sub: "Mon July 20 – Fri July 24",  value: "week-jul-20", date: "2026-07-20" },
+    { label: "Week of July 27", sub: "Mon July 27 – Fri July 31",  value: "week-jul-27", date: "2026-07-27" },
+    { label: "Week of Aug 3",   sub: "Mon Aug 3 – Fri Aug 7",      value: "week-aug-3",  date: "2026-08-03" },
+    { label: "Week of Aug 10",  sub: "Mon Aug 10 – Fri Aug 14",    value: "week-aug-10", date: "2026-08-10" },
+    { label: "Week of Aug 17",  sub: "Mon Aug 17 – Fri Aug 21",    value: "week-aug-17", date: "2026-08-17" },
+  ];
+
+  const adultTrainingOptions = [
+    { label: "Private 4-Hour Lesson",       price: "$495 / person", priceCents: 49500, value: "private-4h"       },
+    { label: "Private Full Day Lesson",      price: "$895 / person", priceCents: 89500, value: "private-full-day" },
+    { label: "3 to 5 Day Training Program",  price: "Contact us",    priceCents: 0,     value: "contact"          },
+  ];
   const isSAISA = selectedVessel?.name?.toLowerCase().includes("saisa") ?? false;
 
   // Session options differ by class - memoized to prevent stale closure
@@ -163,9 +184,13 @@ export default function TripDetail() {
   const learnDate    = sessionOptions.find(o => o.value === selectedSession)?.date ?? "";
 
   const vesselStepLabel = isLearnTrip ? "Choose Class" : "Choose Vessel";
-  const totalSteps = isAdultLearnSail ? 3 : useSessionStep ? 4 : (skipSessionStep && hasVessels) ? 3 : hasVessels ? 4 : 3;
+  const totalSteps = (isAdultLearnSail || isCapeExplorer) ? 3 : isAdultTraining ? 4 : useSessionStep ? 4 : (skipSessionStep && hasVessels) ? 3 : hasVessels ? 4 : 3;
   const stepLabels = isAdultLearnSail
     ? ["Choose Month", "Your Details", "Review"]
+    : isCapeExplorer
+    ? ["Choose Week", "Your Details", "Review"]
+    : isAdultTraining
+    ? ["Choose Program", "Select Date", "Your Details", "Review"]
     : useSessionStep
     ? [vesselStepLabel, "Choose Session", "Your Details", "Review"]
     : (skipSessionStep && hasVessels)
@@ -174,13 +199,15 @@ export default function TripDetail() {
     ? [vesselStepLabel, "Select Date", "Your Details", "Review"]
     : ["Select Date", "Your Details", "Review"];
   const sessionStep  = 2; // only used for non-skipped learn trips
-  const detailsStep  = isAdultLearnSail ? 2 : useSessionStep ? 3 : (skipSessionStep && hasVessels) ? 2 : hasVessels ? 3 : 2;
-  const reviewStep   = isAdultLearnSail ? 3 : useSessionStep ? 4 : (skipSessionStep && hasVessels) ? 3 : hasVessels ? 4 : 3;
+  const detailsStep  = (isAdultLearnSail || isCapeExplorer) ? 2 : isAdultTraining ? 3 : useSessionStep ? 3 : (skipSessionStep && hasVessels) ? 2 : hasVessels ? 3 : 2;
+  const reviewStep   = (isAdultLearnSail || isCapeExplorer) ? 3 : isAdultTraining ? 4 : useSessionStep ? 4 : (skipSessionStep && hasVessels) ? 3 : hasVessels ? 4 : 3;
 
   const isFlat = trip?.pricingModel === "flat";
 
   // Effective price = selected vessel price or trip base price
-  const effectivePriceCents = selectedVessel
+  const effectivePriceCents = isAdultTraining && selectedTrainingOption
+    ? selectedTrainingOption.priceCents
+    : selectedVessel
     ? selectedVessel.priceCents
     : trip?.priceMin ?? 0;
   const effectivePriceDisplay = selectedVessel
@@ -199,12 +226,24 @@ export default function TripDetail() {
       toast({ title: "Please fill in your name and email", variant: "destructive" });
       return;
     }
-    if (!isLearnTrip && !isAdultLearnSail && !selectedDate) {
+    if (!isLearnTrip && !isAdultLearnSail && !isCapeExplorer && !isAdultTraining && !selectedDate) {
+      toast({ title: "Please select a date", variant: "destructive" });
+      return;
+    }
+    if (isAdultTraining && !selectedDate) {
       toast({ title: "Please select a date", variant: "destructive" });
       return;
     }
     if (isAdultLearnSail && !selectedSession) {
       toast({ title: "Please select a month", variant: "destructive" });
+      return;
+    }
+    if (isCapeExplorer && !selectedSession) {
+      toast({ title: "Please select a week", variant: "destructive" });
+      return;
+    }
+    if (isAdultTraining && !selectedTrainingOption) {
+      toast({ title: "Please select a program type", variant: "destructive" });
       return;
     }
     // For adult-fun-sail the vessel name encodes the month (June/July/August Session)
@@ -214,11 +253,12 @@ export default function TripDetail() {
       : selectedVessel.name.toLowerCase().includes("august") ? "2026-08-01"
       : ""
       : "";
+    const capeExplorerDate = capeExplorerWeeks.find(w => w.value === selectedSession)?.date ?? "";
     const adultLearnDate = selectedSession === "june2026" ? "2026-06-01"
       : selectedSession === "july2026" ? "2026-07-01"
       : selectedSession === "august2026" ? "2026-08-01"
       : "";
-    const bookingDateStr = isAdultLearnSail ? adultLearnDate : skipSessionStep ? vesselMonthDate : isLearnTrip ? learnDate : selectedDate;
+    const bookingDateStr = isCapeExplorer ? capeExplorerDate : isAdultLearnSail ? adultLearnDate : skipSessionStep ? vesselMonthDate : isLearnTrip ? learnDate : selectedDate;
     enroll.mutate(
       {
         data: {
@@ -474,6 +514,8 @@ export default function TripDetail() {
                   <div className="text-primary-foreground/70 text-sm mt-1">
                     {isAdultLearnSail
                       ? "Non-member pricing. HCS members receive a discount — membership details coming soon."
+                      : isAdultTraining
+                      ? selectedTrainingOption ? selectedTrainingOption.label : "Select a program below"
                       : selectedVessel ? `${selectedVessel.name}` : (trip.pricingNote ?? "per person")}
                   </div>
                   {isAdultLearnSail && (
@@ -621,8 +663,151 @@ export default function TripDetail() {
                 </div>
               )}
 
+              {/* ── Step 1: Week Picker (cape-explorer-camp) ── */}
+              {!enrolled && isCapeExplorer && step === 1 && (
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Choose the week that works for your family. Camp runs Monday–Friday, 5 days.
+                  </p>
+                  <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+                    {capeExplorerWeeks.map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setSelectedSession(opt.value)}
+                        className={`w-full text-left rounded-lg border px-4 py-3 transition-colors ${
+                          selectedSession === opt.value
+                            ? "border-primary bg-primary/5 text-foreground"
+                            : "border-input bg-background hover:bg-muted/50"
+                        }`}
+                      >
+                        <div className="font-medium text-sm">{opt.label}</div>
+                        <div className="text-xs text-muted-foreground mt-0.5">{opt.sub}</div>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-xs text-muted-foreground space-y-1">
+                    <div className="font-semibold text-foreground">5-day weekday camp · $500 per child</div>
+                    <div>Includes on-water instruction, safety gear, and use of our fleet. No prior sailing experience required.</div>
+                  </div>
+                  <Button
+                    className="w-full"
+                    size="lg"
+                    disabled={!selectedSession}
+                    onClick={() => setStep(detailsStep)}
+                  >
+                    Continue
+                  </Button>
+                </div>
+              )}
+
+              {/* ── Step 1: Program Picker (adult-training-programs) ── */}
+              {!enrolled && isAdultTraining && step === 1 && (
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Choose the program that fits your goals and schedule.
+                  </p>
+                  <div className="space-y-3">
+                    {adultTrainingOptions.map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => {
+                          if (opt.value === "contact") {
+                            navigate("/contact");
+                          } else {
+                            setSelectedTrainingOption(opt);
+                            setStep(2);
+                          }
+                        }}
+                        className={`w-full text-left rounded-xl border-2 transition-all p-4 flex items-center justify-between gap-3 group hover:border-primary/60 ${
+                          selectedTrainingOption?.value === opt.value
+                            ? "border-primary bg-primary/5 shadow-sm"
+                            : "border-border bg-card hover:bg-muted/30"
+                        }`}
+                      >
+                        <div>
+                          <div className={`font-bold text-base leading-tight ${selectedTrainingOption?.value === opt.value ? "text-primary" : "text-foreground"}`}>
+                            {opt.label}
+                          </div>
+                          {opt.value === "contact" && (
+                            <div className="text-xs text-muted-foreground mt-1">Multi-day customized training — we'll build a schedule for you</div>
+                          )}
+                        </div>
+                        <div className={`shrink-0 text-right font-semibold text-sm ${opt.value === "contact" ? "text-primary" : selectedTrainingOption?.value === opt.value ? "text-primary" : "text-foreground"}`}>
+                          {opt.price}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground text-center">
+                    US Sailing certified instructors · All experience levels welcome
+                  </p>
+                </div>
+              )}
+
+              {/* ── Step 2: Date Picker (adult-training-programs) ── */}
+              {!enrolled && isAdultTraining && step === 2 && (
+                <div className="space-y-4">
+                  {selectedTrainingOption && (
+                    <div className="bg-primary/5 rounded-lg px-3 py-2 flex items-center justify-between text-sm">
+                      <span className="font-medium text-foreground">{selectedTrainingOption.label}</span>
+                      <span className="text-primary font-semibold text-xs">{selectedTrainingOption.price}</span>
+                    </div>
+                  )}
+                  <div className="space-y-2">
+                    <Label>Preferred Date <span className="text-destructive">*</span></Label>
+                    <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+                      <PopoverTrigger asChild>
+                        <button
+                          className={`w-full flex items-center gap-2 rounded-md border px-3 py-2 text-sm text-left transition-colors focus:outline-none focus:ring-2 focus:ring-ring ${
+                            selectedDate ? "border-input bg-background text-foreground" : "border-input bg-background text-muted-foreground"
+                          }`}
+                        >
+                          <CalendarDays className="h-4 w-4 text-muted-foreground shrink-0" />
+                          <span className="flex-1">{selectedDate ? formatIsoDate(selectedDate) : "Select a date…"}</span>
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start" sideOffset={4}>
+                        <Calendar
+                          mode="single"
+                          selected={isoToDate(selectedDate)}
+                          onSelect={(date) => {
+                            if (date) { setSelectedDate(dateToIso(date)); setDatePickerOpen(false); }
+                          }}
+                          disabled={(date) => {
+                            const today = new Date(); today.setHours(0, 0, 0, 0);
+                            const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
+                            const maxDate = new Date(today); maxDate.setMonth(today.getMonth() + 18);
+                            return date < tomorrow || date > maxDate;
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <p className="text-xs text-muted-foreground">Subject to availability · we'll confirm within 24–48 hrs</p>
+                  </div>
+                  <div className="space-y-2 pt-1">
+                    <Label>Participants</Label>
+                    <div className="flex items-center gap-3">
+                      <button onClick={() => setPassengers(p => Math.max(1, p - 1))} className="h-9 w-9 rounded-md border border-input flex items-center justify-center hover:bg-muted transition-colors font-bold">–</button>
+                      <span className="text-lg font-semibold w-8 text-center">{passengers}</span>
+                      <button onClick={() => setPassengers(p => Math.min(trip.maxPassengers ?? 10, p + 1))} className="h-9 w-9 rounded-md border border-input flex items-center justify-center hover:bg-muted transition-colors font-bold">+</button>
+                      <span className="text-sm text-muted-foreground">/ {trip.maxPassengers} max</span>
+                    </div>
+                    {selectedDate && selectedTrainingOption && (
+                      <div className="text-xs text-right text-muted-foreground">
+                        Subtotal: <span className="font-semibold text-foreground">${((selectedTrainingOption.priceCents * passengers) / 100).toFixed(0)}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex gap-3">
+                    <Button variant="outline" className="flex-1" onClick={() => setStep(1)}>Back</Button>
+                    <Button className="flex-1" size="lg" disabled={!selectedDate} onClick={() => setStep(detailsStep)}>Continue</Button>
+                  </div>
+                </div>
+              )}
+
               {/* ── Step 1: Vessel Picker (only if vessels available) ── */}
-              {!enrolled && !isAdultLearnSail && hasVessels && step === 1 && (
+              {!enrolled && !isAdultLearnSail && !isCapeExplorer && !isAdultTraining && hasVessels && step === 1 && (
                 <div className="space-y-3">
                   <p className="text-sm text-muted-foreground">
                     {isLearnTrip
@@ -700,8 +885,8 @@ export default function TripDetail() {
                 </div>
               )}
 
-              {/* ── Step: Date & Participants (not shown for learn/session trips) ── */}
-              {!enrolled && !isLearnTrip && ((!hasVessels && step === 1) || (hasVessels && step === 2)) && (
+              {/* ── Step: Date & Participants (not shown for learn/session trips or adult-training which has its own date step) ── */}
+              {!enrolled && !isLearnTrip && !isAdultTraining && ((!hasVessels && step === 1) || (hasVessels && step === 2)) && (
                 <div className="space-y-4">
                   {selectedVessel && (
                     <div className="bg-primary/5 rounded-lg px-3 py-2 flex items-center gap-2 text-sm">
@@ -867,8 +1052,14 @@ export default function TripDetail() {
                     {selectedVessel && (
                       <div className="flex justify-between"><span className="text-muted-foreground">{isLearnTrip ? "Program" : "Vessel"}</span><span className="font-medium">{selectedVessel.name}</span></div>
                     )}
-                    {!isLearnTrip && <div className="flex justify-between"><span className="text-muted-foreground">Date</span><span className="font-medium">{selectedDate}</span></div>}
-                    {!isLearnTrip && <div className="flex justify-between"><span className="text-muted-foreground">Participants</span><span className="font-medium">{passengers}</span></div>}
+                    {isCapeExplorer && selectedSession && (
+                      <div className="flex justify-between"><span className="text-muted-foreground">Week</span><span className="font-medium">{capeExplorerWeeks.find(w => w.value === selectedSession)?.sub ?? selectedSession}</span></div>
+                    )}
+                    {isAdultTraining && selectedTrainingOption && (
+                      <div className="flex justify-between"><span className="text-muted-foreground">Program</span><span className="font-medium">{selectedTrainingOption.label}</span></div>
+                    )}
+                    {(!isLearnTrip && !isCapeExplorer) && <div className="flex justify-between"><span className="text-muted-foreground">Date</span><span className="font-medium">{selectedDate}</span></div>}
+                    {(!isLearnTrip && !isCapeExplorer) && <div className="flex justify-between"><span className="text-muted-foreground">Participants</span><span className="font-medium">{passengers}</span></div>}
                   </div>
                   <div className="space-y-3">
                     <div className="space-y-1.5">
@@ -889,7 +1080,7 @@ export default function TripDetail() {
                     </div>
                   </div>
                   <div className="flex gap-3">
-                    <Button variant="outline" className="flex-1" onClick={() => setStep(isAdultLearnSail ? 1 : useSessionStep ? sessionStep : (!isLearnTrip && hasVessels) ? 2 : 1)}>Back</Button>
+                    <Button variant="outline" className="flex-1" onClick={() => setStep(isAdultLearnSail || isCapeExplorer ? 1 : isAdultTraining ? 2 : useSessionStep ? sessionStep : (!isLearnTrip && hasVessels) ? 2 : 1)}>Back</Button>
                     <Button className="flex-1" onClick={() => setStep(reviewStep)} disabled={!form.name || !form.email} data-testid="button-review">Review</Button>
                   </div>
                 </div>
@@ -907,22 +1098,32 @@ export default function TripDetail() {
                     {isAdultLearnSail && selectedSession && (
                       <div className="flex justify-between"><span className="text-muted-foreground">Month</span><span className="font-medium">{selectedSession === "june2026" ? "June 2026" : selectedSession === "july2026" ? "July 2026" : "August 2026"}</span></div>
                     )}
-                    {isLearnTrip && !isAdultLearnSail && sessionLabel && (
+                    {isCapeExplorer && selectedSession && (
+                      <div className="flex justify-between"><span className="text-muted-foreground">Week</span><span className="font-medium">{capeExplorerWeeks.find(w => w.value === selectedSession)?.sub ?? selectedSession}</span></div>
+                    )}
+                    {isAdultTraining && selectedTrainingOption && (
+                      <div className="flex justify-between"><span className="text-muted-foreground">Program</span><span className="font-medium">{selectedTrainingOption.label}</span></div>
+                    )}
+                    {isLearnTrip && !isAdultLearnSail && !isCapeExplorer && sessionLabel && (
                       <div className="flex justify-between"><span className="text-muted-foreground">Session</span><span className="font-medium">{sessionLabel}</span></div>
                     )}
-                    {!isLearnTrip && !isAdultLearnSail && <div className="flex justify-between"><span className="text-muted-foreground">Date</span><span className="font-medium">{selectedDate}</span></div>}
-                    {!isLearnTrip && <div className="flex justify-between"><span className="text-muted-foreground">Participants</span><span className="font-medium">{passengers}</span></div>}
+                    {!isLearnTrip && !isAdultLearnSail && !isCapeExplorer && <div className="flex justify-between"><span className="text-muted-foreground">Date</span><span className="font-medium">{selectedDate}</span></div>}
+                    {!isLearnTrip && !isCapeExplorer && <div className="flex justify-between"><span className="text-muted-foreground">Participants</span><span className="font-medium">{passengers}</span></div>}
                     <Separator className="my-2" />
                     <div className="flex justify-between"><span className="text-muted-foreground">Name</span><span className="font-medium">{form.name}</span></div>
                     <div className="flex justify-between"><span className="text-muted-foreground">Email</span><span className="font-medium text-xs break-all">{form.email}</span></div>
                     {form.phone && <div className="flex justify-between"><span className="text-muted-foreground">Phone</span><span className="font-medium">{form.phone}</span></div>}
                     <Separator className="my-2" />
                     <div className="flex justify-between font-semibold text-base">
-                      <span>Charter Total</span>
-                      <span>${(isLearnTrip ? effectivePriceCents : totalCents) / 100}</span>
+                      <span>{isCapeExplorer ? "Program Fee" : isAdultTraining ? "Subtotal" : "Charter Total"}</span>
+                      <span>${(isCapeExplorer ? effectivePriceCents : isLearnTrip ? effectivePriceCents : totalCents) / 100}</span>
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      {isLearnTrip
+                      {isCapeExplorer
+                        ? `$500 flat · 5-day weekday camp`
+                        : isAdultTraining && selectedTrainingOption
+                        ? `${selectedTrainingOption.price} × ${passengers} person${passengers > 1 ? "s" : ""}`
+                        : isLearnTrip
                         ? `${effectivePriceDisplay} · full 8-week session · 12 classes`
                         : isFlat
                         ? `${effectivePriceDisplay} · private charter · up to ${selectedVessel?.capacity ?? trip.maxPassengers} guests`
