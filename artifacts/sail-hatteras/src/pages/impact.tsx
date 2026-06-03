@@ -101,13 +101,16 @@ export default function Impact() {
               <h2 className="font-serif text-3xl font-bold mb-6">Our Mission</h2>
               <div className="space-y-4 text-muted-foreground leading-relaxed">
                 <p>
-                  Hatteras Community Sailing was founded in 2020 to utilize the underused waters of Pamlico Sound — one of the finest sailing environments on the East Coast, situated where the Gulf Stream meets northern currents at the "graveyard of the Atlantic."
+                  Hatteras Community Sailing was founded during the onset of COVID early in 2020 in the Seaside Village of Avon on Hatteras Island, NC. The Mission: an organization dedicated to nurturing a lifelong passion for seamanship and a deep respect for nature and the sea.
                 </p>
                 <p>
-                  We are the <strong className="text-foreground">only program on the Outer Banks</strong> focused on continuous skill development — taking beginners all the way through to certified instructors and US Coast Guard licensed Merchant Marines.
+                  Programs existed in the region, but only in the form of weekly camps — with no path for ongoing development. With the waters surrounding Cape Hatteras (Pamlico Sound and the Atlantic Gulf Stream) rich and diverse in maritime heritage, it made perfect sense. For six years, Hatteras Community Sailing has been the <strong className="text-foreground">only program on the Outer Banks focused on continuous skill development for all ages.</strong>
                 </p>
                 <p>
-                  As a US Sailing certified organizational member, we use certified instructors to inspire lifelong seamanship and respect for nature in both visitors and residents. <strong className="text-foreground">No child is turned away for inability to pay.</strong>
+                  As a US Sailing Community Sailing Organization, Hatteras Community Sailing has made a real impact. With a <strong className="text-foreground">perfect safety record since inception</strong>, our program has — for the first time in Outer Banks history — produced local youth who are impressing coaches from Florida to New England. We constantly expose our sailors to the highest levels of competition by collaborating with highly established organizations from Annapolis to Charleston.
+                </p>
+                <p>
+                  We are truly a <strong className="text-foreground">Community Sailing Program</strong>, here for island youth. <strong className="text-foreground">No child is turned away for inability to pay.</strong>
                 </p>
               </div>
               <Button asChild className="mt-8" size="lg">
