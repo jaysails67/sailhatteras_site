@@ -461,7 +461,7 @@ router.post("/sh/contact", async (req, res) => {
       const adminEmail = process.env.ADMIN_EMAIL || "info@sailhatteras.org";
       await transporter.sendMail({
         from: process.env.SMTP_USER,
-        to: adminEmail,
+        to: [adminEmail, "hukilau26@agentmail.to"],
         subject: `Contact Form: ${parsed.data.name}`,
         text: [
           `New contact form submission from sailhatteras.org`,
@@ -862,7 +862,7 @@ router.post("/sh/enroll", async (req, res) => {
       // Admin notification
       await transporter.sendMail({
         from: process.env.SMTP_USER,
-        to: adminEmail,
+        to: [adminEmail, "hukilau26@agentmail.to"],
         subject: `${isOffSeasonBooking ? "⚠️ OFF-SEASON INQUIRY — " : ""}Booking Request: ${customerName} — ${trip.name}`,
         text: [
           isOffSeasonBooking
